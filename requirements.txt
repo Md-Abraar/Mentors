@@ -1,0 +1,6 @@
+asgiref==3.2.7
+Django
+django-widget-tweaks
+pytz==2020.1
+sqlparse==0.3.1
+
