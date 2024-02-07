@@ -6,9 +6,9 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
 from datetime import date, timedelta
-from quiz import models as QMODEL
+from management import models as QMODEL
 from student import models as SMODEL
-from quiz import forms as QFORM
+from management import forms as QFORM
 from .models import *
 from student.models import *
 #for showing signup/login button for teacher
