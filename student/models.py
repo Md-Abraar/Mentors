@@ -16,38 +16,38 @@ class Student_profile(models.Model):
     section=models.CharField(max_length=1,blank=True)
     DOB=models.DateField()
     gender=models.CharField(max_length=10)
-    student_phone_no=models.Integerfield(max_length=20)
+    student_phone_no=models.IntegerField()
     student_email_id=models.CharField(max_length=30)
 
-    L_hno=models.CharField()
-    L_street=models.CharField()
-    L_city=models.CharField()
-    L_district=models.CharField()
-    L_state=models.CharField()
-    L_pincode=models.Integerfield(max_length=6)
+    L_hno=models.CharField(max_length=10)
+    L_street=models.CharField(max_length=20)
+    L_city=models.CharField(max_length=20)
+    L_district=models.CharField(max_length=30)
+    L_state=models.CharField(max_length=30)
+    L_pincode=models.IntegerField()
 
-    P_hno=models.CharField()
-    P_street=models.CharField()
-    P_city=models.CharField()
-    P_district=models.CharField()
-    P_state=models.CharField()
-    P_pincode=models.Integerfield(max_length=6)
+    P_hno=models.CharField(max_length=10)
+    P_street=models.CharField(max_length=20)
+    P_city=models.CharField(max_length=20)
+    P_district=models.CharField(max_length=30)
+    P_state=models.CharField(max_length=30)
+    P_pincode=models.IntegerField()
 
-    residential_details=models.CharField()
-    nationality=models.CharField()
-    aadhar_number=models.Integerfield(max_length=12)
+    residential_details=models.CharField(max_length=20)
+    nationality=models.CharField(max_length=20)
+    aadhar_number=models.IntegerField()
     category=models.CharField(max_length=1)
-    reservation_category=models.CharField()
-    bloodgroup=models.CharField()
+    reservation_category=models.CharField(max_length=20)
+    bloodgroup=models.CharField(max_length=5)
     ph_status=models.BooleanField()
     student_passportsize_photo=models.FileField(upload_to='static/media/student_files')
-    hobbies=models.CharField(null=True,blank=True)
-    scholarship=models.CharField(null=True,blank=True)
-    transport_mode=models.CharField()
-    mother_tongue=models.CharField()
-    height=models.Integerfield(null=True,blank=True)
-    weight=models.Integerfield(null=True,blank=True)
-    illness=models.CharField(null=True,blank=True)
+    hobbies=models.CharField(max_length=100,null=True,blank=True)
+    scholarship=models.CharField(max_length=30,null=True,blank=True)
+    transport_mode=models.CharField(max_length=20)
+    mother_tongue=models.CharField(max_length=20)
+    height=models.IntegerField(null=True,blank=True)
+    weight=models.IntegerField(null=True,blank=True)
+    illness=models.CharField(max_length=30,null=True,blank=True)
 
 class Education_details(models.Model):
     student_id=models.CharField(max_length=10)
@@ -55,7 +55,7 @@ class Education_details(models.Model):
     course=models.CharField(max_length=10, blank=True)
     institute_name=models.CharField(max_length=50)
     insitute_location=models.CharField(max_length=30)
-    YOP=models.Integerfield()
+    YOP=models.IntegerField()
     board=models.CharField(max_length=20)
     percentage=models.IntegerField()
     gpa=models.FloatField()
@@ -71,12 +71,12 @@ class Parents_details(models.Model):
     mother_phone_number=models.IntegerField(null=True,blank=True)
     guardian_name=models.CharField(max_length=50,null=True,blank=True)
     guardian_occupation=models.CharField(max_length=50,null=True,blank=True)
-    guardian_phone_number=models.IntegerField(max_length=50,null=True,blank=True)
+    guardian_phone_number=models.IntegerField(null=True,blank=True)
     parent_email=models.CharField(max_length=50)
 
 class Competitive_exam(models.Model):
     student_id=models.CharField(max_length=10)
-    test_name=models.CharField(blank=True)
+    test_name=models.CharField(max_length=10,blank=True)
     rank_obtained=models.IntegerField(blank=True)
     score_obtained=models.IntegerField(blank=True)
 
@@ -89,8 +89,8 @@ class Remarks(models.Model):
 
 class Attendance(models.Model):
     student_id=models.CharField(max_length=10)
-    semester=models.IntegeField()
-    month=models.CharField()
+    semester=models.IntegerField()
+    month=models.CharField(max_length=10)
     phase=models.IntegerField()
     percentage=models.FloatField()
 
@@ -146,10 +146,22 @@ class Semester_marks(models.Model):
 
 class Backlogs(models.Model):
     student_id=models.CharField(max_length=10)
-    subject_name=models.CharField(blank=True)
+    subject_name=models.CharField(max_length=50,blank=True)
     semester=models.IntegerField(blank=True)
     sem_cleared=models.IntegerField(blank=True)
     ayoc=models.IntegerField(blank=True)
+
+class Extra_Curriculars(models.Model):
+    student_id=models.CharField(max_length=10)
+    activity=models.TextField()
+    role=models.TextField()
+
+class Profile(models.Model):
+    student_id=models.CharField(max_length=10)
+    profile_name=models.CharField(max_length=40)
+    profile_url=models.TextField()
+
+    
 @property
 def get_name(self):
     return self.user.first_name+" "+self.user.last_name
