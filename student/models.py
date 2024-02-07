@@ -150,10 +150,18 @@ class Backlogs(models.Model):
     semester=models.IntegerField(blank=True)
     sem_cleared=models.IntegerField(blank=True)
     ayoc=models.IntegerField(blank=True)
-class Extra_Curriculars(models.model):
+
+class Extra_Curriculars(models.Model):
     student_id=models.CharField(max_length=10)
     activity=models.TextField()
     role=models.TextField()
+
+class Profile(models.Model):
+    student_id=models.CharField(max_length=10)
+    profile_name=models.CharField()
+    profile_url=models.TextField()
+
+    
 @property
 def get_name(self):
     return self.user.first_name+" "+self.user.last_name
