@@ -27,8 +27,8 @@ class Result(models.Model):
 
 class Skill(models.Model):
     skill_name = models.CharField(max_length=50, primary_key=True)
+    sector = models.CharField(max_length=30)
     domain = models.CharField(max_length=50)
-    sub_domain = models.CharField(max_length=50)
     level = models.CharField(max_length=15)
     parameters = models.TextField()
 
