@@ -13,6 +13,7 @@ from student import models as SMODEL
 from teacher import forms as TFORM
 from student import forms as SFORM
 from django.contrib.auth.models import User
+# from .models import *
 
 # from student.models import *
 # from teacher.models import *
@@ -62,12 +63,32 @@ def admin_dashboard_view(request):
 
 @login_required(login_url='adminlogin')
 def admin_teacher_view(request):
-    dict={
-    'total_teacher':TMODEL.Teacher.objects.all().filter(status=True).count(),
-    'pending_teacher':TMODEL.Teacher.objects.all().filter(status=False).count(),
-    'salary':TMODEL.Teacher.objects.all().filter(status=True).aggregate(Sum('salary'))['salary__sum'],
-    }
-    return render(request,'management/admin_teacher.html',context=dict)
+    # dict={
+    # 'total_teacher':TMODEL.Teacher.objects.all().filter(status=True).count(),
+    # 'pending_teacher':TMODEL.Teacher.objects.all().filter(status=False).count(),
+    # 'salary':TMODEL.Teacher.objects.all().filter(status=True).aggregate(Sum('salary'))['salary__sum'],
+    # }
+    # return render(request,'management/admin_teacher.html',context=dict)
+
+
+    return render(request,'management/faculty.html')
+
+def faculty_details(request):
+    # if request.method=='POST':
+    #     faculty_id = request.POST.get('faculty_id')
+    #     faculty_name = request.POST.get('faculty_name')
+    #     faculty_designation = request.POST.get('faculty_designation')
+    #     faculty_email = request.POST.get('faculty_email')
+    #     faculty_branch = request.POST.get('faculty_branch')
+    #     faculty_phone = request.POST.get('facult_phone')
+    #     skillset = request.POST.get('skillset')
+    #     skillset = skillset.split(",")
+
+    #     faculty_record = Faculty(faculty_id = faculty_id, faculty_name = faculty_name, faculty_designation = faculty_designation,
+    #                   faculty_branch = faculty_branch, faculty_email = faculty_email, faculty_phone = faculty_phone)
+    #     faculty_record.save()
+
+    return render(request, 'management/faculty_details.html')
 
 @login_required(login_url='adminlogin')
 def admin_view_teacher_view(request):

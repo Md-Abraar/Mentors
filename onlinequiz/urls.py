@@ -23,6 +23,7 @@ urlpatterns = [
     path('adminlogin', LoginView.as_view(template_name='management/adminlogin.html'),name='adminlogin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
+    path('faculty-details',views.faculty_details, name='faculty-details'),
     path('admin-view-teacher', views.admin_view_teacher_view,name='admin-view-teacher'),
     path('update-teacher/<int:pk>', views.update_teacher_view,name='update-teacher'),
     path('delete-teacher/<int:pk>', views.delete_teacher_view,name='delete-teacher'),
