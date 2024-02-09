@@ -183,7 +183,7 @@
     <a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
     <a href="/admin-teacher"><i class="fas fa-chalkboard-teacher"></i><span>Teacher</span></a>
     <a href="/admin-student"><i class="fas fa-user-graduate"></i><span>Student</span></a>
-    <a href="/admin-course"><i class="fas fa-book"></i><span>Courses</span></a>
+    <a href="/admin-skill"><i class="fas fa-book"></i><span>Skills</span></a>
     <a href="/admin-question"><i class="fas fa-question-circle"></i><span>Questions</span></a>
     
 
@@ -191,6 +191,7 @@
   </div>
   <!--sidebar end-->
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
   <!--content start-->
   <div class="content">
@@ -204,6 +205,11 @@
     {% include "management/footer.html" %}
   </div>
   <!--content end-->
+  <script>
+    $(document).ready(function () {
+      $("label").addClass("fw-semibold");
+    });
+  </script>
 </body>
 
 </html>

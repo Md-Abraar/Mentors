@@ -211,6 +211,57 @@ def delete_student_view(request,pk):
 def admin_course_view(request):
     return render(request,'management/admin_course.html')
 
+@login_required(login_url='adminlogin')
+def admin_skill_view(request):
+
+    domain_filter = request.GET.get('domain_filter', '')
+    sector_filter = request.GET.get('sector_filter', '')
+    level_filter = request.GET.get('level_filter', '')  
+
+    skills = models.Skill.objects.all()
+    domains = models.Skill.objects.values_list('domain',flat=True).distinct()
+    # domains.values_list('domain', flat=True)
+
+    if domain_filter:
+        skills = skills.filter(domain=domain_filter)
+    if sector_filter:
+        skills = skills.filter(sector=sector_filter)
+    if level_filter:
+        skills = skills.filter(level=level_filter)
+
+    context = {
+        'skills':skills,
+        'domain_filter':domain_filter,
+        'sector_filter':sector_filter,
+        'level_filter':level_filter,
+        'domains':list(domains)
+    }
+    return render(request,'management/skills.html',context)
+
+@login_required(login_url='adminlogin')
+def admin_add_skill(request):
+    if request.method=='POST':
+        skill_name = request.POST.get('skill_name')
+        sector = request.POST.get('sector')
+        domain = request.POST.get('domain')
+        level = request.POST.get('level')
+        parameters = request.POST.get('parameters')
+
+        skill = models.Skill(skill_name=skill_name,sector=sector,domain=domain,level=level,parameters=parameters)
+        skill.save()
+
+    return redirect(admin_skill_view)
+
+def admin_edit_skill(request,skill_name):
+    if request.method=='POST':
+        new_skill_name = request.POST.get('skill_name')
+        sector = request.POST.get('sector')
+        domain = request.POST.get('domain')
+        level = request.POST.get('level')
+        parameters = request.POST.get('parameters')
+
+        models.Skill.objects.filter(skill_name=skill_name).update(skill_name = new_skill_name,sector = sector,domain = domain,level = level,parameters = parameters)
+    return redirect(admin_skill_view)
 
 @login_required(login_url='adminlogin')
 def admin_add_course_view(request):
