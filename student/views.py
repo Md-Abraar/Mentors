@@ -42,7 +42,6 @@ def is_student(user):
 @user_passes_test(is_student)
 def student_dashboard_view(request):
     dict={
-    
     'total_course':QMODEL.Course.objects.all().count(),
     'total_question':QMODEL.Question.objects.all().count(),
     }
@@ -124,4 +123,41 @@ def check_marks_view(request,pk):
 def student_marks_view(request):
     courses=QMODEL.Course.objects.all()
     return render(request,'student/student_marks.html',{'courses':courses})
-  
+
+from django.contrib.auth.models import User
+from django.db import transaction
+
+# Define a default password
+DEFAULT_PASSWORD = 'default_password'
+
+# Assuming you have a list of student data in the format of (username, email)
+student_data = [
+    ('student1', 'student1@example.com'),
+    ('student2', 'student2@example.com'),
+    # Add more student data as needed
+]
+
+# @transaction.atomic
+# def create_students_with_default_password(student_data):
+#     # Create User instances
+#     users_to_create = [
+#         User(username=username, email=email, password=DEFAULT_PASSWORD)
+#         for username, email in student_data
+#     ]
+
+#     # Bulk create User instances
+#     created_users = User.objects.bulk_create(users_to_create)
+
+#     # Create Student instances associated with created Users
+#     students_to_create = [
+#         models.Student(user=user)
+#         for user in created_users
+#     ]
+
+#     # Bulk create Student instances
+#     created_students = models.Student.objects.bulk_create(students_to_create)
+
+#     return created_students
+
+# # Call the function to create students
+# created_students = create_students_with_default_password(student_data)

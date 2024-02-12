@@ -13,8 +13,8 @@ from student import models as SMODEL
 from teacher import forms as TFORM
 from student import forms as SFORM
 from django.contrib.auth.models import User
-# from .models import *
-
+import pandas as pd
+import csv
 # from student.models import *
 # from teacher.models import *
 
@@ -125,8 +125,6 @@ def delete_teacher_view(request,pk):
     return HttpResponseRedirect('/admin-view-teacher')
 
 
-
-
 @login_required(login_url='adminlogin')
 def admin_view_pending_teacher_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=False)
@@ -162,14 +160,63 @@ def admin_view_teacher_salary_view(request):
     return render(request,'management/admin_view_teacher_salary.html',{'teachers':teachers})
 
 
+from django.contrib.auth.models import User
+from django.db import transaction
 
+# # Define a default password
+# DEFAULT_PASSWORD = 'GPREC'
 
+# # Assuming you have a list of student data in the format of (username, email)
+# student_data = [
+#     ('student1', 'student1@example.com'),
+#     ('student2', 'student2@example.com'),
+#     # Add more student data as needed
+# ]
+
+# @transaction.atomic
+# def create_students_with_default_password(student_data):
+#     # Create User instances
+#     users_to_create = [
+#         User(username=username, email=email, password=DEFAULT_PASSWORD)
+#         for username, email in student_data
+#     ]
+
+#     # Bulk create User instances
+#     created_users = User.objects.bulk_create(users_to_create)
+
+#     # Create Student instances associated with created Users
+#     students_to_create = [
+#         models.Student(user=user)
+#         for user in created_users
+#     ]
+
+#     # Bulk create Student instances
+#     created_students = models.Student.objects.bulk_create(students_to_create)
+
+#     return created_students
+
+# # Call the function to create students
+# created_students = create_students_with_default_password(student_data)
+from student.models import Student
 @login_required(login_url='adminlogin')
 def admin_student_view(request):
     dict={
     'total_student':SMODEL.Student.objects.all().count(),
     }
-    return render(request,'management/admin_student.html',context=dict)
+    if request.method=="POST":
+        DEFAULT_PASSWORD="GPREC"
+        uploaded_file = request.FILES['file']
+        if uploaded_file.name.endswith(('.xls', '.xlsx')):
+            excel_data = pd.read_excel(uploaded_file)
+            for index, row in excel_data.iterrows():
+                username=row[0]
+                mail=row[1]
+                user=User(username=username, email=mail, password=DEFAULT_PASSWORD)
+                user.save()
+                student=Student(user=user)
+                student.save()
+        render(request,'management/create_students_accounts.html')  
+    return render(request,'management/create_students_accounts.html')
 
 @login_required(login_url='adminlogin')
 def admin_view_student_view(request):
