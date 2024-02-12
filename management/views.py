@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,reverse
 from . import forms,models
 from django.db.models import Sum
 from django.contrib.auth.models import Group
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
 from datetime import date, timedelta
@@ -365,6 +365,34 @@ def contactus_view(request):
             send_mail(str(name)+' || '+str(email),message,settings.EMAIL_HOST_USER, settings.EMAIL_RECEIVING_USER, fail_silently = False)
             return render(request, 'management/contactussuccess.html')
     return render(request, 'management/contactus.html', {'form':sub})
+
+# import csv
+
+# @login_required(login_url='adminlogin')
+# def admin_create_student(request):
+#     # Define a default password
+#     DEFAULT_PASSWORD = 'default_password'
+
+#     # Assuming you have a list of student data in the format of (username, email)
+#     student_data = [
+#         ('student9', 'student3@example.com'),
+#         ('student10', 'student4@example.com'),
+#         # Add more student data as needed
+#     ]
+#     csv_file_path = 'C:/Users/Abraar/OneDrive/Desktop/students.csv'
+#     with open(csv_file_path, 'r') as file:
+#         reader = csv.DictReader(file)
+#         for row in reader:
+#             # Create User instance
+#             user = User.objects.create_user(
+#                 username=row['userid'],
+#                 email=row['email'],
+#                 password=DEFAULT_PASSWORD
+#             )
+#             # Create StudentAccount instance
+#             SMODEL.Studentaccount.objects.create(user=user)
+        
+#     return HttpResponse('aipoindi')
 
 
 
