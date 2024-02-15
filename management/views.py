@@ -14,7 +14,7 @@ from teacher import forms as TFORM
 from student import forms as SFORM
 from django.contrib.auth.models import User
 import pandas as pd
-import csv
+
 # from student.models import *
 # from teacher.models import *
 
@@ -110,7 +110,6 @@ def admin_view_pending_teacher_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=False)
     return render(request,'management/admin_view_pending_teacher.html',{'teachers':teachers})
 
-
 @login_required(login_url='adminlogin')
 def approve_teacher_view(request,pk):
     teacherSalary=forms.TeacherSalaryForm()
@@ -143,40 +142,6 @@ def admin_view_teacher_salary_view(request):
 from django.contrib.auth.models import User
 from django.db import transaction
 
-# # Define a default password
-# DEFAULT_PASSWORD = 'GPREC'
-
-# # Assuming you have a list of student data in the format of (username, email)
-# student_data = [
-#     ('student1', 'student1@example.com'),
-#     ('student2', 'student2@example.com'),
-#     # Add more student data as needed
-# ]
-
-# @transaction.atomic
-# def create_students_with_default_password(student_data):
-#     # Create User instances
-#     users_to_create = [
-#         User(username=username, email=email, password=DEFAULT_PASSWORD)
-#         for username, email in student_data
-#     ]
-
-#     # Bulk create User instances
-#     created_users = User.objects.bulk_create(users_to_create)
-
-#     # Create Student instances associated with created Users
-#     students_to_create = [
-#         models.Student(user=user)
-#         for user in created_users
-#     ]
-
-#     # Bulk create Student instances
-#     created_students = models.Student.objects.bulk_create(students_to_create)
-
-#     return created_students
-
-# # Call the function to create students
-# created_students = create_students_with_default_password(student_data)
 from student.models import Student
 @login_required(login_url='adminlogin')
 def admin_student_view(request):
@@ -202,8 +167,6 @@ def admin_student_view(request):
 def admin_view_student_view(request):
     students= SMODEL.Student.objects.all()
     return render(request,'management/admin_view_student.html',{'students':students})
-
-
 
 @login_required(login_url='adminlogin')
 def update_student_view(request,pk):
@@ -262,8 +225,6 @@ def delete_course_view(request,pk):
     course=models.Course.objects.get(id=pk)
     course.delete()
     return HttpResponseRedirect('/admin-view-course')
-
-
 
 @login_required(login_url='adminlogin')
 def admin_question_view(request):

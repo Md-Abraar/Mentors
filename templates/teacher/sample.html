@@ -1,11 +1,13 @@
 {% extends 'teacher/teacherbase.html' %}
 {% block content %}
 {%load static%}
-
 <head>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
 
   <style media="screen">
     a:link {
@@ -17,20 +19,48 @@
     }
 
     .row {
-      margin: 100px;
+      margin: 1000px;
     }
   </style>
 </head>
 <br><br>
 <div class="container">
+  <!-- Button to trigger the modal -->
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" style="float:right;margin-right:20px">
+      Add Students
+  </button>
+  <br><br>
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 class="modal-title" id="myModalLabel">Add Students</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search">
+                  </div>
+                  <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+          </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</div>
+<div class="container">
   <div class="panel panel-primary">
     <div class="panel-heading">
-      <h6 class="panel-title">Students</h6>
+      <h6 class="panel-title ">Students</h6>
     </div>
     <table class="table table-hover" id="dev-table">
       <thead>
         <tr>
-
           <th>Name</th>
           <th>Profile Picture</th>
           <th>Mobile</th>
@@ -41,7 +71,6 @@
       </thead>
       {% for t in details %}
       <tr>
-
         <td> {{t.get_name}}</td>
         <td> <img src="{% static t.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
         <td>{{t.mobile}}</td>
@@ -56,4 +85,5 @@
 </div>
 
 <br><br><br><br><br><br>
+
 {% endblock content %}
