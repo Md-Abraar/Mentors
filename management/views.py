@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,reverse
 from . import forms,models
 from django.db.models import Sum
 from django.contrib.auth.models import Group
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
 from datetime import date, timedelta
@@ -63,12 +63,32 @@ def admin_dashboard_view(request):
 
 @login_required(login_url='adminlogin')
 def admin_teacher_view(request):
-    dict={
-    'total_teacher':TMODEL.Teacher.objects.all().filter(status=True).count(),
-    'pending_teacher':TMODEL.Teacher.objects.all().filter(status=False).count(),
-    'salary':TMODEL.Teacher.objects.all().filter(status=True).aggregate(Sum('salary'))['salary__sum'],
-    }
-    return render(request,'management/admin_teacher.html',context=dict)
+    # dict={
+    # 'total_teacher':TMODEL.Teacher.objects.all().filter(status=True).count(),
+    # 'pending_teacher':TMODEL.Teacher.objects.all().filter(status=False).count(),
+    # 'salary':TMODEL.Teacher.objects.all().filter(status=True).aggregate(Sum('salary'))['salary__sum'],
+    # }
+    # return render(request,'management/admin_teacher.html',context=dict)
+
+
+    return render(request,'management/faculty.html')
+
+def faculty_details(request):
+    # if request.method=='POST':
+    #     faculty_id = request.POST.get('faculty_id')
+    #     faculty_name = request.POST.get('faculty_name')
+    #     faculty_designation = request.POST.get('faculty_designation')
+    #     faculty_email = request.POST.get('faculty_email')
+    #     faculty_branch = request.POST.get('faculty_branch')
+    #     faculty_phone = request.POST.get('facult_phone')
+    #     skillset = request.POST.get('skillset')
+    #     skillset = skillset.split(",")
+
+    #     faculty_record = Faculty(faculty_id = faculty_id, faculty_name = faculty_name, faculty_designation = faculty_designation,
+    #                   faculty_branch = faculty_branch, faculty_email = faculty_email, faculty_phone = faculty_phone)
+    #     faculty_record.save()
+
+    return render(request, 'management/faculty_details.html')
 
 @login_required(login_url='adminlogin')
 def admin_view_teacher_view(request):
@@ -199,8 +219,59 @@ def delete_student_view(request,pk):
 
 @login_required(login_url='adminlogin')
 def admin_course_view(request):
-    return render(request,'management/skills.html')
+    return render(request,'management/admin_course.html')
 
+@login_required(login_url='adminlogin')
+def admin_skill_view(request):
+
+    domain_filter = request.GET.get('domain_filter', '')
+    sector_filter = request.GET.get('sector_filter', '')
+    level_filter = request.GET.get('level_filter', '')  
+
+    skills = models.Skill.objects.all()
+    domains = models.Skill.objects.values_list('domain',flat=True).distinct()
+    # domains.values_list('domain', flat=True)
+
+    if domain_filter:
+        skills = skills.filter(domain=domain_filter)
+    if sector_filter:
+        skills = skills.filter(sector=sector_filter)
+    if level_filter:
+        skills = skills.filter(level=level_filter)
+
+    context = {
+        'skills':skills,
+        'domain_filter':domain_filter,
+        'sector_filter':sector_filter,
+        'level_filter':level_filter,
+        'domains':list(domains)
+    }
+    return render(request,'management/skills.html',context)
+
+@login_required(login_url='adminlogin')
+def admin_add_skill(request):
+    if request.method=='POST':
+        skill_name = request.POST.get('skill_name')
+        sector = request.POST.get('sector')
+        domain = request.POST.get('domain')
+        level = request.POST.get('level')
+        parameters = request.POST.get('parameters')
+
+        skill = models.Skill(skill_name=skill_name,sector=sector,domain=domain,level=level,parameters=parameters)
+        skill.save()
+
+    return redirect(admin_skill_view)
+
+def admin_edit_skill(request,skill_name):
+    if request.method=='POST':
+        new_skill_name = request.POST.get('skill_name')
+        sector = request.POST.get('sector')
+        domain = request.POST.get('domain')
+        level = request.POST.get('level')
+        parameters = request.POST.get('parameters')
+
+        models.Skill.objects.filter(skill_name=skill_name).update(skill_name = new_skill_name,sector = sector,domain = domain,level = level,parameters = parameters)
+    return redirect(admin_skill_view)
 
 @login_required(login_url='adminlogin')
 def admin_add_course_view(request):
@@ -302,4 +373,34 @@ def contactus_view(request):
             send_mail(str(name)+' || '+str(email),message,settings.EMAIL_HOST_USER, settings.EMAIL_RECEIVING_USER, fail_silently = False)
             return render(request, 'management/contactussuccess.html')
     return render(request, 'management/contactus.html', {'form':sub})
+
+# import csv
+
+# @login_required(login_url='adminlogin')
+# def admin_create_student(request):
+#     # Define a default password
+#     DEFAULT_PASSWORD = 'default_password'
+
+#     # Assuming you have a list of student data in the format of (username, email)
+#     student_data = [
+#         ('student9', 'student3@example.com'),
+#         ('student10', 'student4@example.com'),
+#         # Add more student data as needed
+#     ]
+#     csv_file_path = 'C:/Users/Abraar/OneDrive/Desktop/students.csv'
+#     with open(csv_file_path, 'r') as file:
+#         reader = csv.DictReader(file)
+#         for row in reader:
+#             # Create User instance
+#             user = User.objects.create_user(
+#                 username=row['userid'],
+#                 email=row['email'],
+#                 password=DEFAULT_PASSWORD
+#             )
+#             # Create StudentAccount instance
+#             SMODEL.Studentaccount.objects.create(user=user)
+        
+#     return HttpResponse('aipoindi')
+
+
 

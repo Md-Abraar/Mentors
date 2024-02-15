@@ -1,0 +1,243 @@
+{% extends 'management/adminbase.html' %}
+{%load static%}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 800px; /* Adjust this value as needed */
+  margin: 0 auto; /* Center the container horizontally */
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  /*max-width: 300px;*/
+  max-width: 200px; /* Adjust this value to reduce the length */
+  margin: 20px;
+  text-align: center;
+  font-family: arial;
+  {% comment %} padding:5px; {% endcomment %}
+}
+
+.title {
+  color: grey;
+  /*font-size: 18px;*/
+  font-size: 14px; /* Adjust font size */
+  text-align:left;
+  margin-left:10px;
+}
+
+button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  /*padding: 8px;*/
+  padding: 6px; /* Adjust padding */
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  /*font-size: 18px;*/
+  font-size: 14px; /* Adjust font size */
+}
+
+a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+}
+
+button:hover, a:hover {
+  opacity: 0.7;
+}
+.search
+{
+    display: flex;
+    justify-content: space-between;
+    max-width: 800px;
+    margin:0 auto;
+}
+.addProfile
+{
+    padding: 5px;
+    background: #19B3D3;
+    text-decoration: none;
+    border-radius: 2px;
+    margin-left: 460px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    transition: 0.5s;
+}
+</style>
+</head>
+<body>
+<div class="search">
+    <h2 style="margin: 20px;">Faculty Profiles</h2>
+    <input type="text" id="searchInput" name="search" onkeyup="searchProfile()" placeholder="Search by names.." style="margin: 20px;">   
+    
+ </div> 
+<a href="{% url "faculty-details" %}" class="addProfile"><b>Add Profile</b></a>
+<div class="container" id="content" >
+    
+    {% for faculty_data in  faculty_data%}
+    <div class="card">
+        <img src= "{% static 'image/student.png' %}" alt="No image" style="width:100%">
+        <h2>{{faculty_data.faculty_name}}</h2>
+        <p class="title">{{faculty_data.faculty_designation}}</p>
+        <p>{{faculty_data.faculty_branch}}</p>
+      </div>
+    {% endfor %} 
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>A. Vishnu Vardhan Reddy</h4>
+    <p class="title"><span style="font-weight:bold">Dept: </span>ECS</p>
+    <p class="title"><span style="font-weight:bold">Email: </span>ECS</p>
+    <p class="title"><span style="font-weight:bold">Contact: </span>ECS</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p><button>Contact</button></p>
+    <p><button style="background-color: green;">Approve</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Texas University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jaye Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jay Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>John Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+    <p><button>Contact</button></p>
+  </div>
+
+  <!-- Add more profile cards here as needed -->
+
+</div>
+
+
+
+<script>
+    function searchProfile() {
+      // Declare variables
+      var input, filter, container, card, title, i, txtValue;
+      input = document.getElementById('searchInput');
+      filter = input.value.toUpperCase();
+      container = document.getElementsByClassName('container')[0];
+      card = container.getElementsByClassName('card');
+    
+      // Loop through all cards, and hide those who don't match the search query
+      for (i = 0; i < card.length; i++) {
+        title = card[i].getElementsByTagName("h4")[0];
+        txtValue = title.textContent || title.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          card[i].style.display = "";
+        } else {
+          card[i].style.display = "none";
+        }
+      }
+    }
+</script>
+
+
+{% endblock content %}

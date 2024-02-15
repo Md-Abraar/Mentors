@@ -27,8 +27,8 @@ class Result(models.Model):
 
 class Skill(models.Model):
     skill_name = models.CharField(max_length=50, primary_key=True)
+    sector = models.CharField(max_length=30)
     domain = models.CharField(max_length=50)
-    sub_domain = models.CharField(max_length=50)
     level = models.CharField(max_length=15)
     parameters = models.TextField()
 
@@ -36,14 +36,14 @@ class Faculty(models.Model):
     faculty_id = models.CharField(max_length=10)
     faculty_name = models.CharField(max_length=30)
     faculty_branch = models.CharField(max_length=30)
+    faculty_designation= models.CharField(max_length=25)
     skill_set  = models.ManyToManyField(Skill)
     faculty_email = models.EmailField()
     faculty_phone = models.CharField(max_length=10)
+    faculty_image = models.ImageField(upload_to='static/Faculty/')
 
 class Mentorship(models.Model):
     mentor_id = models.CharField(max_length=30, primary_key=True)
     faculty_id = models.ForeignKey(Faculty, on_delete=models.CASCADE)
     
-class Student_account(models.Model):
-    username=models.CharField(max_length=30,primary_key=True)
 
