@@ -46,6 +46,4 @@ class Mentorship(models.Model):
     mentor_id = models.CharField(max_length=30, primary_key=True)
     faculty_id = models.ForeignKey(Faculty, on_delete=models.CASCADE)
     
-class Student_account(models.Model):
-    username=models.CharField(max_length=30,primary_key=True)
 

@@ -18,12 +18,15 @@
   margin: 20px;
   text-align: center;
   font-family: arial;
+  {% comment %} padding:5px; {% endcomment %}
 }
 
 .title {
   color: grey;
   /*font-size: 18px;*/
   font-size: 14px; /* Adjust font size */
+  text-align:left;
+  margin-left:10px;
 }
 
 button {
@@ -91,36 +94,38 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
-    <p class="title">CTO, ABC Company</p>
-    <p>Stanford University</p>
-  </div>
-
-  <div class="card">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
-    <p class="title">CTO, ABC Company</p>
-    <p>Stanford University</p>
-  </div>
-
-  <div class="card">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
-    <p class="title">CTO, ABC Company</p>
-    <p>Stanford University</p>
-  </div>
-
-  <div class="card">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
-    <p class="title">CTO, ABC Company</p>
-    <p>Stanford University</p>
+    <h4>A. Vishnu Vardhan Reddy</h4>
+    <p class="title"><span style="font-weight:bold">Dept: </span>ECS</p>
+    <p class="title"><span style="font-weight:bold">Email: </span>ECS</p>
+    <p class="title"><span style="font-weight:bold">Contact: </span>ECS</p>
     <p><button>Contact</button></p>
   </div>
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p>Stanford University</p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
+    <p class="title">CTO, ABC Company</p>
+    <p><button>Contact</button></p>
+    <p><button style="background-color: green;">Approve</button></p>
+  </div>
+
+  <div class="card">
+    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <h4>Jane Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Texas University</p>
     <p><button>Contact</button></p>
@@ -128,7 +133,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
+    <h4>Jane Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -136,7 +141,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
+    <h4>Jane Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -144,7 +149,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jaye Smith</h2>
+    <h4>Jaye Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -152,7 +157,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
+    <h4>Jane Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -160,7 +165,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
+    <h4>Jane Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -168,7 +173,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jay Smith</h2>
+    <h4>Jay Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -176,7 +181,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>John Smith</h2>
+    <h4>John Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -184,7 +189,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
+    <h4>Jane Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -192,7 +197,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
+    <h4>Jane Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -200,7 +205,7 @@ button:hover, a:hover {
 
   <div class="card">
     <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h2>Jane Smith</h2>
+    <h4>Jane Smith</h4>
     <p class="title">CTO, ABC Company</p>
     <p>Stanford University</p>
     <p><button>Contact</button></p>
@@ -223,7 +228,7 @@ button:hover, a:hover {
     
       // Loop through all cards, and hide those who don't match the search query
       for (i = 0; i < card.length; i++) {
-        title = card[i].getElementsByTagName("h2")[0];
+        title = card[i].getElementsByTagName("h4")[0];
         txtValue = title.textContent || title.innerText;
         if (txtValue.toUpperCase().indexOf(filter) > -1) {
           card[i].style.display = "";

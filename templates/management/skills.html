@@ -42,15 +42,24 @@
                                         <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" stroke-width=1 stroke="currentColor"/>
                                     </svg>
                                 </button>
+                                <div class="ms-2 ">
+                                    <a class="btn btn-outline-secondary btn" href="{% url "admin-skill" %}" data-bs-toggle="tooltip" data-bs-title="Clear">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 2 36 36">
+                                            <path d="M23.9,18.6L10.3,5.1h22.2C33.3,5,34,5.6,34,6.4c0,0,0,0,0,0.1v1.1c0,0.5-0.2,1-0.6,1.4L23.9,18.6z" class="clr-i-solid clr-i-solid-path-1"></path>
+                                            <path d="M33.5,31L4.1,1.6L2.6,3l2.1,2.1H3.5C2.7,5,2,5.6,2,6.4c0,0,0,0,0,0.1v1.1c0,0.5,0.2,1,0.6,1.4L14,20.5v10.1l8,3.4V22.4l10.1,10.1L33.5,31z" class="clr-i-solid clr-i-solid-path-2"></path>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
                         
                     </div>
                 </div>
-                <div class="row collapse" id="filterCollapse">
-                    <div class="col-md-4"></div>
-                    <div class="col-md-8">
+                <div class="row collapse mt-3 float-end" id="filterCollapse">
+                    {% comment %} <div class="col-md-2"></div> {% endcomment %}
+                    <div class="col-md-12">
                             <div class="d-flex justify-content-start">
-                                <div class="mx-1">
+                                <div class="mx-3 small d-flex">
+                                    <label for="sector_filter" class="form-label me-1 mt-1">Sector:</label>
                                     <select name="sector_filter" id="sector_filter" class="form-select form-select-sm ellipsis">
                                         <option value="">All</option>
                                         <option value="IT" {% if sector_filter == "IT" %}selected{% endif %}>IT</option>
@@ -60,7 +69,8 @@
                                         <option value="Construction" {% if sector_filter == "Construction" %}selected{% endif %}>Construction</option>
                                     </select>
                                 </div>
-                                <div class="">
+                                <div class="small d-flex">
+                                    <label for="domain_filter" class="form-label me-1 mt-1">Domain:</label>
                                     <select name="domain_filter" id="domain_filter" class="form-select form-select-sm ellipsis">
                                         <option value="">All</option>
                                         {% for domain in domains %}
@@ -68,7 +78,8 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="mx-1">
+                                <div class="mx-3 small d-flex">
+                                    <label for="level_filter" class="form-label me-1 mt-1">Level:</label>
                                     <select name="level_filter" id="level_filter" class="form-select form-select-sm ellipsis">
                                         <option value="">All</option>
                                         <option value="Basic" {% if level_filter == "Basic" %}selected{% endif %}>Basic</option>
@@ -76,21 +87,14 @@
                                         <option value="Advanced" {% if level_filter == "Advanced" %}selected{% endif %}>Advanced</option>
                                     </select>
                                 </div>
-                                <div class="ms-3 ">
+                                <div>
                                     <button class="btn btn-outline-secondary btn-sm" type="submit" data-bs-toggle="tooltip" data-bs-title="Apply">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
                                             <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
                                         </svg>
                                     </button>
                                 </div>
-                                <div class="ms-2 ">
-                                    <a class="btn btn-outline-secondary btn-sm" href="{% url "admin-skill" %}" data-bs-toggle="tooltip" data-bs-title="Clear">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel-fill" viewBox="0 2 36 36">
-                                            <path d="M23.9,18.6L10.3,5.1h22.2C33.3,5,34,5.6,34,6.4c0,0,0,0,0,0.1v1.1c0,0.5-0.2,1-0.6,1.4L23.9,18.6z" class="clr-i-solid clr-i-solid-path-1"></path>
-                                            <path d="M33.5,31L4.1,1.6L2.6,3l2.1,2.1H3.5C2.7,5,2,5.6,2,6.4c0,0,0,0,0,0.1v1.1c0,0.5,0.2,1,0.6,1.4L14,20.5v10.1l8,3.4V22.4l10.1,10.1L33.5,31z" class="clr-i-solid clr-i-solid-path-2"></path>
-                                        </svg>
-                                    </a>
-                                </div>
+                                
                             </div>
                         
                     </div>
