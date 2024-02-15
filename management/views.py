@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.core.mail import send_mail
 from teacher import models as TMODEL
 from student import models as SMODEL
+from mentor import models as MMODEL
 from teacher import forms as TFORM
 from student import forms as SFORM
 from django.contrib.auth.models import User
@@ -30,6 +31,9 @@ def is_teacher(user):
 def is_student(user):
     return user.groups.filter(name='STUDENT').exists()
 
+def is_mentor(user):
+    return user.groups.filter(name='MENTOR').exists()
+
 def afterlogin_view(request):
     if is_student(request.user):      
         return redirect('student/student-dashboard')
@@ -40,6 +44,12 @@ def afterlogin_view(request):
             return redirect('teacher/teacher-dashboard')
         else:
             return render(request,'teacher/teacher_wait_for_approval.html')
+    elif is_mentor(request.user):
+        accountapproval=MMODEL.mentor.objects.all().filter(user_id=request.user.id,status=True)
+        if accountapproval:
+            return redirect('mentor/mentor-dashboard')
+        else:
+            return render(request,'mentor/mentor_wait_for_approval.html')
     else:
         return redirect('admin-dashboard')
 
