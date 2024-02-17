@@ -128,14 +128,14 @@ from django.contrib.auth.models import User
 from django.db import transaction
 
 # Define a default password
-DEFAULT_PASSWORD = 'default_password'
+# DEFAULT_PASSWORD = 'default_password'
 
-# Assuming you have a list of student data in the format of (username, email)
-student_data = [
-    ('student1', 'student1@example.com'),
-    ('student2', 'student2@example.com'),
-    # Add more student data as needed
-]
+# # Assuming you have a list of student data in the format of (username, email)
+# student_data = [
+#     ('student1', 'student1@example.com'),
+#     ('student2', 'student2@example.com'),
+#     # Add more student data as needed
+# ]
 
 # @transaction.atomic
 # def create_students_with_default_password(student_data):

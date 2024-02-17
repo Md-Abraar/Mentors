@@ -93,19 +93,18 @@
  <script>
   function validateFile() {
     var input = document.getElementById('excelFile');
-    var fileName = input.value.split('\\').pop(); // Get only the file name
+    var fileName = input.value.split('\\').pop(); 
     const file=input.files[0];
     console.log(file.size);
     console.log(input.files);
     maxSize=1024*1024;
     // Check if file extension is .xlsx or .xls
     if ((fileName.endsWith('.xlsx') || fileName.endsWith('.xls')) && file.size>maxSize) {
-        
         alert('Please select the file less than 1MB');
         input.value='';
         return;
     }
-    else
+    else if((!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls'))
     {
       alert("Please select a valid Excel file (XLSX or XLS format)");
       input.value='';
