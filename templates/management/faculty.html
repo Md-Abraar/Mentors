@@ -99,7 +99,7 @@ button:hover, a:hover {
     
     {% for faculty_data in  faculty_data%}
     <div class="mycard">
-        <img src= "{% static 'image/student.png' %}" alt="No image" style="width:100%">
+        <img src= "{% static 'image/{{faculty_data.mentor_image}}' %}" alt="No image" style="width:100%">
         <h2>{{faculty_data.faculty_name}}</h2>
         <p class="mytitle">{{faculty_data.faculty_designation}}</p>
         <p>{{faculty_data.faculty_branch}}</p>
