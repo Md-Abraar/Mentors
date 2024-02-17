@@ -9,6 +9,7 @@ class mentor(models.Model):
     department=models.CharField(max_length=40,null=True)
     mobile=models.CharField(max_length=13,null=True)
     email=models.CharField(max_length=40,null=True)
+    mentor_image = models.ImageField(upload_to='static/Faculty/')
 
     @property
     def get_instance(self):
