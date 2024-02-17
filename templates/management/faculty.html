@@ -16,13 +16,14 @@
 h4 {
   display: block;
   margin-block-start: 1.33em;
-  margin-block-end: 1.33em;
+  margin-block-end: 0.3em;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
   font-weight: bold;
   text-align: center;
   font-family: arial;
   font-size: 18px;
+
 }
 
 .mycard {
@@ -30,6 +31,7 @@ h4 {
   /*max-width: 300px;*/
   max-width: 200px; /* Adjust this value to reduce the length */
   margin: 20px;
+  max-height: 400px;
   text-align: center;
   font-family: arial;
   {% comment %} padding:5px; {% endcomment %}
@@ -37,6 +39,7 @@ h4 {
 
 .mytitle {
   color: grey;
+  
   /*font-size: 18px;*/
   font-size: 14px; /* Adjust font size */
   text-align:center;
@@ -49,6 +52,8 @@ h4 {
   display: inline-block;
   /*padding: 8px;*/
   padding: 6px; /* Adjust padding */
+  margin-top:1%;
+  margin-bottom:2%;
   color: white;
   background-color: #000;
   text-align: center;
@@ -97,17 +102,33 @@ button:hover, a:hover {
 <a href="{% url "faculty-details" %}" class="addProfile">Add Profile</a>
 <div class="container" id="content" >
     
-    {% for faculty_data in  faculty_data%}
-    <div class="mycard">
-        <img src= "{% static 'image/{{faculty_data.mentor_image}}' %}" alt="No image" style="width:100%">
-        <h2>{{faculty_data.faculty_name}}</h2>
-        <p class="mytitle">{{faculty_data.faculty_designation}}</p>
-        <p>{{faculty_data.faculty_branch}}</p>
+    {% for mentor in  mentors%}
+      <div class="mycard">
+        <img src= "{% static mentor.mentor_image %}" alt="John" style="width:100%; height:65%">
+        <h4>{{mentor.name}}</h4>
+        <p class="mytitle">{{mentor.department}}</p>
+        <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton">More</button></p>
+      </div>
+      <div class="modal fade" id="a{{mentor.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Emp id: {{mentor.emp_id}}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{mentor.name}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{mentor.department}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{mentor.email}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>
+            </div>
+          </div>
+        </div>
       </div>
     {% endfor %} 
 
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+  {% comment %} <div class="mycard">
+    <img src= "{% static 'static/Faculty/keerthan_passport_photo_9kMdWYn.jpeg' %}" alt="John" style="width:100%; height:55%">
     <h4>A. Vishnu Vardhan Reddy</h4>
     <p class="mytitle">Emerging Technologies in Computer Science</p>
     <p><button data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="mybutton">More</button></p>
@@ -127,15 +148,15 @@ button:hover, a:hover {
         <p style="font-size:18px"><span class="fw-semibold">Email: </span>vishnu.ecs@gprec.ac.in</p>
         <p style="font-size:18px"><span class="fw-semibold">Contact: </span>9876543210</p>
       </div>
-      {% comment %} <div class="modal-footer">
+      <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div> {% endcomment %}
+      </div>
     </div>
   </div>
 </div>
 
   <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
+    <img src= "{% static 'static/Faculty/Screenshot_60.jpeg' %}" alt="John" style="width:100%; height:55%">
     <h4>Jane Smith</h4>
     <p class="mytitle">CTO, ABC Company</p>
     <p>Stanford University</p>
@@ -243,7 +264,7 @@ button:hover, a:hover {
     <p>Stanford University</p>
     <p><button>Contact</button></p>
   </div>
-
+ {% endcomment %}
   <!-- Add more profile mycards here as needed -->
 
 </div>

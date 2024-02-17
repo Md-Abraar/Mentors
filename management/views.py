@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,reverse
 from . import forms,models
 from django.db.models import Sum
 from django.contrib.auth.models import Group
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
 from datetime import date, timedelta
@@ -92,9 +92,9 @@ def admin_teacher_view(request):
     # 'salary':TMODEL.Teacher.objects.all().filter(status=True).aggregate(Sum('salary'))['salary__sum'],
     # }
     # return render(request,'management/admin_teacher.html',context=dict)
+    mentors = MMODEL.mentor.objects.all().values('emp_id','name','department','mobile','email','status','mentor_image')
 
-
-    return render(request,'management/faculty.html')
+    return render(request,'management/faculty.html',{'mentors':mentors})
 
 def faculty_details(request):
     # if request.method=='POST':
@@ -240,7 +240,6 @@ def update_student_view(request,pk):
     return render(request,'management/update_student.html',context=mydict)
 
 
-
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def delete_student_view(request,pk):
@@ -259,6 +258,13 @@ def admin_course_view(request):
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
+def get_domains(request):
+    sector = request.GET.get('sector')
+    domains = models.Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
+    return JsonResponse(list(domains), safe=False)
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_skill_view(request):
 
     domain_filter = request.GET.get('domain_filter', '')
@@ -266,8 +272,7 @@ def admin_skill_view(request):
     level_filter = request.GET.get('level_filter', '')  
 
     skills = models.Skill.objects.all()
-    domains = models.Skill.objects.values_list('domain',flat=True).distinct()
-    # domains.values_list('domain', flat=True)
+    # domains = models.Skill.objects.values_list('domain',flat=True).distinct()
 
     if domain_filter:
         skills = skills.filter(domain=domain_filter)
@@ -281,7 +286,7 @@ def admin_skill_view(request):
         'domain_filter':domain_filter,
         'sector_filter':sector_filter,
         'level_filter':level_filter,
-        'domains':list(domains)
+        # 'domains':list(domains)
     }
     return render(request,'management/skills.html',context)
 
