@@ -73,9 +73,6 @@
                                     <label for="domain_filter" class="form-label me-1 mt-1">Domain:</label>
                                     <select name="domain_filter" id="domain_filter" class="form-select form-select-sm ellipsis">
                                         <option value="">All</option>
-                                        {% for domain in domains %}
-                                            <option value="{{domain}}" {% if domain_filter == domain %}selected{% endif %}>{{domain}}</option>
-                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="mx-3 small d-flex">
@@ -302,6 +299,29 @@
     $('.domain').typeahead({
         source: suggestions
     });
+
+    $(document).ready(function(){
+        $('#sector_filter').change(function(){
+            var sector = $(this).val();
+            $.ajax({
+                url: '/get_domains',
+                data: {
+                    'sector': sector
+                },
+                dataType: 'json',
+                success: function(data){
+                    var d = $('#domain_filter')
+                    d.empty();
+                    d.append('<option value="">All</option>')
+                    $.each(data, function(index, domain){
+                       //                            <option value="{{domain}}" {% if domain_filter == domain %}selected{% endif %}>{{domain}}</option>
+                        d.append('<option value="' + domain + '">' + domain + '</option>');
+                    });
+                }
+            });
+        });
+    });
+    
 
 </script>
 {% endblock content %}

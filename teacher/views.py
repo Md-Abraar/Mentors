@@ -45,7 +45,6 @@ def is_teacher(user):
 @user_passes_test(is_teacher)
 def teacher_dashboard_view(request):
     dict={
-    
     'total_course':QMODEL.Course.objects.all().count(),
     'total_question':QMODEL.Question.objects.all().count(),
     'total_student':SMODEL.Student.objects.all().count()
@@ -85,6 +84,7 @@ def delete_exam_view(request,pk):
     return HttpResponseRedirect('/teacher/teacher-view-exam')
 
 @login_required(login_url='adminlogin')
+@user_passes_test(is_teacher)
 def teacher_question_view(request):
     return render(request,'teacher/teacher_question.html')
 
@@ -123,7 +123,7 @@ def remove_question_view(request,pk):
     question.delete()
     return HttpResponseRedirect('/teacher/teacher-view-question')
 
-
+@user_passes_test(is_teacher)
 def students_list(request):
     user_instance = User.objects.get(username='sowmya')
     teacher_instance = Teacher.objects.get(user=user_instance)

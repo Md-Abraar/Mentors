@@ -6,8 +6,17 @@ class Student(models.Model):
     profile_pic= models.ImageField(upload_to='profile_pic/Student/',null=True,blank=True)
     address = models.CharField(max_length=40,null=True)
     mobile = models.CharField(max_length=20,null=True)
-    TD = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='teacher',default=1,null=True)
-
+    TD = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='teacher',null=True,default=1)
+    branch=models.CharField(max_length=6)
+    section=models.CharField(max_length=1,blank=True)
+    gender=models.CharField(max_length=10)
+    semester=models.IntegerField()
+    # @property
+    # def get_name(self):
+    #     return self.user.first_name+" "+self.user.last_name
+    @property
+    def get_instance(self):
+        return self
 class Student_profile(models.Model):
     student_id=models.CharField(max_length=10)
     student_fullname=models.CharField(max_length=50)
@@ -159,13 +168,3 @@ class Profile(models.Model):
     student_id=models.CharField(max_length=10)
     profile_name=models.CharField(max_length=40)
     profile_url=models.TextField()
-
-    
-@property
-def get_name(self):
-    return self.user.first_name+" "+self.user.last_name
-@property
-def get_instance(self):
-    return self
-def __str__(self):
-    return self.user.first_name

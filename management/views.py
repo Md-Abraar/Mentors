@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,reverse
 from . import forms,models
 from django.db.models import Sum
 from django.contrib.auth.models import Group
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
 from datetime import date, timedelta
@@ -15,9 +15,20 @@ from teacher import forms as TFORM
 from student import forms as SFORM
 from django.contrib.auth.models import User
 import pandas as pd
-import csv
+from django.contrib.auth.decorators import permission_required
+
 # from student.models import *
 # from teacher.models import *
+
+def admin_superuser_required(view_func):
+    """
+    Decorator for views that checks if the user is logged in, is an admin, and is a superuser.
+    """
+    actual_decorator = user_passes_test(
+        lambda u: u.is_active and u.is_superuser and u.is_staff,
+        login_url='/login/'  # Redirect URL if the user doesn't meet the requirements
+    )
+    return actual_decorator(view_func)
 
 def home_view(request):
     if request.user.is_authenticated:
@@ -62,6 +73,7 @@ def adminclick_view(request):
 
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_dashboard_view(request):
     dict={
     'total_student':SMODEL.Student.objects.all().count(),
@@ -72,6 +84,7 @@ def admin_dashboard_view(request):
     return render(request,'management/admin_dashboard.html',context=dict)
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_teacher_view(request):
     # dict={
     # 'total_teacher':TMODEL.Teacher.objects.all().filter(status=True).count(),
@@ -79,9 +92,9 @@ def admin_teacher_view(request):
     # 'salary':TMODEL.Teacher.objects.all().filter(status=True).aggregate(Sum('salary'))['salary__sum'],
     # }
     # return render(request,'management/admin_teacher.html',context=dict)
+    mentors = MMODEL.mentor.objects.all().values('emp_id','name','department','mobile','email','status','mentor_image')
 
-
-    return render(request,'management/faculty.html')
+    return render(request,'management/faculty.html',{'mentors':mentors})
 
 def faculty_details(request):
     # if request.method=='POST':
@@ -101,12 +114,14 @@ def faculty_details(request):
     return render(request, 'management/faculty_details.html')
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_view_teacher_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=True)
     return render(request,'management/admin_view_teacher.html',{'teachers':teachers})
 
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def update_teacher_view(request,pk):
     teacher=TMODEL.Teacher.objects.get(id=pk)
     user=TMODEL.User.objects.get(id=teacher.user_id)
@@ -127,6 +142,7 @@ def update_teacher_view(request,pk):
 
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def delete_teacher_view(request,pk):
     teacher=TMODEL.Teacher.objects.get(id=pk)
     user=User.objects.get(id=teacher.user_id)
@@ -136,12 +152,13 @@ def delete_teacher_view(request,pk):
 
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_view_pending_teacher_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=False)
     return render(request,'management/admin_view_pending_teacher.html',{'teachers':teachers})
 
-
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def approve_teacher_view(request,pk):
     teacherSalary=forms.TeacherSalaryForm()
     if request.method=='POST':
@@ -157,6 +174,7 @@ def approve_teacher_view(request,pk):
     return render(request,'management/salary_form.html',{'teacherSalary':teacherSalary})
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def reject_teacher_view(request,pk):
     teacher=TMODEL.Teacher.objects.get(id=pk)
     user=User.objects.get(id=teacher.user_id)
@@ -165,6 +183,7 @@ def reject_teacher_view(request,pk):
     return HttpResponseRedirect('/admin-view-pending-teacher')
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_view_teacher_salary_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=True)
     return render(request,'management/admin_view_teacher_salary.html',{'teachers':teachers})
@@ -173,42 +192,9 @@ def admin_view_teacher_salary_view(request):
 from django.contrib.auth.models import User
 from django.db import transaction
 
-# # Define a default password
-# DEFAULT_PASSWORD = 'GPREC'
-
-# # Assuming you have a list of student data in the format of (username, email)
-# student_data = [
-#     ('student1', 'student1@example.com'),
-#     ('student2', 'student2@example.com'),
-#     # Add more student data as needed
-# ]
-
-# @transaction.atomic
-# def create_students_with_default_password(student_data):
-#     # Create User instances
-#     users_to_create = [
-#         User(username=username, email=email, password=DEFAULT_PASSWORD)
-#         for username, email in student_data
-#     ]
-
-#     # Bulk create User instances
-#     created_users = User.objects.bulk_create(users_to_create)
-
-#     # Create Student instances associated with created Users
-#     students_to_create = [
-#         models.Student(user=user)
-#         for user in created_users
-#     ]
-
-#     # Bulk create Student instances
-#     created_students = models.Student.objects.bulk_create(students_to_create)
-
-#     return created_students
-
-# # Call the function to create students
-# created_students = create_students_with_default_password(student_data)
 from student.models import Student
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_student_view(request):
     dict={
     'total_student':SMODEL.Student.objects.all().count(),
@@ -229,13 +215,13 @@ def admin_student_view(request):
     return render(request,'management/create_students_accounts.html')
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_view_student_view(request):
     students= SMODEL.Student.objects.all()
     return render(request,'management/admin_view_student.html',{'students':students})
 
-
-
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def update_student_view(request,pk):
     student=SMODEL.Student.objects.get(id=pk)
     user=SMODEL.User.objects.get(id=student.user_id)
@@ -254,8 +240,8 @@ def update_student_view(request,pk):
     return render(request,'management/update_student.html',context=mydict)
 
 
-
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def delete_student_view(request,pk):
     student=SMODEL.Student.objects.get(id=pk)
     user=User.objects.get(id=student.user_id)
@@ -265,10 +251,20 @@ def delete_student_view(request,pk):
 
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_course_view(request):
+    
     return render(request,'management/admin_course.html')
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
+def get_domains(request):
+    sector = request.GET.get('sector')
+    domains = models.Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
+    return JsonResponse(list(domains), safe=False)
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_skill_view(request):
 
     domain_filter = request.GET.get('domain_filter', '')
@@ -276,8 +272,7 @@ def admin_skill_view(request):
     level_filter = request.GET.get('level_filter', '')  
 
     skills = models.Skill.objects.all()
-    domains = models.Skill.objects.values_list('domain',flat=True).distinct()
-    # domains.values_list('domain', flat=True)
+    # domains = models.Skill.objects.values_list('domain',flat=True).distinct()
 
     if domain_filter:
         skills = skills.filter(domain=domain_filter)
@@ -291,11 +286,12 @@ def admin_skill_view(request):
         'domain_filter':domain_filter,
         'sector_filter':sector_filter,
         'level_filter':level_filter,
-        'domains':list(domains)
+        # 'domains':list(domains)
     }
     return render(request,'management/skills.html',context)
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_add_skill(request):
     if request.method=='POST':
         skill_name = request.POST.get('skill_name')
@@ -308,7 +304,7 @@ def admin_add_skill(request):
         skill.save()
 
     return redirect(admin_skill_view)
-
+@admin_superuser_required
 def admin_edit_skill(request,skill_name):
     if request.method=='POST':
         new_skill_name = request.POST.get('skill_name')
@@ -321,6 +317,7 @@ def admin_edit_skill(request,skill_name):
     return redirect(admin_skill_view)
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_add_course_view(request):
     courseForm=forms.CourseForm()
     if request.method=='POST':
@@ -332,26 +329,27 @@ def admin_add_course_view(request):
         return HttpResponseRedirect('/admin-view-course')
     return render(request,'management/admin_add_course.html',{'courseForm':courseForm})
 
-
+@admin_superuser_required
 @login_required(login_url='adminlogin')
 def admin_view_course_view(request):
     courses = models.Course.objects.all()
     return render(request,'management/admin_view_course.html',{'courses':courses})
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def delete_course_view(request,pk):
     course=models.Course.objects.get(id=pk)
     course.delete()
     return HttpResponseRedirect('/admin-view-course')
 
-
-
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_question_view(request):
     return render(request,'management/admin_question.html')
 
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_add_question_view(request):
     questionForm=forms.QuestionForm()
     if request.method=='POST':
@@ -368,27 +366,32 @@ def admin_add_question_view(request):
 
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_view_question_view(request):
     courses= models.Course.objects.all()
     return render(request,'management/admin_view_question.html',{'courses':courses})
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def view_question_view(request,pk):
     questions=models.Question.objects.all().filter(course_id=pk)
     return render(request,'management/view_question.html',{'questions':questions})
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def delete_question_view(request,pk):
     question=models.Question.objects.get(id=pk)
     question.delete()
     return HttpResponseRedirect('/admin-view-question')
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_view_student_marks_view(request):
     students= SMODEL.Student.objects.all()
     return render(request,'management/admin_view_student_marks.html',{'students':students})
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_view_marks_view(request,pk):
     courses = models.Course.objects.all()
     response =  render(request,'management/admin_view_marks.html',{'courses':courses})
@@ -396,6 +399,7 @@ def admin_view_marks_view(request,pk):
     return response
 
 @login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_check_marks_view(request,pk):
     course = models.Course.objects.get(id=pk)
     student_id = request.COOKIES.get('student_id')
@@ -407,10 +411,11 @@ def admin_check_marks_view(request,pk):
 
 
 
-
+@admin_superuser_required
 def aboutus_view(request):
     return render(request,'management/aboutus.html')
 
+@admin_superuser_required
 def contactus_view(request):
     sub = forms.ContactusForm()
     if request.method == 'POST':

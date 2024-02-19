@@ -47,6 +47,7 @@ urlpatterns = [
     path('delete-course/<int:pk>', views.delete_course_view,name='delete-course'),
     path("admin-add-skill", views.admin_add_skill, name="admin-add-skill"),
     path("admin-edit-skill/<str:skill_name>", views.admin_edit_skill, name="admin-edit-skill"),
+    path("get_domains", views.get_domains , name="get_domains"),
 
     path('admin-question', views.admin_question_view,name='admin-question'),
     path('admin-add-question', views.admin_add_question_view,name='admin-add-question'),
