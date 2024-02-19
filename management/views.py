@@ -192,7 +192,7 @@ def admin_view_teacher_salary_view(request):
 from django.contrib.auth.models import User
 from django.db import transaction
 
-from student.models import Student
+# from student.models import Student
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_student_view(request):
@@ -209,7 +209,7 @@ def admin_student_view(request):
                 mail=row[1]
                 user=User(username=username, email=mail, password=DEFAULT_PASSWORD)
                 user.save()
-                student=Student(user=user)
+                student=SMODEL.Student(user=user)
                 student.save()
         render(request,'management/create_students_accounts.html')  
     return render(request,'management/create_students_accounts.html')
@@ -259,8 +259,11 @@ def admin_course_view(request):
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def get_domains(request):
-    sector = request.GET.get('sector')
-    domains = models.Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
+    sector = request.GET.get('sector','')
+    if sector:
+        domains = models.Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
+    else:
+        domains = models.Skill.objects.values_list('domain',flat=True).distinct()
     return JsonResponse(list(domains), safe=False)
 
 @login_required(login_url='adminlogin')
