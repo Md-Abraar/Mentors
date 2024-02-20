@@ -196,9 +196,9 @@ from django.db import transaction
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_student_view(request):
-    dict={
-    'total_student':SMODEL.Student.objects.all().count(),
-    }
+    # dict={
+    # 'total_student':SMODEL.Student.objects.all().count(),
+    # }
     if request.method=="POST":
         DEFAULT_PASSWORD="GPREC"
         uploaded_file = request.FILES['file']
@@ -458,6 +458,11 @@ def contactus_view(request):
 #             SMODEL.Studentaccount.objects.create(user=user)
         
 #     return HttpResponse('aipoindi')
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def mentor_assign(request):
+    return render(request,'management/assign.html')
 
 
 

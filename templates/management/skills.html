@@ -351,6 +351,10 @@
         });
     }
     
+    if ( "{{sector_filter|safe}}" || "{{domain_filter|safe}}" || "{{level_filter|safe}}" ) {
+        $('#filterCollapse').addClass('show');
+        
+    }
     
 
 </script>

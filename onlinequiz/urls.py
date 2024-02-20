@@ -49,6 +49,8 @@ urlpatterns = [
     path("admin-edit-skill/<str:skill_name>", views.admin_edit_skill, name="admin-edit-skill"),
     path("get_domains", views.get_domains , name="get_domains"),
 
+    path("admin-assign", views.mentor_assign, name="admin-assign"),
+
     path('admin-question', views.admin_question_view,name='admin-question'),
     path('admin-add-question', views.admin_add_question_view,name='admin-add-question'),
     path('admin-view-question', views.admin_view_question_view,name='admin-view-question'),
