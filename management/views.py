@@ -247,7 +247,7 @@ def delete_student_view(request,pk):
     user=User.objects.get(id=student.user_id)
     user.delete()
     student.delete()
-    return HttpResponseRedirect('/admin-view-student')
+    return HttpResponseRedirect('/admin-skill')
 
 
 @login_required(login_url='adminlogin')

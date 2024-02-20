@@ -5,10 +5,10 @@ from mentor.models import mentor
 class Student(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     mentor = models.ForeignKey(mentor, on_delete=models.CASCADE,null=True)
-    branch=models.CharField(max_length=6)
-    semester=models.IntegerField()
+    branch=models.CharField(max_length=6,null=True)
+    semester=models.IntegerField(null=True)
     section=models.CharField(max_length=1,blank=True)
-    gender=models.CharField(max_length=10)    
+    gender=models.CharField(max_length=10,null=True)    
 
     @property
     def get_instance(self):
