@@ -92,9 +92,11 @@ def admin_teacher_view(request):
     # 'salary':TMODEL.Teacher.objects.all().filter(status=True).aggregate(Sum('salary'))['salary__sum'],
     # }
     # return render(request,'management/admin_teacher.html',context=dict)
-    mentors = MMODEL.mentor.objects.all().values('emp_id','name','department','mobile','email','status','mentor_image')
-
-    return render(request,'management/faculty.html',{'mentors':mentors})
+    mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
+    mentor_pending =  MMODEL.mentor.objects.filter(status=False)
+    mentor_approve = MMODEL.mentor.objects.filter(status=True) #.values('emp_id','name','department','mobile','email','status','mentor_image')
+    
+    return render(request,'management/faculty.html',{'mentor_pending':mentor_pending,'mentor_approve':mentor_approve})
 
 def faculty_details(request):
     # if request.method=='POST':
@@ -156,6 +158,22 @@ def delete_teacher_view(request,pk):
 def admin_view_pending_teacher_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=False)
     return render(request,'management/admin_view_pending_teacher.html',{'teachers':teachers})
+    # return render(request,'management/faculty.html',{'teachers':teachers})
+
+@login_required(login_url='adminlogin')
+def approve_mentor_view(request,pk):
+    mentor=MMODEL.mentor.objects.get(id=pk)
+    mentor.status=True
+    mentor.save()
+    return HttpResponseRedirect('/admin-teacher')
+
+@login_required(login_url='adminlogin')
+def reject_mentor_view(request,pk):
+    mentor=MMODEL.mentor.objects.get(id=pk)
+    user=User.objects.get(id=mentor.user_id)
+    user.delete()
+    mentor.delete()
+    return HttpResponseRedirect('/admin-teacher')
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required

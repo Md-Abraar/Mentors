@@ -27,14 +27,13 @@ h4 {
 }
 
 .mycard {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
-  /*max-width: 300px;*/
-  max-width: 200px; /* Adjust this value to reduce the length */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);  
+  width: 200px; /* Adjust this value to reduce the length */
   margin: 20px;
-  max-height: 400px;
+  height: 400px;
   text-align: center;
   font-family: arial;
-  {% comment %} padding:5px; {% endcomment %}
+  /*padding:4px;*/
 }
 
 .mytitle {
@@ -100,14 +99,23 @@ button:hover, a:hover {
     
  </div> 
 <a href="{% url "faculty-details" %}" class="addProfile">Add Profile</a>
+
+{% if mentor_pending %}
+<br><br>
+<p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approval Pending Accounts</i></b></p>
+{% endif %}
 <div class="container" id="content" >
-    
-    {% for mentor in  mentors%}
+  
+    {% for mentor in  mentor_pending%}
       <div class="mycard">
-        <img src= "{% static mentor.mentor_image %}" alt="John" style="width:100%; height:65%">
+        <img src= "{% static mentor.mentor_image.url %}" alt="John" style="width:100%; height:65%">
         <h4>{{mentor.name}}</h4>
         <p class="mytitle">{{mentor.department}}</p>
-        <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton">More</button></p>
+        <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton" style="background-color: #ffc107; color: #000;">Action Required 
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-arrow-right-circle " viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
+          </svg>
+        </button></p>
       </div>
       <div class="modal fade" id="a{{mentor.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
@@ -121,155 +129,52 @@ button:hover, a:hover {
               <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{mentor.department}}</p>
               <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{mentor.email}}</p>
               <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>
+              <div class="row">
+                <div class="col-md-6">
+                  <a href=" {% url 'approve-mentor1' mentor.id %} "><button type="button" class="btn btn-success">Accept</button></a>
+                </div>
+                <div class="col-md-6">
+                  <a href=" {% url 'reject-mentor1' mentor.id %} "><button type="button" class="btn btn-danger">Reject</button></a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    {% endfor %} 
+    {% endfor %}
+   
+</div>
 
-  {% comment %} <div class="mycard">
-    <img src= "{% static 'static/Faculty/keerthan_passport_photo_9kMdWYn.jpeg' %}" alt="John" style="width:100%; height:55%">
-    <h4>A. Vishnu Vardhan Reddy</h4>
-    <p class="mytitle">Emerging Technologies in Computer Science</p>
-    <p><button data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="mybutton">More</button></p>
-  </div>
-
-  <!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Emp id: 1234</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size:18px"><span class="fw-semibold">Name: </span>A. Vishnu Vardhan Reddy</p>
-        <p style="font-size:18px"><span class="fw-semibold">Dept: </span>ECS</p>
-        <p style="font-size:18px"><span class="fw-semibold">Email: </span>vishnu.ecs@gprec.ac.in</p>
-        <p style="font-size:18px"><span class="fw-semibold">Contact: </span>9876543210</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<br><br>
+<p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approved Accounts</i></b></p>
+<div class="container" id="content" >
+  
+  {% for mentor in  mentor_approve%}
+    <div class="mycard">
+      <img src= "{% static mentor.mentor_image.url %}" alt="John" style="width:100%; height:65%">
+      <h4>{{mentor.name}}</h4>
+      <p class="mytitle">{{mentor.department}}</p>
+      <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton">More Details</button></p>
+    </div>
+    <div class="modal fade" id="a{{mentor.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Emp id: {{mentor.emp_id}}</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{mentor.name}}</p>
+            <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{mentor.department}}</p>
+            <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{mentor.email}}</p>
+            <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>
+            
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  {% endfor %}  
 </div>
-
-  <div class="mycard">
-    <img src= "{% static 'static/Faculty/Screenshot_60.jpeg' %}" alt="John" style="width:100%; height:55%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p><button>Contact</button></p>
-    <p><button style="background-color: green;">Approve</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Texas University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jaye Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jay Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>John Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
-
-  <div class="mycard">
-    <img src= "{% static 'image/student.png' %}" alt="John" style="width:100%">
-    <h4>Jane Smith</h4>
-    <p class="mytitle">CTO, ABC Company</p>
-    <p>Stanford University</p>
-    <p><button>Contact</button></p>
-  </div>
- {% endcomment %}
-  <!-- Add more profile mycards here as needed -->
-
-</div>
-
-
 
 <script>
     function searchProfile() {

@@ -33,6 +33,7 @@ def mentor_signup_view(request):
         mobile=request.POST['mobile']
         email=request.POST['email']
         password=request.POST['password']
+        mentor_image = request.FILES.get('mentor_image')
 
         if(User.objects.filter(email=email).exists()):
             messages.info(request,"email already exists !")
@@ -42,13 +43,14 @@ def mentor_signup_view(request):
             return redirect("mentorsignup")
         else:
             user = User.objects.create_user(username=username, email=email, password=password)
-            user.mobile = mobile
-            user.EmployeeID = EmployeeID
-            user.name = full_name
-            user.department = department
-            user.status=False          
+            # mobile = mobile
+            # EmployeeID = EmployeeID
+            # name = full_name
+            # department = department
+            # status=False  
+            # mentor_image = mentor_image        
             user.save()
-            mentor1=mentor(user=user,emp_id=EmployeeID,name=full_name,status=False,department=department,mobile=mobile,email=email)
+            mentor1=mentor(user=user,emp_id=EmployeeID,name=full_name,status=False,department=department,mobile=mobile,email=email, mentor_image=mentor_image)
             mentor1.save()
             mentor_group = Group.objects.get(name='MENTOR')
             mentor_group.user_set.add(user)

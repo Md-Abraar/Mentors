@@ -32,6 +32,8 @@ urlpatterns = [
     path('admin-view-teacher-salary', views.admin_view_teacher_salary_view,name='admin-view-teacher-salary'),
     path('approve-teacher/<int:pk>', views.approve_teacher_view,name='approve-teacher'),
     path('reject-teacher/<int:pk>', views.reject_teacher_view,name='reject-teacher'),
+    path('approve-mentor/<int:pk>', views.approve_mentor_view,name='approve-mentor1'),
+    path('reject-mentor/<int:pk>', views.reject_mentor_view,name='reject-mentor1'),
 
     path('admin-student', views.admin_student_view,name='admin-student'),
     path('admin-view-student', views.admin_view_student_view,name='admin-view-student'),

@@ -54,10 +54,41 @@
         <input type="text" name="email" id="address" class="form-control" placeholder="Address" required>
       </div>
     </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="mentor_image">Image</label>
+        <input id="imageInput" type="file" name="mentor_image" id="mentor_image" class="form-control" placeholder="mentor_image" required>
+      </div>
+    </div>
+    
 
-    <button type="submit" class="btn btn-primary">Sign Up</button>
+    <button type="submit" class="btn btn-primary" onclick="validateImage()">Sign Up</button>
   </form>
   <br><br>
   {% include "management/footer.html" %}
+  <script>
+  function validateImage() {
+    var fileInput = document.getElementById('imageInput');
+    var filePath = fileInput.value;
+    if (filePath) {
+        // Get the file extension
+        var extension = filePath.split('.').pop().toLowerCase();
+        // Check if the file extension is valid
+        if (extension === 'png' || extension === 'jpg' || extension === 'jpeg') {
+          // File is valid
+          console.log('File is valid');
+          // You can submit the form or perform further actions here
+      } else {
+          // File is invalid
+          alert('Only PNG and JPEG images are allowed.');
+          // Clear the file input
+          fileInput.value = '';
+      }
+    } else {
+        // No file selected
+        alert('Please select a file.');
+    }
+}
+</script>
 </body>
 </html>
