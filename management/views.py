@@ -210,13 +210,13 @@ def admin_view_teacher_salary_view(request):
 from django.contrib.auth.models import User
 from django.db import transaction
 
-from student.models import Student
+# from student.models import Student
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_student_view(request):
-    dict={
-    'total_student':SMODEL.Student.objects.all().count(),
-    }
+    # dict={
+    # 'total_student':SMODEL.Student.objects.all().count(),
+    # }
     if request.method=="POST":
         DEFAULT_PASSWORD="GPREC"
         uploaded_file = request.FILES['file']
@@ -227,7 +227,7 @@ def admin_student_view(request):
                 mail=row[1]
                 user=User(username=username, email=mail, password=DEFAULT_PASSWORD)
                 user.save()
-                student=Student(user=user)
+                student=SMODEL.Student(user=user)
                 student.save()
         render(request,'management/create_students_accounts.html')  
     return render(request,'management/create_students_accounts.html')
@@ -265,7 +265,7 @@ def delete_student_view(request,pk):
     user=User.objects.get(id=student.user_id)
     user.delete()
     student.delete()
-    return HttpResponseRedirect('/admin-view-student')
+    return HttpResponseRedirect('/admin-skill')
 
 
 @login_required(login_url='adminlogin')
@@ -277,8 +277,11 @@ def admin_course_view(request):
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def get_domains(request):
-    sector = request.GET.get('sector')
-    domains = models.Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
+    sector = request.GET.get('sector','')
+    if sector:
+        domains = models.Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
+    else:
+        domains = models.Skill.objects.values_list('domain',flat=True).distinct()
     return JsonResponse(list(domains), safe=False)
 
 @login_required(login_url='adminlogin')
@@ -473,6 +476,11 @@ def contactus_view(request):
 #             SMODEL.Studentaccount.objects.create(user=user)
         
 #     return HttpResponse('aipoindi')
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def mentor_assign(request):
+    return render(request,'management/assign.html')
 
 
 

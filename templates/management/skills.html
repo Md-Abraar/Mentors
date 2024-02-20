@@ -281,10 +281,8 @@
 
         input.addEventListener('keyup', function () {
             var filter = input.value.toLowerCase();
-
             for (var i = 1; i < rows.length; i++) {
                 var skill = rows[i].getElementsByTagName('td')[0].textContent.toLowerCase();
-
                 if (skill.indexOf(filter) > -1) {
                     rows[i].style.display = '';
                 } else {
@@ -301,26 +299,62 @@
     });
 
     $(document).ready(function(){
+        // Define an object to store the AJAX request parameters and corresponding responses
+        var ajaxResponses = {};
+    
         $('#sector_filter').change(function(){
             var sector = $(this).val();
-            $.ajax({
-                url: '/get_domains',
-                data: {
-                    'sector': sector
-                },
-                dataType: 'json',
-                success: function(data){
-                    var d = $('#domain_filter')
-                    d.empty();
-                    d.append('<option value="">All</option>')
-                    $.each(data, function(index, domain){
-                       //                            <option value="{{domain}}" {% if domain_filter == domain %}selected{% endif %}>{{domain}}</option>
-                        d.append('<option value="' + domain + '">' + domain + '</option>');
-                    });
-                }
-            });
+    
+            // Check if the response for this sector is already cached
+            if (ajaxResponses[sector]) {
+                // If the response is cached, use it directly without making a new AJAX request
+                updateDomainsDropdown(ajaxResponses[sector]);
+            } else {
+                $.ajax({
+                    url: '/get_domains',
+                    data: {
+                        'sector': sector
+                    },
+                    dataType: 'json',
+                    success: function (data){
+                        setDomains(data)
+                        // Store the response in the ajaxResponses object
+                        ajaxResponses[sector] = data;
+                    }
+                });
+            }
+            
         });
+
+        function setDomains(data){
+            var d = $('#domain_filter')
+            d.empty();
+            d.append('<option value="">All</option>')
+            $.each(data, function(index, domain){
+                d.append('<option value="' + domain + '">' + domain + '</option>');
+            });
+            d.find("option[value='{{domain_filter|safe}}']").attr("selected","selected");             
+        }
+
+        $('#sector_filter').trigger("change")
+        
+
     });
+    
+    // Function to update the domains dropdown with new options
+    function updateDomainsDropdown(domains) {
+        var d = $('#domain_filter')
+        d.empty();
+        d.append('<option value="">All</option>')
+        $.each(domains, function(index, domain){
+            d.append('<option value="' + domain + '">' + domain + '</option>');
+        });
+    }
+    
+    if ( "{{sector_filter|safe}}" || "{{domain_filter|safe}}" || "{{level_filter|safe}}" ) {
+        $('#filterCollapse').addClass('show');
+        
+    }
     
 
 </script>

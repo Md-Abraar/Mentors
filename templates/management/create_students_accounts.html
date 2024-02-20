@@ -104,7 +104,7 @@
         input.value='';
         return;
     }
-    else if((!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls'))
+    else if(!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls'))
     {
       alert("Please select a valid Excel file (XLSX or XLS format)");
       input.value='';
