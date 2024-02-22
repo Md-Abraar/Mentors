@@ -1,0 +1,61 @@
+{% extends 'teacher/teacherbase.html' %}
+{% block content %}
+{%load static %}
+
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap" rel="stylesheet">
+  </head>
+    <style>
+      .btn-primary1 {
+        background-color: #4CAF50; 
+        color: white; 
+        font-size:17px;
+    }
+      #body {
+        margin-top:5%;
+        text-align: center;
+      }
+        #h1 {
+          color: #88B04B;
+          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+          font-weight: 900;
+          font-size: 40px;
+          margin-bottom: 10px;
+        }
+        #p {
+          color: #404F5E;
+          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+          font-size:20px;
+          margin: 0;
+        }
+      .i {
+        color: #9ABC66;
+        font-size: 100px;
+        line-height: 200px;
+        margin-left:-15px;
+      }
+      #card {
+        background: white;
+        padding: 60px;
+        border-radius: 4px;
+        box-shadow: 10px 10px 10px 10px #C8D0D8;
+        display: inline-block;
+        margin: 0 auto;
+      }
+    </style>
+    
+    <div id="body">
+      <div id="card">
+      <div style="border-radius:200px; height:200px; width:200px; margin:0 auto;">
+        <i class="checkmark i">✓</i>
+      </div>
+        <h1 id="h1">{{message}}</h1> 
+        
+        <p id="p">{{text}}  </p>
+        <form method="post">
+        </form>
+      </div>
+
+
+
+{% endblock content %}

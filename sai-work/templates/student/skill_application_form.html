@@ -1,0 +1,129 @@
+{% extends 'student/studentbase.html' %}
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Skill Application Table -->
+            <div class="card">
+                <div class="card-header">Application Statuses</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Skill Name</th>
+                                    <th>Certification Status</th>
+                                    <th>Project Type</th>
+                                    <th>Skill Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for application in student_applications %}
+                                <tr>
+                                    <td>{{ application.skill_name }}</td>
+                                    <td>
+                                        {% if application.certification_status %}
+                                            Certified
+                                        {% else %}
+                                            Not Certified
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if application.project_type %}
+                                            {{ application.project_type }}
+                                        {% else %}
+                                            Unspecified
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ application.skill_status }}</td>
+                                    <td><a class="btn btn-danger btn-xs" href="{% url 'delete_application' application.id %}"><i class="bi bi-trash"></i></a></td>
+
+                                                                    </tr>
+                                {% endfor %}
+                                <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Skill Application Button -->
+            <div class="text-center mt-3">
+                <button type="button" class="btn btn-success" id="addSkillBtn"><i class="fas fa-plus"></i> Add Another Skill</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-uyLr+Eu9N0EcpQq2KBfFfPk8aMYro3gJcFeCe8SNcXGjSqqqFz6U0Mskh5G4kz2b" crossorigin="anonymous"></script>
+<script>
+    // Add event listener to the "Add Another Skill" button
+    document.getElementById('addSkillBtn').addEventListener('click', function() {
+        // Show the modal for adding another skill application
+        $('#addSkillModal').modal('show');
+    });
+</script>
+
+<!-- Bootstrap Modal for adding another skill application -->
+<div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSkillModalLabel">Add Another Skill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="new_skills_applying" class="form-label">Skill Applying:</label>
+                        <input type="text" class="form-control" id="new_skills_applying" name="skill_applying" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="new_certification_status" name="certification_status">
+                        <label class="form-check-label" for="new_certification_status">Certification Status</label>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="new_project_status_checkbox" name="project_status">
+                        <label class="form-check-label" for="new_project_status_checkbox">Project Status</label>
+                    </div>
+                    <div class="mb-3" id="new_project_select_div" style="display: none;">
+                        <label for="new_project_select" class="form-label">Select Project:</label>
+                        <select class="form-select" id="new_project_select" name="project_select">
+                            <option value="">Select Project</option>
+                            <option value="individual">Individual Project</option>
+                            <option value="group">Group Project</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Add event listener to the "Add Another Skill" button
+    document.getElementById('addSkillBtn').addEventListener('click', function() {
+        // Show the modal for adding another skill application
+        $('#addSkillModal').modal('show');
+    });
+
+    // Add event listener to the project status checkbox in the modal form
+    document.getElementById('new_project_status_checkbox').addEventListener('change', function() {
+        // Get a reference to the select project field
+        const projectSelectDiv = document.getElementById('new_project_select_div');
+        // If the checkbox is checked, display the select project field; otherwise, hide it
+        projectSelectDiv.style.display = this.checked ? 'block' : 'none';
+    });
+</script>
+{% endblock content %}
