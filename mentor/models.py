@@ -15,5 +15,5 @@ class mentor(models.Model):
     def get_instance(self):
         return self
     
-    def _str_(self):
+    def __str__(self):
         return self.name
