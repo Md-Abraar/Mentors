@@ -157,7 +157,7 @@ button:hover, a:hover {
       <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton">More Details</button></p>
     </div>
     <div class="modal fade" id="a{{mentor.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-dialog modal-dialog-centered ">
         <div class="modal-content">
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="staticBackdropLabel">Emp id: {{mentor.emp_id}}</h1>
@@ -167,9 +167,17 @@ button:hover, a:hover {
             <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{mentor.name}}</p>
             <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{mentor.department}}</p>
             <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{mentor.email}}</p>
-            <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>
-            
+            <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>            
           </div>
+          <form method="POST" action=" {% url 'assignment' %} ">
+            {% csrf_token %}
+            <div class="m-3">
+              <textarea id="student_assignment" name="student_assignment" class="form-control border border-dark"></textarea>
+            </div>
+            <div class="m-3">
+              <button type="button" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

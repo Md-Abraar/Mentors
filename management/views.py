@@ -98,6 +98,12 @@ def admin_teacher_view(request):
     
     return render(request,'management/faculty.html',{'mentor_pending':mentor_pending,'mentor_approve':mentor_approve})
 
+def assignment(request):
+    if(request.method=='POST'):
+        students = request.POST.getlist('student_assignment')
+    return render(request,'management/faculty.html')
+    
+
 def faculty_details(request):
     # if request.method=='POST':
     #     faculty_id = request.POST.get('faculty_id')
