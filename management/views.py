@@ -235,6 +235,8 @@ def admin_student_view(request):
                 user.save()
                 student=SMODEL.Student(user=user)
                 student.save()
+                student_group = Group.objects.get(name='STUDENT')
+                student_group.user_set.add(user)
         render(request,'management/create_students_accounts.html')  
     return render(request,'management/create_students_accounts.html')
 
@@ -299,7 +301,7 @@ def admin_skill_view(request):
     level_filter = request.GET.get('level_filter', '')  
 
     skills = models.Skill.objects.all()
-    # domains = models.Skill.objects.values_list('domain',flat=True).distinct()
+    domains = models.Skill.objects.values_list('domain',flat=True).distinct()
 
     if domain_filter:
         skills = skills.filter(domain=domain_filter)
@@ -313,7 +315,7 @@ def admin_skill_view(request):
         'domain_filter':domain_filter,
         'sector_filter':sector_filter,
         'level_filter':level_filter,
-        # 'domains':list(domains)
+        'domains':list(domains)
     }
     return render(request,'management/skills.html',context)
 
