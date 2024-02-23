@@ -98,17 +98,16 @@ button:hover, a:hover {
     <input type="text" id="searchInput" name="search" onkeyup="searchProfile()" placeholder="Search by names.." style="margin: 20px;">   
     
  </div> 
-<a href="{% url "faculty-details" %}" class="addProfile">Add Profile</a>
 
 {% if mentor_pending %}
 <br><br>
-<p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approval Pending Accounts</i></b></p>
+<p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approve Pending Accounts</i></b></p>
 {% endif %}
 <div class="container" id="content" >
   
     {% for mentor in  mentor_pending%}
       <div class="mycard">
-        <img src= "{% static mentor.mentor_image.url %}" alt="John" style="width:100%; height:65%">
+        <img src= "{% static mentor.mentor_image %}" alt="John" style="width:100%; height:65%">
         <h4>{{mentor.name}}</h4>
         <p class="mytitle">{{mentor.department}}</p>
         <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton" style="background-color: #ffc107; color: #000;">Action Required 
@@ -131,10 +130,10 @@ button:hover, a:hover {
               <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>
               <div class="row">
                 <div class="col-md-6">
-                  <a href=" {% url 'approve-mentor1' mentor.id %} "><button type="button" class="btn btn-success">Accept</button></a>
+                  <a href=" {% url 'approve-mentor1' mentor.emp_id %} "><button type="button" class="btn btn-success">Accept</button></a>
                 </div>
                 <div class="col-md-6">
-                  <a href=" {% url 'reject-mentor1' mentor.id %} "><button type="button" class="btn btn-danger">Reject</button></a>
+                  <a href=" {% url 'reject-mentor1' mentor.emp_id %} "><button type="button" class="btn btn-danger">Reject</button></a>
                 </div>
               </div>
             </div>
@@ -151,35 +150,10 @@ button:hover, a:hover {
   
   {% for mentor in  mentor_approve%}
     <div class="mycard">
-      <img src= "{% static mentor.mentor_image.url %}" alt="John" style="width:100%; height:65%">
+      <img src= "{% static mentor.mentor_image %}" alt="John" style="width:100%; height:65%">
       <h4>{{mentor.name}}</h4>
       <p class="mytitle">{{mentor.department}}</p>
-      <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton">More Details</button></p>
-    </div>
-    <div class="modal fade" id="a{{mentor.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered ">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="staticBackdropLabel">Emp id: {{mentor.emp_id}}</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{mentor.name}}</p>
-            <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{mentor.department}}</p>
-            <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{mentor.email}}</p>
-            <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>            
-          </div>
-          <form method="POST" action="">
-            {% csrf_token %}
-            <div class="m-3">
-              <textarea id="student_assignment" name="student_assignment" class="form-control border border-dark"></textarea>
-            </div>
-            <div class="m-3">
-              <button type="button" class="btn btn-primary">Submit</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <p><a href="{% url "mentor-details" mentor.emp_id %}" class="mybutton">More Details</a></p>
     </div>
   {% endfor %}  
 </div>

@@ -1,0 +1,14 @@
+{% extends "management/mentorbase.html" %}
+{% block class_disable %}disabled{% endblock class_disable %}
+{% block gender_disable %}disabled{% endblock gender_disable %}
+{% block btn %}<a class="btn btn-success btn-sm mt-3" id="update" href="{% url "mentor-assign" details.emp_id %}">Update</a>{% endblock btn %}
+{% block table %}
+<tr><td><input type="checkbox" name="roll" id="1" value="1" disabled><label for="1" class="ms-1">209x1a1111</label></td></tr>
+<tr><td><input type="checkbox" name="roll" id="2" value="2" disabled><label for="2" class="ms-1">209x1a1111</label></td></tr>
+<tr><td><input type="checkbox" name="roll" id="3" value="3" disabled><label for="3" class="ms-1">209x1a1111</label></td></tr>
+<tr><td><input type="checkbox" name="roll" id="4" value="4" disabled><label for="4" class="ms-1">209x1a1111</label></td></tr>
+<tr><td><input type="checkbox" name="roll" id="5" value="5" disabled><label for="5" class="ms-1">209x1a1111</label></td></tr>
+<tr><td><input type="checkbox" name="roll" id="6" value="6" disabled><label for="6" class="ms-1">209x1a1111</label></td></tr>
+<tr><td><input type="checkbox" name="roll" id="7" value="7" disabled><label for="7" class="ms-1">209x1a1111</label></td></tr>
+
+{% endblock table %}

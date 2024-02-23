@@ -54,10 +54,11 @@
           <img src="{% static "static\Faculty\keerthan_passport_photo_U5wBCwK.jpeg" %}" alt="" style="height:150px; width:120px" class="mx-auto d-block"><br>
         </div>
         <div class="col">
-          <p style="font-size:18px"><span class="fw-semibold">Name: </span>Keerthan</p>
-          <p style="font-size:18px"><span class="fw-semibold">Dept: </span>CSE</p>
-          <p style="font-size:18px"><span class="fw-semibold">Email: </span>keerthan@gmail.com</p>
-          <p style="font-size:18px"><span class="fw-semibold">Contact: </span>1234567890</p>
+          <p style="font-size:18px"><span class="fw-semibold">Emp id: </span>{{details.emp_id}}</p>
+          <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{details.name}}</p>
+          <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{details.department}}</p>
+          <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{details.email}}</p>
+          <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{details.mobile}}</p>
           <p style="font-size:18px"><span class="fw-semibold">No. of Mentees: </span>15</p>
         </div>
       </div>
@@ -65,14 +66,14 @@
     </div>
     <div class="col-md-2" id="filters">
       <form action="#" method="post">
-        <label for="class">Class</label>
-        <select name="class" id="class" {% block class_disable %}{% endblock class_disable %}>
+        <label for="class">Class</label><br>
+        <select class="mb-2" name="class" id="class" {% block class_disable %}{% endblock class_disable %}>
           <option value="III CSE A">III CSE A</option>
           <option value="IV ECE C">IV ECE C</option>
           <option value="I MEC A">I MEC A</option>
         </select><br>
-        <label for="gender">Gender</label>
-        <select name="gender" id="gender" {% block gender_disable %}{% endblock gender_disable %}>
+        <label for="gender">Gender</label><br>
+        <select class="mb-2" name="gender" id="gender" {% block gender_disable %}{% endblock gender_disable %}>
           <option value="All">All</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
@@ -87,24 +88,9 @@
         <form action="#" method="POST" id="rollform">
         <div class="table-container">
           <h6 class="text-center mt-2">Mentees</h6>
-            <table class="mx-2">
-                <tr><td><input type="checkbox" name="roll" id="1" value="1" disabled><label for="1" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="2" value="2" disabled><label for="2" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="3" value="3" disabled><label for="3" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="4" value="4" disabled><label for="4" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="5" value="5" disabled><label for="5" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="6" value="6" disabled><label for="6" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="7" value="7" disabled><label for="7" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="8" value="8"><label for="8" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="9" value="9"><label for="9" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="10" value="10"><label for="10" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="11" value="11"><label for="11" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="12" value="12"><label for="12" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="13" value="13"><label for="13" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="14" value="14"><label for="14" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="15" value="15"><label for="15" class="ms-1">209x1a1111</label></td></tr>
-                <tr><td><input type="checkbox" name="roll" id="16" value="16"><label for="16" class="ms-1">209x1a1111</label></td></tr>  
-        </table>
+          <table class="mx-2">
+             {% block table %}{% endblock table %}   
+          </table>
         </div>
     </form>
     </div>
@@ -137,7 +123,7 @@
         }
      }
 
-    $('#go').click(function(){
+    $('#assign').click(function(){
         $('#rollform').submit()
     })
 
@@ -181,6 +167,7 @@
 
         $(".dragArea").attr("style", "display:block; top:" + top + "px;  left:" + left + "px; width:" + width + "px; height: " + height + "px; transform:" + flipX + " " + flipY + ";");
 
+              //Scroll with drag
               // Check if mouse is near the top or bottom edge of the container
               /* var containerTop = $('.table-container').offset().top;
               var containerBottom = containerTop + $('.table-container').height();
@@ -234,30 +221,6 @@
         $(".selectedArea").text("X-Range: " + sx + ":" + ex + " | Y-Range: " + sy + ":" + ey);
       }
     });
-
-    {% comment %} function selectItems() {
-      $("input[type=checkbox]").each(function () {
-        if (!$(this).is(':disabled')) {
-          var pos = $(this).position();
-          var cxLow = pos.left;
-          var cxHi = pos.left + $(this).width();
-          var cyLow = pos.top;
-          var cyHi = pos.top + $(this).height();
-          if (cxLow <= sx && sx <= cxHi && cxLow <= ex && ex <= cxHi) {
-            if (cyLow <= sy && sy <= cyHi && cyLow <= ey && ey <= cyHi) {
-              $(this).prop("checked", !$(this).prop("checked"));
-
-            }
-          }
-          else if (sx <= cxHi && ex >= cxLow) {
-            if (sy <= cyHi && ey >= cyLow) {
-              $(this).prop("checked", !$(this).prop("checked"));
-            }
-          }
-        }
-
-      });
-    } {% endcomment %}
 
     function selectItems() {
         $('.table-container input[type=checkbox]').each(function () {

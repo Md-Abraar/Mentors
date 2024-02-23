@@ -86,43 +86,44 @@ def admin_dashboard_view(request):
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_teacher_view(request):
-    # dict={
-    # 'total_teacher':TMODEL.Teacher.objects.all().filter(status=True).count(),
-    # 'pending_teacher':TMODEL.Teacher.objects.all().filter(status=False).count(),
-    # 'salary':TMODEL.Teacher.objects.all().filter(status=True).aggregate(Sum('salary'))['salary__sum'],
-    # }
-    # return render(request,'management/admin_teacher.html',context=dict)
-    mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
-    mentor_pending =  MMODEL.mentor.objects.filter(status=False)
-    mentor_approve = MMODEL.mentor.objects.filter(status=True) #.values('emp_id','name','department','mobile','email','status','mentor_image')
-    
+    # mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
+    mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
+    mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image')
     return render(request,'management/faculty.html',{'mentor_pending':mentor_pending,'mentor_approve':mentor_approve})
 
-   
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def mentor_assign(request,empid):
+    mentor = MMODEL.mentor.objects.get(emp_id=empid)
+    details = {
+        'emp_id':mentor.emp_id,
+        'name':mentor.name,
+        'department':mentor.department,
+        'mobile':mentor.mobile,
+        'email':mentor.email,
+        'mentor_image':mentor.mentor_image
+    }
+    return render(request,'management/assign.html',{'details':details})
 
-def faculty_details(request):
-    # if request.method=='POST':
-    #     faculty_id = request.POST.get('faculty_id')
-    #     faculty_name = request.POST.get('faculty_name')
-    #     faculty_designation = request.POST.get('faculty_designation')
-    #     faculty_email = request.POST.get('faculty_email')
-    #     faculty_branch = request.POST.get('faculty_branch')
-    #     faculty_phone = request.POST.get('facult_phone')
-    #     skillset = request.POST.get('skillset')
-    #     skillset = skillset.split(",")
-
-    #     faculty_record = Faculty(faculty_id = faculty_id, faculty_name = faculty_name, faculty_designation = faculty_designation,
-    #                   faculty_branch = faculty_branch, faculty_email = faculty_email, faculty_phone = faculty_phone)
-    #     faculty_record.save()
-
-    return render(request, 'management/faculty_details.html')
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def mentor_details(request,empid):
+    mentor = MMODEL.mentor.objects.get(emp_id=empid)
+    details = {
+        'emp_id':mentor.emp_id,
+        'name':mentor.name,
+        'department':mentor.department,
+        'mobile':mentor.mobile,
+        'email':mentor.email,
+        'mentor_image':mentor.mentor_image
+    }
+    return render(request,'management/mentor_details.html',{'details':details})
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_view_teacher_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=True)
     return render(request,'management/admin_view_teacher.html',{'teachers':teachers})
-
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
@@ -144,7 +145,6 @@ def update_teacher_view(request,pk):
     return render(request,'management/update_teacher.html',context=mydict)
 
 
-
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def delete_teacher_view(request,pk):
@@ -164,14 +164,14 @@ def admin_view_pending_teacher_view(request):
 
 @login_required(login_url='adminlogin')
 def approve_mentor_view(request,pk):
-    mentor=MMODEL.mentor.objects.get(id=pk)
+    mentor=MMODEL.mentor.objects.get(emp_id=pk)
     mentor.status=True
     mentor.save()
     return HttpResponseRedirect('/admin-teacher')
 
 @login_required(login_url='adminlogin')
 def reject_mentor_view(request,pk):
-    mentor=MMODEL.mentor.objects.get(id=pk)
+    mentor=MMODEL.mentor.objects.get(emp_id=pk)
     user=User.objects.get(id=mentor.user_id)
     user.delete()
     mentor.delete()
@@ -433,9 +433,6 @@ def admin_check_marks_view(request,pk):
     results= models.Result.objects.all().filter(exam=course).filter(student=student)
     return render(request,'management/admin_check_marks.html',{'results':results})
     
-
-
-
 @admin_superuser_required
 def aboutus_view(request):
     return render(request,'management/aboutus.html')
@@ -452,44 +449,6 @@ def contactus_view(request):
             send_mail(str(name)+' || '+str(email),message,settings.EMAIL_HOST_USER, settings.EMAIL_RECEIVING_USER, fail_silently = False)
             return render(request, 'management/contactussuccess.html')
     return render(request, 'management/contactus.html', {'form':sub})
-
-# import csv
-
-# @login_required(login_url='adminlogin')
-# def admin_create_student(request):
-#     # Define a default password
-#     DEFAULT_PASSWORD = 'default_password'
-
-#     # Assuming you have a list of student data in the format of (username, email)
-#     student_data = [
-#         ('student9', 'student3@example.com'),
-#         ('student10', 'student4@example.com'),
-#         # Add more student data as needed
-#     ]
-#     csv_file_path = 'C:/Users/Abraar/OneDrive/Desktop/students.csv'
-#     with open(csv_file_path, 'r') as file:
-#         reader = csv.DictReader(file)
-#         for row in reader:
-#             # Create User instance
-#             user = User.objects.create_user(
-#                 username=row['userid'],
-#                 email=row['email'],
-#                 password=DEFAULT_PASSWORD
-#             )
-#             # Create StudentAccount instance
-#             SMODEL.Studentaccount.objects.create(user=user)
-        
-#     return HttpResponse('aipoindi')
-
-@login_required(login_url='adminlogin')
-@admin_superuser_required
-def mentor_assign(request):
-    return render(request,'management/assign.html')
-
-@login_required(login_url='adminlogin')
-@admin_superuser_required
-def mentor_details(request):
-    return render(request,'management/mentor_details.html')
     
 
 
