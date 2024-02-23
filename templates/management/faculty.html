@@ -154,7 +154,8 @@ button:hover, a:hover {
       <img src= "{% static mentor.mentor_image.url %}" alt="John" style="width:100%; height:65%">
       <h4>{{mentor.name}}</h4>
       <p class="mytitle">{{mentor.department}}</p>
-      <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton">More Details</button></p>
+      {% comment %} <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton">More Details</button></p> {% endcomment %}
+      <p> <a href=" {% url 'mentor-assign' %} "><button data-bs-toggle="modal" class="mybutton">More Details</button></a> </p>
     </div>
     <div class="modal fade" id="a{{mentor.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered ">

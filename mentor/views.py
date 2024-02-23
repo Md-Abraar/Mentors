@@ -18,11 +18,25 @@ from management.models import *
 
 from student.models import * 
 # Create your views here.
+
+def is_mentor(user):
+    return user.groups.filter(name="MENTOR").exists()
+
+def is_approved(user):
+    #return user.groups.filter(name="MENTOR").status
+    # mentor_group = Group.objects.get(name="MENTOR")
+    # mentor_profile = user.mentor_profile  # Assuming Mentor model has a OneToOneField to User
+    # return mentor_profile.status if mentor_profile else False
+    try:
+        mentor_profile = mentor.objects.get(user=user)
+        return mentor_profile.status
+    except mentor.DoesNotExist:
+        return False
+
 def mentorclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
     return render(request,'mentor/mentorclick.html')
-
 
 def mentor_signup_view(request):
     if request.method=='POST':
@@ -42,13 +56,7 @@ def mentor_signup_view(request):
             messages.info(request,"user already exists !")
             return redirect("mentorsignup")
         else:
-            user = User.objects.create_user(username=username, email=email, password=password)
-            # mobile = mobile
-            # EmployeeID = EmployeeID
-            # name = full_name
-            # department = department
-            # status=False  
-            # mentor_image = mentor_image        
+            user = User.objects.create_user(username=username, email=email, password=password)       
             user.save()
             mentor1=mentor(user=user,emp_id=EmployeeID,name=full_name,status=False,department=department,mobile=mobile,email=email, mentor_image=mentor_image)
             mentor1.save()
@@ -56,8 +64,6 @@ def mentor_signup_view(request):
             mentor_group.user_set.add(user)
             return redirect('mentorlogin')
     return render(request,'mentor/mentorsignup.html')
-
-
 
 # @login_required(login_url='teacherlogin')
 def students_list(request):
@@ -67,7 +73,8 @@ def students_list(request):
     return render(request, 'mentor/students_list.html', {'details': students_data})
 
 
-@login_required(login_url='mentorlogin')
+# @login_required(login_url='mentorlogin')
+@user_passes_test(is_approved)
 def mentor_dashboard_view(request):
     dict={
     
