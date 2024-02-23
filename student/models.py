@@ -13,6 +13,7 @@ class Student(models.Model):
     @property
     def get_instance(self):
         return self
+        
 class Student_profile(models.Model):
     student_id=models.CharField(max_length=10)
     student_fullname=models.CharField(max_length=50)
