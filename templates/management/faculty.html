@@ -169,7 +169,7 @@ button:hover, a:hover {
             <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{mentor.email}}</p>
             <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>            
           </div>
-          <form method="POST" action=" {% url 'assignment' %} ">
+          <form method="POST" action="">
             {% csrf_token %}
             <div class="m-3">
               <textarea id="student_assignment" name="student_assignment" class="form-control border border-dark"></textarea>

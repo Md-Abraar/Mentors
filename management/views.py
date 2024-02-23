@@ -98,11 +98,7 @@ def admin_teacher_view(request):
     
     return render(request,'management/faculty.html',{'mentor_pending':mentor_pending,'mentor_approve':mentor_approve})
 
-def assignment(request):
-    if(request.method=='POST'):
-        students = request.POST.getlist('student_assignment')
-    return render(request,'management/faculty.html')
-    
+   
 
 def faculty_details(request):
     # if request.method=='POST':
@@ -489,6 +485,12 @@ def contactus_view(request):
 @admin_superuser_required
 def mentor_assign(request):
     return render(request,'management/assign.html')
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def mentor_details(request):
+    return render(request,'management/mentor_details.html')
+    
 
 
 
