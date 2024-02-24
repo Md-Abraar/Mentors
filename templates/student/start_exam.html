@@ -1,85 +1,240 @@
-{% extends 'student/studentbase.html' %}
-{% block content %}
-{%load static%}
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Title Here</title>
   <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
   <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 
-
-</head>
-
-
-<div class="jumbotron my-4">
-
-  <form class="form" autocomplete="off" onsubmit="return saveAns()"  action="/student/calculate-marks" method="POST">
-    {% csrf_token %}
-    <h1 style="text-align: center;">{{course.course_name}}</h1>
-    {% for q in questions%}
-    <h3 class="text-info">{{ forloop.counter }}. {{q.question}}</h3><h4 style="text-align: right;">[Marks {{q.marks}}]</h4>
-    
-        <input type="hidden" name="csrfmiddlewaretoken" value="C24rUotmdHawVQJL3KrqiWxvti8UffOFYUc8TRbZtLt36AVLdP3jbkzUVe3beRAa">
-        
-        
-          <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option1}}" value="Option1">
-            <label class="form-check-label" for="option1">
-              {{q.option1}}
-            </label>
-          </div>
-
-        
-          <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option2}}" value="Option2">
-            <label class="form-check-label" for="option2">
-              {{q.option2}}
-            </label>
-          </div>
-
-        
-          <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option3}}" value="Option3">
-            <label class="form-check-label" for="option3">
-              {{q.option3}}
-            </label>
-          </div>
-
-        
-          <div class="form-check mx-4">
-            <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option4}}" value="Option4">
-            <label class="form-check-label" for="option4">
-              {{q.option4}}
-            </label>
-          </div>
-
-        {% endfor %}
-        <input class="btn btn-info btn-lg"   type="submit" value="Submit">  
-    </form>
-  </div>
-
-<script> 
-    function saveAns(){  
-
-        var ele = document.getElementsByTagName('input'); 
-        for(i = 0; i < ele.length; i++) { 
-            if(ele[i].type="radio") { 
-                if(ele[i].checked){        
-                  setCookie(ele[i].name,ele[i].value,3)
-                }
-            } 
-        } 
-          
+  <style>
+    .card {
+      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+      transition: 0.3s;
+      width: 40%;
     }
     
-    function setCookie(cname, cvalue, exdays) {
-  var d = new Date();
-  d.setTime(d.getTime() + (exdays*24*60*60*1000));
-  var expires = "expires="+ d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
+    
+    
+    .container {
+      padding: 2px 16px;
+    }
+  </style>
+</head>
+<body>
+  <div style="position:relative;padding-top:20px;padding-right:20px;">
+    <img src="{% url 'video_feed' %}" width="200" height="120" style="float:right;">
+  
+  </div>
+  <section id="fs">
+    <div class="container">
+      <div class="row">
+        <div class="col-4"></div>
+        <div class="" style="margin-top:20%;margin-left:30%">
+          <div class="centered-container">
+            <div class="card">
+              <div class="card-header p-5">
+                <h3 style="text-align:center;">Please Enter Full Screen to Continue Exam !!</h3>
+                <div style="display:flex;justify-content:center;">
+                <button onclick="openFullscreen()" class="btn btn-danger p-3 mt-3" style="font-size:15px;text-align:center;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-fullscreen" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707m4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707m0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707m-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707"/>
+                  </svg> &nbsp; Enter Full Screen
+                </button>
+              </div>
+            </div></div>
+          </div>
+        </div>
+      </div>
+    </div></div>  
+  
+</section>
 
-</script> 
 
-<br><br><br><br><br><br>
-{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} <button onclick="openFullscreen()" class="btn btn-danger p-3" style="font-size:20px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrows-fullscreen" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707m4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707m0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707m-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707"/>
+</svg> &nbsp Enter Full Screen</button> {% endcomment %}
+
+
+
+
+
+
+
+
+<div class="jumbotron my-4" id="entirepage" style="display:none">
+  <form class="form" autocomplete="off" onsubmit="return saveAns()" action="/student/calculate-marks" method="POST">
+    {% csrf_token %}
+    <h1 style="text-align: center;">{{course.course_name}}</h1>
+    {% for q in questions %}
+    <h3 class="text-info">{{ forloop.counter }}. {{q.question}}</h3><h4 style="text-align: right;">[Marks {{q.marks}}]</h4>
+    
+    <input type="hidden" name="csrfmiddlewaretoken" value="C24rUotmdHawVQJL3KrqiWxvti8UffOFYUc8TRbZtLt36AVLdP3jbkzUVe3beRAa">
+    
+    <div class="form-check mx-4">
+      <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option1}}" value="option1">
+      <label class="form-check-label" for="option1">
+        {{q.option1}}
+      </label>
+    </div>
+    
+    <div class="form-check mx-4">
+      <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option2}}" value="option2">
+      <label class="form-check-label" for="option2">
+        {{q.option2}}
+      </label>
+    </div>
+    
+    <div class="form-check mx-4">
+      <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option3}}" value="option3">
+      <label class="form-check-label" for="option3">
+        {{q.option3}}
+      </label>
+    </div>
+    
+    <div class="form-check mx-4">
+      <input class="form-check-input" type="radio" name="{{ forloop.counter }}" id="{{q.option4}}" value="option4">
+      <label class="form-check-label" for="option4">
+        {{q.option4}}
+      </label>
+    </div>
+    
+    {% endfor %}
+    <input class="btn btn-info btn-lg" type="submit" value="Submit">
+
+  </form>
+
+</div>
+
+
+
+
+
+
+<script>
+  
+  var page = document.getElementById('entirepage');
+  var fs=document.getElementById('fs');
+
+  function saveAns() {
+    var ele = document.getElementsByTagName('input');
+    for (i = 0; i < ele.length; i++) {
+      if (ele[i].type === "radio") {
+        if (ele[i].checked) {
+          setCookie(ele[i].name, ele[i].value, 3);
+        }
+      }
+    }
+  }
+
+  function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+
+
+
+  function openFullscreen() {
+    var elem = document.documentElement;
+    fs.style.display='none';
+    page.style.display='block';
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+      
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+      page.style.display='block';
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+      elem.msRequestFullscreen();
+    }
+  }
+
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+      // Full screen exited
+      isfullscreen = false;
+      spoofDetected = true;
+      page.style.display='none';
+      fs.style.display='block';
+
+      alert("Spoof detected: Full screen exited");
+    }
+  });
+
+  document.addEventListener("webkitfullscreenchange", () => {
+    if (!document.webkitFullscreenElement) {
+      // Full screen exited
+      isfullscreen = false;
+      spoofDetected = true;
+      page.style.display='none';
+      fs.style.display='block';
+
+      alert("Spoof detected: Full screen exited");
+    }
+  });
+
+  document.addEventListener("mozfullscreenchange", () => {
+    if (!document.mozFullScreenElement) {
+      // Full screen exited
+      isfullscreen = false;
+      spoofDetected = true;
+      page.style.display='none';
+      fs.style.display='block';
+
+      alert("Spoof detected: Full screen exited");
+    }
+  });
+
+  document.addEventListener("MSFullscreenChange", () => {
+    if (!document.msFullscreenElement) {
+      // Full screen exited
+      isfullscreen = false;
+      spoofDetected = true;
+      page.style.display='none';
+      fs.style.display='block';
+
+      alert("Spoof detected: Full screen exited");
+    }
+  });
+
+  
+  function closeFullScreen()
+  {
+    if (this.document.exitFullscreen) {
+      this.document.exitFullscreen();
+    } else if (this.document.mozCancelFullScreen) {
+      /* Firefox */
+      this.document.mozCancelFullScreen();
+    } else if (this.document.webkitExitFullscreen) {
+      /* Chrome, Safari and Opera */
+      this.document.webkitExitFullscreen();
+    } else if (this.document.msExitFullscreen) {
+      /* IE/Edge */
+      this.document.msExitFullscreen();
+    }
+    this.isfullscreen=false;
+  }
+</script>
+</body>
+</html>

@@ -177,13 +177,13 @@
 
       <img src="{% static "image/teacher.png" %}" class="profile_image" alt="">
       <h4>{{request.user.first_name}}</h4>
-      <h6 style="color: rgb(255, 255, 255);">( Teacher )</h6>
+      <h6 style="color: rgb(255, 255, 255);">( Intructor )</h6>
 
     </center>
 
     <a href="/teacher/teacher-dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
     <a href="/teacher/teacher-exam"><i class="fas fa-book"></i><span>Exam</span></a>
-    <a href="/teacher/teacher-question"><i class="fas fa-question-circle"></i><span>Questions</span></a>
+    {% comment %} <a href="/teacher/teacher-question"><i class="fas fa-question-circle"></i><span>Questions</span></a> {% endcomment %}
     <a href="/teacher/students_list"><i class="fas fa-question-circle"></i><span>Students</span></a>
 
   </div>
@@ -199,7 +199,7 @@
 
 
     <br><br><br>
-    {% include "management/footer.html" %}
+    {% include "quiz/footer.html" %}
   </div>
   <!--content end-->
 </body>

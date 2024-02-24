@@ -1,73 +1,70 @@
 <!DOCTYPE html>
-{% load widget_tweaks %}
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <style>
-
-        form{
-           margin: 50px; 
-          
-        }
-
-    </style>
-  </head>
-  <body>
-    {% include "management/navbar.html" %}
- 
-
-
-<br><br><br>
-<h3 style="text-align: center;color: red;">TEACHER SIGNUP</h3>
-<form method="POST" autocomplete="off" enctype="multipart/form-data">
+<head>
+  <meta charset="utf-8">
+  <style>
+    form {
+      margin: 50px; 
+    }
+  </style>
+</head>
+<body>
+  {% include "quiz/navbar.html" %}
+  <br><br><br>
+  {% for i in messages %}
+<h1 style="color:red;"> {{i}} </h1>
+{% endfor %}
+  <h3 style="text-align: center;color: red;">Mentor SIGNUP</h3>
+  <form method="POST" autocomplete="off" enctype="multipart/form-data">
     {% csrf_token %}
+    <div class="form-row">
+        <div class="form-group col-md-6">
+
+        <label for="username">Employee ID</label>
+        <input type="text" name="EmployeeID" id="username" class="form-control" placeholder="username" required>
+        </div>
+    </div>
     <div class="form-row">
       <div class="form-group col-md-6">
         <label for="username">Username</label>
-        {% render_field userForm.username|attr:'required:true'  class="form-control" placeholder="username" %}
+        <input type="text" name="username" id="username" class="form-control" placeholder="username" required>
       </div>
       <div class="form-group col-md-6">
         <label for="inputPassword4">Password</label>
-        {% render_field userForm.password|attr:'required:true'  class="form-control" placeholder="password" %}
+        <input type="password" name="password" id="inputPassword4" class="form-control" placeholder="password" required>
       </div>
     </div>
-
     <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="first_name">First Name</label>
-          {% render_field userForm.first_name|attr:'required:true'  class="form-control" placeholder="First Name" %}
-        </div>
-        <div class="form-group col-md-6">
-          <label for="last_name">Last Name</label>
-          {% render_field userForm.last_name|attr:'required:true'  class="form-control" placeholder="Last Name" %}
-        </div>
+      <div class="form-group col-md-6">
+        <label for="first_name">Name</label>
+        <input type="text" name="full_name" id="full_name" class="form-control" placeholder="Full Name" required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="last_name">Department</label>
+        <input type="text" name="department" id="department" class="form-control" placeholder="Department" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="mobile">Mobile</label>
+        <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile" required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="address">Email</label>
+        <input type="text" name="email" id="address" class="form-control" placeholder="Address" required>
+      </div>
+    </div>
+    <div class="form-row">
+
+      <div class="form-group col-md-6">
+        <label for="address">Expertise</label>
+        <input type="text" name="f_skill" id="address" class="form-control" placeholder="Address" required>
       </div>
 
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="mobile">Mobile</label>
-          {% render_field teacherForm.mobile|attr:'required:true'  class="form-control" placeholder="Mobile" %}
-        </div>
-        <div class="form-group col-md-6">
-          <label for="address">Address</label>
-          {% render_field teacherForm.address|attr:'required:true'  class="form-control" placeholder="Address" %}
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-12">
-          <label for="profile_pic">Profile Picture</label>
-          {% render_field teacherForm.profile_pic|attr:'required:true' class="form-control" placeholder="" %}
-        </div>
-        
-      </div>
-
-
+    </div>
     <button type="submit" class="btn btn-primary">Sign Up</button>
   </form>
-
-
-<br><br>
-{% include "management/footer.html" %}
-  </body>
+  <br><br>
+  {% include "quiz/footer.html" %}
+</body>
 </html>

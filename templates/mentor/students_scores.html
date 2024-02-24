@@ -1,0 +1,162 @@
+{% extends 'mentor/mentorbase.html' %}
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Scores</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        .dataTables_filter {
+            margin-bottom: 20px;
+        }
+        .dataTables_wrapper .dataTables_filter input[type="search"] {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+            box-shadow: none;
+        }
+        .dataTables_wrapper .dataTables_length {
+            margin-bottom: 20px;
+        }
+        .dataTables_wrapper .dataTables_length select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+            box-shadow: none;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+            box-shadow: none;
+            margin-right: 5px;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: #edf2f7;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #1a202c;
+            color: #fff;
+            border: 1px solid #1a202c;
+        }
+
+        /* Remove borders from table headings and bottom */
+        #student-table th {
+            border: none;
+        }
+        #student-table tfoot {
+            border-top: none;
+        }
+        #student-table tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-semibold mb-8 text-center">Students Scores</h1>
+        <div class="overflow-x-auto">
+            <table id="student-table" class="table-auto w-full bg-white shadow-md rounded-lg overflow-hidden">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="px-4 py-2 text-left">Roll Number</th>
+                        <th class="px-4 py-2 text-left">Student Name</th>
+                        <th class="px-4 py-2 text-left">Skill Applied</th>
+                        <th class="px-4 py-2 text-left">Test Marks</th>
+                        <th class="px-4 py-2 text-left">Assessed By</th>
+                        <th class="px-4 py-2 text-left">Project Marks</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-700">
+                    {% for t in data %}
+                    <tr>
+                        <td class="border px-4 py-2">{{ t.student.user.username }}</td>
+                        <td class="border px-4 py-2">{{ t.student.name }}</td>
+                        <td class="border px-4 py-2">{{ t.skill_name }}</td>
+                        <td class="border px-4 py-2">{{ t.test_score }}</td>
+                        <td class="border px-4 py-2">{{ t.assessed_by }}</td>
+                        <td class="border px-4 py-2">
+                            {% if t.project_score %}
+                            {{ t.project_score }}
+                            {% else %}
+                            <button type="button" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-1 px-2 rounded focus:outline-none focus:shadow-outline" data-toggle="modal" data-target="#updateProjectModal{{ t.id }}">
+                                Update
+                            </button>
+                            <div class="modal" id="updateProjectModal{{ t.id }}">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-blue-500 text-white">
+                                            <h5 class="modal-title">Update Project</h5>
+                                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form method="post" action="{% url 'update_student_skill' t.id  %}">
+                                            {% csrf_token %}
+                                            <div class="modal-body">
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="projectName{{ t.id }}">
+                                                        Project Name
+                                                    </label>
+                                                    <input type="text" class="form-input rounded-md border-gray-300 w-full" id="projectName{{ t.id }}" name="project_name">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="projectType{{ t.id }}">
+                                                        Project Type
+                                                    </label>
+                                                    <select class="form-select rounded-md border-gray-300 w-full" id="projectType{{ t.id }}" name="project_type">
+                                                        <option value="individual">Individual</option>
+                                                        <option value="group">Group</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="updateDate{{ t.id }}">
+                                                        Date of Update
+                                                    </label>
+                                                    <input type="date" class="form-input rounded-md border-gray-300 w-full" id="updateDate{{ t.id }}" name="update_date">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label class="block text-gray-700 text-sm font-bold mb-2" for="updateMarks{{ t.id }}">
+                                                        Marks Awarded
+                                                    </label>
+                                                    <input type="number" class="form-input rounded-md border-gray-300 w-full" id="updateMarks{{ t.id }}" name="marks">
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer bg-gray-100">
+                                                <button type="button" class="bg-red-500 hover:bg-red-700 text-white font-semibold py-1 px-2 rounded focus:outline-none focus:shadow-outline" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-semibold py-1 px-2 rounded focus:outline-none focus:shadow-outline">Save changes</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#student-table').DataTable({
+                "paging": true,
+                "ordering": true,
+                "searching": true
+            });
+        });
+    </script>
+</body>
+</html>
+
+{% endblock content %}
