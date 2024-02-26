@@ -103,7 +103,61 @@ def mentor_assign(request,empid):
         'email':mentor.email,
         'mentor_image':mentor.mentor_image
     }
-    return render(request,'management/assign.html',{'details':details})
+
+    roman = {
+        1:'I',
+        2:'II',
+        3:'III',
+        4:'IV',
+        5:'V',
+        6:'VI',
+        7:'VII',
+        8:'VIII'
+    }
+
+    students = SMODEL.Student.objects.filter(department=mentor.department, mentor=None)
+    classes = []
+    for i in students.values('semester','branch','section').distinct():
+        classes.append(roman[i['semester']]+' '+i['branch']+' '+i['section'])
+
+    if request.method=='GET':
+        classname = request.GET.get('class','')
+        gender = request.GET.get('gender','')
+
+        numbers = {
+            'I':1,
+            'II':2,
+            'III':3,
+            'IV':4,
+            'V':5,
+            'VI':6,
+            'VII':7,
+            'VIII':8
+        }
+
+        if gender:
+            students = students.filter(gender=gender)
+        if classname:
+            semester, branch, section = classname.split(' ')
+            semester = numbers[semester]
+            students = students.filter(semester=semester,branch=branch,section=section)
+        return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes, 'class_filter':classname, 'gender_filter':gender})
+    if request.method == 'POST':
+        rolls = request.POST.getlist('roll')
+        for roll in rolls:
+            try:
+                user = User.objects.get(username=roll)
+                student = SMODEL.Student.objects.get(user=user)
+                student.mentor = mentor
+                student.save()
+            except User.DoesNotExist:
+                return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes})
+            except SMODEL.Student.DoesNotExist:
+                return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes})
+            
+            return redirect(reverse('mentor-details',args=[empid]))
+
+    return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes})
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required

@@ -51,7 +51,7 @@
       <h4 class="text-center mb-5">Mentor details</h4>
       <div class="row">
         <div class="col-md-4">
-          <img src="{% static "static\Faculty\keerthan_passport_photo_U5wBCwK.jpeg" %}" alt="" style="height:150px; width:120px" class="mx-auto d-block"><br>
+          <img src="{% static details.mentor_image.url %}" alt="" style="height:150px; width:120px" class="mx-auto d-block"><br>
         </div>
         <div class="col">
           <p style="font-size:18px"><span class="fw-semibold">Emp id: </span>{{details.emp_id}}</p>
@@ -65,18 +65,19 @@
        
     </div>
     <div class="col-md-2" id="filters">
-      <form action="#" method="post">
+      <form action="" method="get" id="filterForm">
         <label for="class">Class</label><br>
         <select class="mb-2" name="class" id="class" {% block class_disable %}{% endblock class_disable %}>
-          <option value="III CSE A">III CSE A</option>
-          <option value="IV ECE C">IV ECE C</option>
-          <option value="I MEC A">I MEC A</option>
+          <option value="">All</option>
+          {% for class in classes %}
+            <option value="{{class}}" {% if class_filter == class %}selected{% endif %}>{{class}}</option>
+          {% endfor %}
         </select><br>
         <label for="gender">Gender</label><br>
         <select class="mb-2" name="gender" id="gender" {% block gender_disable %}{% endblock gender_disable %}>
-          <option value="All">All</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
+          <option value="" {% if gender_filter == "" %}selected{% endif %}>All</option>
+          <option value="Male" {% if gender_filter == "Male" %}selected{% endif %}>Male</option>
+          <option value="Female" {% if gender_filter == "Female" %}selected{% endif %}>Female</option>
         </select>
       </form>
       <div class="form-text fst-italic">Left click & Drag over multiple checkboxes to select/deselect</div>
@@ -85,9 +86,9 @@
     </div>
     <div class="col-md-3">
       
-        <form action="#" method="POST" id="rollform">
+        <form action="{% url "mentor-assign" details.emp_id %}" method="POST" id="rollform">
         <div class="table-container">
-          <h6 class="text-center mt-2">Mentees</h6>
+          <h6 class="text-center mt-2">{% block table-head %}{% endblock table-head %} Mentees</h6>
           <table class="mx-2">
              {% block table %}{% endblock table %}   
           </table>
@@ -125,7 +126,25 @@
 
     $('#assign').click(function(){
         $('#rollform').submit()
-    })
+    });
+
+    $('#class,#gender').change(function(){
+      /*$.ajax({
+        url: '/mentor-assign/{{details.emp_id}}',
+        method:'POST',
+        data: {
+            'class': $('#class').val(),
+            'gender':$('#gender').val(),
+        },
+      });*/
+      $('#filterForm').submit();
+    });
+
+    {% comment %} $('#class').trigger("change") {% endcomment %}
+
+    function filter(){
+      
+    }
 
     $('#lorem,#filters').on('mousedown', function (event) {
       // event.stopPropagation();
@@ -135,11 +154,9 @@
     });
 
     var sidebar = $('.sidebar')
-    $('.sidebar').on('mousedown', function (event) {
-        if (!$(event.target).is('input[type="checkbox"]')) {
+    sidebar.on('mousedown', function (event) {
           event.stopPropagation();
-        }
-      });
+    });
 
     $(document).on("mousemove", function (event) {
       if (drag) {
