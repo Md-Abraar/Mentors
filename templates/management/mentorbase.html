@@ -44,56 +44,90 @@
         border:1px solid rgba(0,0,255,.15);
         background:rgba(0,0,255,.05);
       }
+
 </style>
 <div class="container">
 <div class="row">
-    <div class="col ms-2" id="lorem">
-      <h4 class="text-center mb-5">Mentor details</h4>
-      <div class="row">
-        <div class="col-md-4">
-          <img src="{% static "static\Faculty\keerthan_passport_photo_U5wBCwK.jpeg" %}" alt="" style="height:150px; width:120px" class="mx-auto d-block"><br>
-        </div>
-        <div class="col">
-          <p style="font-size:18px"><span class="fw-semibold">Emp id: </span>{{details.emp_id}}</p>
-          <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{details.name}}</p>
-          <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{details.department}}</p>
-          <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{details.email}}</p>
-          <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{details.mobile}}</p>
-          <p style="font-size:18px"><span class="fw-semibold">No. of Mentees: </span>15</p>
-        </div>
+  <div class="col ms-2" id="lorem">
+    <h4 class="text-center mb-5">Mentor details</h4>
+    <div class="row">
+      <div class="col-md-4">
+        <img src="{% static details.mentor_image.url %}" alt="" style="height:150px; width:120px" class="mx-auto d-block"><br>
       </div>
-       
-    </div>
-    <div class="col-md-2" id="filters">
-      <form action="#" method="post">
-        <label for="class">Class</label><br>
-        <select class="mb-2" name="class" id="class" {% block class_disable %}{% endblock class_disable %}>
-          <option value="III CSE A">III CSE A</option>
-          <option value="IV ECE C">IV ECE C</option>
-          <option value="I MEC A">I MEC A</option>
-        </select><br>
-        <label for="gender">Gender</label><br>
-        <select class="mb-2" name="gender" id="gender" {% block gender_disable %}{% endblock gender_disable %}>
-          <option value="All">All</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-        </select>
-      </form>
-      <div class="form-text fst-italic">Left click & Drag over multiple checkboxes to select/deselect</div>
-      {% block btn %}{% endblock btn %}
-
-    </div>
-    <div class="col-md-3">
-      
-        <form action="#" method="POST" id="rollform">
-        <div class="table-container">
-          <h6 class="text-center mt-2">Mentees</h6>
-          <table class="mx-2">
-             {% block table %}{% endblock table %}   
-          </table>
+      <div class="col">
+        <p style="font-size:18px"><span class="fw-semibold">Emp id: </span>{{details.emp_id}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{details.name}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{details.department}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{details.email}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{details.mobile}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">No. of Mentees: </span>15</p>
+        <div class="form-check form-switch">
+          {% if details.is_active %}
+          {% comment %} <a href=" {% url 'update-is-active' details.emp_id %} "><button type="submit" class="btn btn-danger" id="alert_message" onclick="alert_message()">deactivate</button></a>
+          <p>Clicking this button deactivates the account.</p> {% endcomment %}
+          <!-- Button to trigger the modal -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#alertmessage">Deactivate</button>
+        <p>Clicking this button deactivates the account.</p>
+        <div class="modal" id="alertmessage" tabindex="-1" aria-labelledby="alertmessageLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="alertmessageLabel">Are you sure to deactivate the account?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href=" {% url 'update-is-active' details.emp_id %} "><button type="button" class="btn btn-primary" id="okButton">OK</button></a>
+              </div>
+            </div>
+          </div>
         </div>
+        {% endif %}
+        </div>    
+      </div>
+    </div> 
+                             
+  </div>
+  {% if details.is_active %}
+  <div class="col-md-2" id="filters">
+    <form action="#" method="post">
+      <label for="class">Class</label><br>
+      <select class="mb-2" name="class" id="class" {% block class_disable %}{% endblock class_disable %}>
+        <option value="III CSE A">III CSE A</option>
+        <option value="IV ECE C">IV ECE C</option>
+        <option value="I MEC A">I MEC A</option>
+      </select><br>
+      <label for="gender">Gender</label><br>
+      <select class="mb-2" name="gender" id="gender" {% block gender_disable %}{% endblock gender_disable %}>
+        <option value="All">All</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
     </form>
+    <div class="form-text fst-italic">Left click & Drag over multiple checkboxes to select/deselect</div>
+    {% block btn %}{% endblock btn %}
+
+  </div>
+  <div class="col-md-3">
+    
+      <form action="#" method="POST" id="rollform">
+      <div class="table-container">
+        <h6 class="text-center mt-2">Mentees</h6>
+        <table class="mx-2">
+           {% block table %}{% endblock table %}   
+        </table>
+      </div>
+  </form>
+  </div>   
+  {% else %}
+  
+  <div class="row">
+    <div class="col d-flex justify-content-center">
+      <h5><span class="badge text-bg-warning">Deactivated</span></h5>
     </div>
+  </div>
+    
+  {% endif %}
 </div>
 </div>
 {% comment %} <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> {% endcomment %}
@@ -129,9 +163,8 @@
 
     $('#lorem,#filters').on('mousedown', function (event) {
       // event.stopPropagation();
-      if (!$(event.target).is('input[type="checkbox"]')) {
+
         event.stopPropagation();
-      }
     });
 
     var sidebar = $('.sidebar')
@@ -244,7 +277,19 @@
         });
       }
       
-
+      document.addEventListener("DOMContentLoaded", function() {
+        var isActive = {{ details.is_active|lower }};
+        var switchElement = document.getElementById("is_active");
+    
+        // Set the switch state based on the value of isActive
+        switchElement.checked = isActive;
+    
+        // If isActive is false, disable the switch
+        if (!isActive) {
+            switchElement.disabled = true;
+        }
+    });
+    
 
   </script>
 

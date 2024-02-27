@@ -115,9 +115,18 @@ def mentor_details(request,empid):
         'department':mentor.department,
         'mobile':mentor.mobile,
         'email':mentor.email,
-        'mentor_image':mentor.mentor_image
+        'mentor_image':mentor.mentor_image,
+        'is_active' : mentor.is_active
     }
     return render(request,'management/mentor_details.html',{'details':details})
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def update_is_active(request,empid):
+    mentor_obj=MMODEL.mentor.objects.get(emp_id=empid)
+    mentor_obj.is_active=False
+    mentor_obj.save() 
+    return redirect(reverse('mentor-details',args=[empid]))
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required

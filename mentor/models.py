@@ -10,6 +10,7 @@ class mentor(models.Model):
     mobile=models.CharField(max_length=13,null=True)
     email=models.CharField(max_length=40,null=True)
     mentor_image = models.ImageField(upload_to='static/Faculty/')
+    is_active = models.BooleanField(default=False)
 
     @property
     def get_instance(self):

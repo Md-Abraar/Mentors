@@ -101,9 +101,9 @@ button:hover, a:hover {
 
 {% if mentor_pending %}
 <br><br>
-<p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approve Pending Accounts</i></b></p>
+<p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approval Pending Accounts</i></b></p>
 {% endif %}
-<div class="container" id="content" >
+<div class="container" id="pendingContent" >
   
     {% for mentor in  mentor_pending%}
       <div class="mycard">
@@ -146,7 +146,7 @@ button:hover, a:hover {
 
 <br><br>
 <p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approved Accounts</i></b></p>
-<div class="container" id="content" >
+<div class="container" id="approvedContent" >
   
   {% for mentor in  mentor_approve%}
     <div class="mycard">
@@ -158,7 +158,7 @@ button:hover, a:hover {
   {% endfor %}  
 </div>
 
-<script>
+{% comment %} <script>
     function searchProfile() {
       // Declare variables
       var input, filter, container, mycard, mytitle, i, txtValue;
@@ -178,7 +178,48 @@ button:hover, a:hover {
         }
       }
     }
-</script>
+</script> {% endcomment %}
+<script>
+    function searchProfile() {
+        // Declare variables
+        var input, filter, container, cards, card, title, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        
+        // Search in pending mentor cards
+        container = document.getElementById("pendingContent");
+        cards = container.getElementsByClassName("mycard");
+        var con = document.getElementById('con');
+        for (i = 0; i < cards.length; i++) {
+            card = cards[i];
+            title = card.getElementsByTagName("h4")[0];
+            txtValue = title.textContent || title.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+
+            }
+        }
+        
+        // Search in approved mentor cards
+        container = document.getElementById("approvedContent");
+        cards = container.getElementsByClassName("mycard");
+        
+        for (i = 0; i < cards.length; i++) {
+            card = cards[i];
+            title = card.getElementsByTagName("h4")[0];
+            txtValue = title.textContent || title.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+        }
+    }
+    </script>
+    
+  
 
 
 {% endblock content %}
