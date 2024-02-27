@@ -1,14 +1,33 @@
 {% extends "management/mentorbase.html" %}
-{% block class_disable %}disabled{% endblock class_disable %}
-{% block gender_disable %}disabled{% endblock gender_disable %}
-{% block btn %}<a class="btn btn-success btn-sm mt-3" id="update" href="{% url "mentor-assign" details.emp_id %}">Update</a>{% endblock btn %}
+{% block mentee_count %}<p style="font-size:18px"><span class="fw-semibold">No. of Mentees: </span>{{mentees|length}}</p>{% endblock mentee_count %}
+{% block filter1 %}
+{{class}}
+{% endblock filter1 %}
+{% block filter2 %}
+{{gender}}
+{% endblock filter2 %}
+{% block btn %}
+<button type="button" class="btn btn-success btn-sm mt-3" id="update" data-bs-toggle="modal" data-bs-target="#caution">Update</button>
+<div class="modal fade" data-bs-backdrop="static" id="caution" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class=" text-primary" id="exampleModalLabel">All the previously assigned mentees will be removed !</h6>
+          {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <a href=" {% url "mentor-assign" details.emp_id %} "><button type="button" class="btn btn-outline-primary" id="okButton">Proceed</button></a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock btn %}
 {% block table %}
-<tr><td><input type="checkbox" name="roll" id="1" value="1" disabled><label for="1" class="ms-1">209x1a1111</label></td></tr>
-<tr><td><input type="checkbox" name="roll" id="2" value="2" disabled><label for="2" class="ms-1">209x1a1111</label></td></tr>
-<tr><td><input type="checkbox" name="roll" id="3" value="3" disabled><label for="3" class="ms-1">209x1a1111</label></td></tr>
-<tr><td><input type="checkbox" name="roll" id="4" value="4" disabled><label for="4" class="ms-1">209x1a1111</label></td></tr>
-<tr><td><input type="checkbox" name="roll" id="5" value="5" disabled><label for="5" class="ms-1">209x1a1111</label></td></tr>
-<tr><td><input type="checkbox" name="roll" id="6" value="6" disabled><label for="6" class="ms-1">209x1a1111</label></td></tr>
-<tr><td><input type="checkbox" name="roll" id="7" value="7" disabled><label for="7" class="ms-1">209x1a1111</label></td></tr>
-
+  {% if mentees|length == 0 %}
+      <p class="text-center mt-5">No assigned students</p>
+  {% endif %}
+  {% for mentee in mentees %}
+    <tr><td><label class="exclude ms-3">{{mentee.user.username}}</label></td></tr>
+  {% endfor %} 
 {% endblock table %}

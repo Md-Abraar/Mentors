@@ -60,7 +60,7 @@
         <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{details.department}}</p>
         <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{details.email}}</p>
         <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{details.mobile}}</p>
-        <p style="font-size:18px"><span class="fw-semibold">No. of Mentees: </span>15</p>
+        {% block mentee_count %}{% endblock mentee_count %}
         <div class="form-check form-switch">
           {% if details.is_active %}
           {% comment %} <a href=" {% url 'update-is-active' details.emp_id %} "><button type="submit" class="btn btn-danger" id="alert_message" onclick="alert_message()">deactivate</button></a>
@@ -92,17 +92,10 @@
   <div class="col-md-2" id="filters">
     <form action="#" method="post">
       <label for="class">Class</label><br>
-      <select class="mb-2" name="class" id="class" {% block class_disable %}{% endblock class_disable %}>
-        <option value="III CSE A">III CSE A</option>
-        <option value="IV ECE C">IV ECE C</option>
-        <option value="I MEC A">I MEC A</option>
-      </select><br>
+      {% block filter1 %}{% endblock filter1 %}
+      <br>
       <label for="gender">Gender</label><br>
-      <select class="mb-2" name="gender" id="gender" {% block gender_disable %}{% endblock gender_disable %}>
-        <option value="All">All</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
+      {% block filter2 %}{% endblock filter2 %}
     </form>
     <div class="form-text fst-italic">Left click & Drag over multiple checkboxes to select/deselect</div>
     {% block btn %}{% endblock btn %}

@@ -20,6 +20,29 @@ from django.contrib.auth.decorators import permission_required
 # from student.models import *
 # from teacher.models import *
 
+roman = {
+        1:'I',
+        2:'II',
+        3:'III',
+        4:'IV',
+        5:'V',
+        6:'VI',
+        7:'VII',
+        8:'VIII'
+}
+
+numbers = {
+        'I':1,
+        'II':2,
+        'III':3,
+        'IV':4,
+        'V':5,
+        'VI':6,
+        'VII':7,
+        'VIII':8
+}
+
+
 def admin_superuser_required(view_func):
     """
     Decorator for views that checks if the user is logged in, is an admin, and is a superuser.
@@ -95,6 +118,13 @@ def admin_teacher_view(request):
 @admin_superuser_required
 def mentor_assign(request,empid):
     mentor = MMODEL.mentor.objects.get(emp_id=empid)
+    
+    #Clear previous mentees
+    mentees = SMODEL.Student.objects.filter(mentor=mentor)
+    for mentee in mentees:
+        mentee.mentor = None
+        mentee.save()
+
     details = {
         'emp_id':mentor.emp_id,
         'name':mentor.name,
@@ -104,16 +134,7 @@ def mentor_assign(request,empid):
         'mentor_image':mentor.mentor_image
     }
 
-    roman = {
-        1:'I',
-        2:'II',
-        3:'III',
-        4:'IV',
-        5:'V',
-        6:'VI',
-        7:'VII',
-        8:'VIII'
-    }
+    
 
     students = SMODEL.Student.objects.filter(department=mentor.department, mentor=None)
     classes = []
@@ -123,17 +144,6 @@ def mentor_assign(request,empid):
     if request.method=='GET':
         classname = request.GET.get('class','')
         gender = request.GET.get('gender','')
-
-        numbers = {
-            'I':1,
-            'II':2,
-            'III':3,
-            'IV':4,
-            'V':5,
-            'VI':6,
-            'VII':7,
-            'VIII':8
-        }
 
         if gender:
             students = students.filter(gender=gender)
@@ -155,7 +165,7 @@ def mentor_assign(request,empid):
             except SMODEL.Student.DoesNotExist:
                 return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes})
             
-            return redirect(reverse('mentor-details',args=[empid]))
+        return redirect(reverse('mentor-details',args=[empid]))
 
     return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes})
 
@@ -172,7 +182,17 @@ def mentor_details(request,empid):
         'mentor_image':mentor.mentor_image,
         'is_active' : mentor.is_active
     }
-    return render(request,'management/mentor_details.html',{'details':details})
+
+    classname = 'All'
+    gender = 'All'
+    mentees = SMODEL.Student.objects.filter(mentor=mentor)
+    if mentees.values('semester','branch','section').distinct().count() == 1:
+        classname = roman[mentees[0].semester]+' '+mentees[0].branch+' '+mentees[0].section
+    if mentees.values('gender').distinct().count == 1:
+        gender = mentees[0].gender
+
+    print(classname,gender)
+    return render(request,'management/mentor_details.html',{'details':details, 'class':classname, 'gender':gender, 'mentees':mentees})
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
