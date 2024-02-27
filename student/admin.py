@@ -4,7 +4,7 @@ from django.contrib import admin
 from .models import *
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('username','semester','branch','section','gender')
+    list_display = ('username','semester','branch','section','gender','mentor')
     def username(self,obj):
         return obj.user.username
     

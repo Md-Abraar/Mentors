@@ -59,7 +59,7 @@
           <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{details.department}}</p>
           <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{details.email}}</p>
           <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{details.mobile}}</p>
-          <p style="font-size:18px"><span class="fw-semibold">No. of Mentees: </span>15</p>
+          {% block mentee_count %}{% endblock mentee_count %}
         </div>
       </div>
        
@@ -67,18 +67,10 @@
     <div class="col-md-2" id="filters">
       <form action="" method="get" id="filterForm">
         <label for="class">Class</label><br>
-        <select class="mb-2" name="class" id="class" {% block class_disable %}{% endblock class_disable %}>
-          <option value="">All</option>
-          {% for class in classes %}
-            <option value="{{class}}" {% if class_filter == class %}selected{% endif %}>{{class}}</option>
-          {% endfor %}
-        </select><br>
-        <label for="gender">Gender</label><br>
-        <select class="mb-2" name="gender" id="gender" {% block gender_disable %}{% endblock gender_disable %}>
-          <option value="" {% if gender_filter == "" %}selected{% endif %}>All</option>
-          <option value="Male" {% if gender_filter == "Male" %}selected{% endif %}>Male</option>
-          <option value="Female" {% if gender_filter == "Female" %}selected{% endif %}>Female</option>
-        </select>
+        {% block filter1 %}{% endblock filter1 %}
+        <br>
+        <label for="gender" class="mt-2">Gender</label><br>
+        {% block filter2 %}{% endblock filter2 %}
       </form>
       <div class="form-text fst-italic">Left click & Drag over multiple checkboxes to select/deselect</div>
       {% block btn %}{% endblock btn %}
