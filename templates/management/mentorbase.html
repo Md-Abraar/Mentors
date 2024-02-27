@@ -159,7 +159,25 @@
 
     $('#assign').click(function(){
         $('#rollform').submit()
-    })
+    });
+
+    $('#class,#gender').change(function(){
+      /*$.ajax({
+        url: '/mentor-assign/{{details.emp_id}}',
+        method:'POST',
+        data: {
+            'class': $('#class').val(),
+            'gender':$('#gender').val(),
+        },
+      });*/
+      $('#filterForm').submit();
+    });
+
+    {% comment %} $('#class').trigger("change") {% endcomment %}
+
+    function filter(){
+      
+    }
 
     $('#lorem,#filters').on('mousedown', function (event) {
       // event.stopPropagation();
@@ -168,11 +186,9 @@
     });
 
     var sidebar = $('.sidebar')
-    $('.sidebar').on('mousedown', function (event) {
-        if (!$(event.target).is('input[type="checkbox"]')) {
+    sidebar.on('mousedown', function (event) {
           event.stopPropagation();
-        }
-      });
+    });
 
     $(document).on("mousemove", function (event) {
       if (drag) {

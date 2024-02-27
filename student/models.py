@@ -6,6 +6,7 @@ class Student(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     mentor = models.ForeignKey(mentor, on_delete=models.CASCADE,null=True,blank=True)
     branch=models.CharField(max_length=6,null=True)
+    department=models.CharField(max_length=6,null=True)
     semester=models.IntegerField(null=True)
     section=models.CharField(max_length=1,blank=True)
     gender=models.CharField(max_length=10,null=True)    
