@@ -23,10 +23,10 @@ urlpatterns = [
     path('adminlogin', LoginView.as_view(template_name='management/adminlogin.html'),name='adminlogin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
-    path('faculty-details',views.faculty_details, name='faculty-details'),
     path('admin-view-teacher', views.admin_view_teacher_view,name='admin-view-teacher'),
     path('update-teacher/<int:pk>', views.update_teacher_view,name='update-teacher'),
     path('delete-teacher/<int:pk>', views.delete_teacher_view,name='delete-teacher'),
+    path('update-is-active/<str:empid>', views.update_is_active, name="update-is-active"),
     path('admin-view-pending-teacher', views.admin_view_pending_teacher_view,name='admin-view-pending-teacher'),
     path('admin-view-teacher-salary', views.admin_view_teacher_salary_view,name='admin-view-teacher-salary'),
     path('approve-teacher/<int:pk>', views.approve_teacher_view,name='approve-teacher'),
@@ -50,7 +50,8 @@ urlpatterns = [
     path("admin-edit-skill/<str:skill_name>", views.admin_edit_skill, name="admin-edit-skill"),
     path("get_domains", views.get_domains , name="get_domains"),
 
-    path("admin-assign", views.mentor_assign, name="admin-assign"),
+    path("mentor-assign/<str:empid>", views.mentor_assign, name="mentor-assign"),
+    path("mentor-details/<str:empid>", views.mentor_details, name="mentor-details"),
 
     path('admin-question', views.admin_question_view,name='admin-question'),
     path('admin-add-question', views.admin_add_question_view,name='admin-add-question'),

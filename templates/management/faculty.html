@@ -98,17 +98,16 @@ button:hover, a:hover {
     <input type="text" id="searchInput" name="search" onkeyup="searchProfile()" placeholder="Search by names.." style="margin: 20px;">   
     
  </div> 
-<a href="{% url "faculty-details" %}" class="addProfile">Add Profile</a>
 
 {% if mentor_pending %}
 <br><br>
 <p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approval Pending Accounts</i></b></p>
 {% endif %}
-<div class="container" id="content" >
+<div class="container" id="pendingContent" >
   
     {% for mentor in  mentor_pending%}
       <div class="mycard">
-        <img src= "{% static mentor.mentor_image.url %}" alt="John" style="width:100%; height:65%">
+        <img src= "{% static mentor.mentor_image %}" alt="John" style="width:100%; height:60%">
         <h4>{{mentor.name}}</h4>
         <p class="mytitle">{{mentor.department}}</p>
         <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton" style="background-color: #ffc107; color: #000;">Action Required 
@@ -131,10 +130,10 @@ button:hover, a:hover {
               <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>
               <div class="row">
                 <div class="col-md-6">
-                  <a href=" {% url 'approve-mentor1' mentor.id %} "><button type="button" class="btn btn-success">Accept</button></a>
+                  <a href=" {% url 'approve-mentor1' mentor.emp_id %} "><button type="button" class="btn btn-success">Accept</button></a>
                 </div>
                 <div class="col-md-6">
-                  <a href=" {% url 'reject-mentor1' mentor.id %} "><button type="button" class="btn btn-danger">Reject</button></a>
+                  <a href=" {% url 'reject-mentor1' mentor.emp_id %} "><button type="button" class="btn btn-danger">Reject</button></a>
                 </div>
               </div>
             </div>
@@ -147,36 +146,20 @@ button:hover, a:hover {
 
 <br><br>
 <p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approved Accounts</i></b></p>
-<div class="container" id="content" >
+<div class="container" id="approvedContent" >
   
   {% for mentor in  mentor_approve%}
-    <div class="mycard">
-      <img src= "{% static mentor.mentor_image.url %}" alt="John" style="width:100%; height:65%">
+    <div class="mycard position-relative">
+      <span style="top:5%; left:85%; font-size:14px" class="badge rounded-pill text-bg-dark position-absolute translate-middle" data-bs-toggle="tooltip" data-bs-title="Mentees">{{mentor.mentee_count}}</span>
+      <img src= "{% static mentor.mentor_image %}" alt="John" style="width:100%; height:60%">
       <h4>{{mentor.name}}</h4>
       <p class="mytitle">{{mentor.department}}</p>
-      <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton">More Details</button></p>
-    </div>
-    <div class="modal fade" id="a{{mentor.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="staticBackdropLabel">Emp id: {{mentor.emp_id}}</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{mentor.name}}</p>
-            <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{mentor.department}}</p>
-            <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{mentor.email}}</p>
-            <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>
-            
-          </div>
-        </div>
-      </div>
+      <p><a href="{% url "mentor-details" mentor.emp_id %}" class="mybutton">More Details</a></p>
     </div>
   {% endfor %}  
 </div>
 
-<script>
+{% comment %} <script>
     function searchProfile() {
       // Declare variables
       var input, filter, container, mycard, mytitle, i, txtValue;
@@ -196,7 +179,50 @@ button:hover, a:hover {
         }
       }
     }
-</script>
+</script> {% endcomment %}
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    function searchProfile() {
+        // Declare variables
+        var input, filter, container, cards, card, title, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        
+        // Search in pending mentor cards
+        container = document.getElementById("pendingContent");
+        cards = container.getElementsByClassName("mycard");
+        var con = document.getElementById('con');
+        for (i = 0; i < cards.length; i++) {
+            card = cards[i];
+            title = card.getElementsByTagName("h4")[0];
+            txtValue = title.textContent || title.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+
+            }
+        }
+        
+        // Search in approved mentor cards
+        container = document.getElementById("approvedContent");
+        cards = container.getElementsByClassName("mycard");
+        
+        for (i = 0; i < cards.length; i++) {
+            card = cards[i];
+            title = card.getElementsByTagName("h4")[0];
+            txtValue = title.textContent || title.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+        }
+    }
+    </script>
+    
+  
 
 
 {% endblock content %}

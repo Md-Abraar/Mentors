@@ -5,8 +5,9 @@ from management.models import Skill as skill
 from mentor.models import mentor
 class Student(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    mentor = models.ForeignKey(mentor, on_delete=models.CASCADE,null=True)
+    mentor = models.ForeignKey(mentor, on_delete=models.CASCADE,null=True,blank=True)
     branch=models.CharField(max_length=6,null=True)
+    department=models.CharField(max_length=6,null=True)
     semester=models.IntegerField(null=True)
     section=models.CharField(max_length=1,blank=True)
     gender=models.CharField(max_length=10,null=True)    
@@ -14,8 +15,8 @@ class Student(models.Model):
     @property
     def get_instance(self):
         return self
-    
-        
+    def __str__(self):
+        return self.user.username
 class Student_profile(models.Model):
     student_id=models.CharField(max_length=10)
     student_fullname=models.CharField(max_length=50)

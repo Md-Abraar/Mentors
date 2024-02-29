@@ -14,6 +14,4 @@ class Teacher(models.Model):
     @property
     def get_instance(self):
         return self
-    # def __str__(self):
-    #     return self.status
     

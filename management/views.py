@@ -1,12 +1,10 @@
 from django.shortcuts import render,redirect,reverse
 from . import forms,models
-from django.db.models import Sum
+from django.db.models import Count
 from django.contrib.auth.models import Group
-from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
+from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
-from datetime import date, timedelta
-from django.db.models import Q
 from django.core.mail import send_mail
 from teacher import models as TMODEL
 from student import models as SMODEL
@@ -20,6 +18,29 @@ from django.contrib.auth.decorators import permission_required
 from student.models import students_skills as student_skills
 # from student.models import *
 # from teacher.models import *
+
+roman = {
+        1:'I',
+        2:'II',
+        3:'III',
+        4:'IV',
+        5:'V',
+        6:'VI',
+        7:'VII',
+        8:'VIII'
+}
+
+numbers = {
+        'I':1,
+        'II':2,
+        'III':3,
+        'IV':4,
+        'V':5,
+        'VI':6,
+        'VII':7,
+        'VIII':8
+}
+
 
 def admin_superuser_required(view_func):
     """
@@ -97,41 +118,110 @@ def admin_dashboard_view(request):
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_teacher_view(request):
-    # dict={
-    # 'total_teacher':TMODEL.Teacher.objects.all().filter(status=True).count(),
-    # 'pending_teacher':TMODEL.Teacher.objects.all().filter(status=False).count(),
-    # 'salary':TMODEL.Teacher.objects.all().filter(status=True).aggregate(Sum('salary'))['salary__sum'],
-    # }
-    # return render(request,'management/admin_teacher.html',context=dict)
-    mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
-    mentor_pending =  MMODEL.mentor.objects.filter(status=False)
-    mentor_approve = MMODEL.mentor.objects.filter(status=True) #.values('emp_id','name','department','mobile','email','status','mentor_image')
-    
+    # mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
+    mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
+    mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image').annotate(mentee_count=Count('student')).order_by('mentee_count')
     return render(request,'management/faculty.html',{'mentor_pending':mentor_pending,'mentor_approve':mentor_approve})
 
-def faculty_details(request):
-    # if request.method=='POST':
-    #     faculty_id = request.POST.get('faculty_id')
-    #     faculty_name = request.POST.get('faculty_name')
-    #     faculty_designation = request.POST.get('faculty_designation')
-    #     faculty_email = request.POST.get('faculty_email')
-    #     faculty_branch = request.POST.get('faculty_branch')
-    #     faculty_phone = request.POST.get('facult_phone')
-    #     skillset = request.POST.get('skillset')
-    #     skillset = skillset.split(",")
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def mentor_assign(request,empid):
+    mentor = MMODEL.mentor.objects.get(emp_id=empid)
+    
+    #Clear previous mentees
+    mentees = SMODEL.Student.objects.filter(mentor=mentor)
+    for mentee in mentees:
+        mentee.mentor = None
+        mentee.save()
 
-    #     faculty_record = Faculty(faculty_id = faculty_id, faculty_name = faculty_name, faculty_designation = faculty_designation,
-    #                   faculty_branch = faculty_branch, faculty_email = faculty_email, faculty_phone = faculty_phone)
-    #     faculty_record.save()
+    details = {
+        'emp_id':mentor.emp_id,
+        'name':mentor.name,
+        'department':mentor.department,
+        'mobile':mentor.mobile,
+        'email':mentor.email,
+        'mentor_image':mentor.mentor_image,
+        'is_active' : mentor.is_active
+    }
 
-    return render(request, 'management/faculty_details.html')
+    
+
+    students = SMODEL.Student.objects.filter(department=mentor.department, mentor=None)
+    classes = []
+    for i in students.values('semester','branch','section').distinct():
+        classes.append(roman[i['semester']]+' '+i['branch']+' '+i['section'])
+
+    if request.method=='GET':
+        classname = request.GET.get('class','')
+        gender = request.GET.get('gender','')
+
+        if gender:
+            students = students.filter(gender=gender)
+        if classname:
+            semester, branch, section = classname.split(' ')
+            semester = numbers[semester]
+            students = students.filter(semester=semester,branch=branch,section=section)
+        return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes, 'class_filter':classname, 'gender_filter':gender})
+    if request.method == 'POST':
+        rolls = request.POST.getlist('roll')
+        for roll in rolls:
+            try:
+                user = User.objects.get(username=roll)
+                student = SMODEL.Student.objects.get(user=user)
+                student.mentor = mentor
+                student.save()
+            except User.DoesNotExist:
+                return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes})
+            except SMODEL.Student.DoesNotExist:
+                return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes})
+            
+        return redirect(reverse('mentor-details',args=[empid]))
+
+    return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes})
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def mentor_details(request,empid):
+    mentor = MMODEL.mentor.objects.get(emp_id=empid)
+    details = {
+        'emp_id':mentor.emp_id,
+        'name':mentor.name,
+        'department':mentor.department,
+        'mobile':mentor.mobile,
+        'email':mentor.email,
+        'mentor_image':mentor.mentor_image,
+        'is_active' : mentor.is_active
+    }
+
+    classname = 'All'
+    gender = 'All'
+    mentees = SMODEL.Student.objects.filter(mentor=mentor)
+    if mentees.values('semester','branch','section').distinct().count() == 1:
+        classname = roman[mentees[0].semester]+' '+mentees[0].branch+' '+mentees[0].section
+    if mentees.values('gender').distinct().count == 1:
+        gender = mentees[0].gender
+
+    return render(request,'management/mentor_details.html',{'details':details, 'class':classname, 'gender':gender, 'mentees':mentees})
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def update_is_active(request,empid):
+    mentor_obj=MMODEL.mentor.objects.get(emp_id=empid)
+    mentor_obj.is_active=False
+    mentor_obj.save()
+
+    mentees = SMODEL.Student.objects.filter(mentor=mentor_obj)
+    for mentee in mentees:
+        mentee.mentor = None
+        mentee.save()
+    
+    return redirect(reverse('mentor-details',args=[empid]))
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_view_teacher_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=True)
     return render(request,'management/admin_view_teacher.html',{'teachers':teachers})
-
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
@@ -153,7 +243,6 @@ def update_teacher_view(request,pk):
     return render(request,'management/update_teacher.html',context=mydict)
 
 
-
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def delete_teacher_view(request,pk):
@@ -173,14 +262,14 @@ def admin_view_pending_teacher_view(request):
 
 @login_required(login_url='adminlogin')
 def approve_mentor_view(request,pk):
-    mentor=MMODEL.mentor.objects.get(id=pk)
+    mentor=MMODEL.mentor.objects.get(emp_id=pk)
     mentor.status=True
     mentor.save()
     return HttpResponseRedirect('/admin-teacher')
 
 @login_required(login_url='adminlogin')
 def reject_mentor_view(request,pk):
-    mentor=MMODEL.mentor.objects.get(id=pk)
+    mentor=MMODEL.mentor.objects.get(emp_id=pk)
     user=User.objects.get(id=mentor.user_id)
     user.delete()
     mentor.delete()
@@ -442,9 +531,6 @@ def admin_check_marks_view(request,pk):
     results= models.Result.objects.all().filter(exam=course).filter(student=student)
     return render(request,'management/admin_check_marks.html',{'results':results})
     
-
-
-
 @admin_superuser_required
 def aboutus_view(request):
     return render(request,'management/aboutus.html')
@@ -462,38 +548,6 @@ def contactus_view(request):
             return render(request, 'management/contactussuccess.html')
     return render(request, 'management/contactus.html', {'form':sub})
 
-# import csv
-
-# @login_required(login_url='adminlogin')
-# def admin_create_student(request):
-#     # Define a default password
-#     DEFAULT_PASSWORD = 'default_password'
-
-#     # Assuming you have a list of student data in the format of (username, email)
-#     student_data = [
-#         ('student9', 'student3@example.com'),
-#         ('student10', 'student4@example.com'),
-#         # Add more student data as needed
-#     ]
-#     csv_file_path = 'C:/Users/Abraar/OneDrive/Desktop/students.csv'
-#     with open(csv_file_path, 'r') as file:
-#         reader = csv.DictReader(file)
-#         for row in reader:
-#             # Create User instance
-#             user = User.objects.create_user(
-#                 username=row['userid'],
-#                 email=row['email'],
-#                 password=DEFAULT_PASSWORD
-#             )
-#             # Create StudentAccount instance
-#             SMODEL.Studentaccount.objects.create(user=user)
-        
-#     return HttpResponse('aipoindi')
-
-@login_required(login_url='adminlogin')
-@admin_superuser_required
-def mentor_assign(request):
-    return render(request,'management/assign.html')
 
 # def get_skills(request):
 #     sector = request.POST.get('sector')
