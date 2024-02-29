@@ -13,10 +13,11 @@ from student import models as SMODEL
 from mentor import models as MMODEL
 from teacher import forms as TFORM
 from student import forms as SFORM
+from .models import Skill as Skill
 from django.contrib.auth.models import User
 import pandas as pd
 from django.contrib.auth.decorators import permission_required
-
+from student.models import students_skills as student_skills
 # from student.models import *
 # from teacher.models import *
 
@@ -81,7 +82,17 @@ def admin_dashboard_view(request):
     'total_course':models.Course.objects.all().count(),
     'total_question':models.Question.objects.all().count(),
     }
-    return render(request,'management/admin_dashboard.html',context=dict)
+    if request.method=="POST":
+        sector = request.POST.get('sector')
+        domain = request.POST.get('domain')
+        level = request.POST.get('level')
+        skills=Skill.objects.filter(sector=sector,domain=domain,level=level) 
+        list=[]
+        for i in skills:
+            list.append(i.skill_name) 
+        return render(request,'management/dashboard.html',{'list':list}) 
+    return render(request,'management/dashboard.html')
+    # return render(request,'management/admin_dashboard.html',context=dict)
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
@@ -484,5 +495,41 @@ def contactus_view(request):
 def mentor_assign(request):
     return render(request,'management/assign.html')
 
+# def get_skills(request):
+#     sector = request.POST.get('sector')
+#     domain = request.POST.get('domain')
+#     level = request.POST.get('level')
+#     skills=Skill.objects.filter(sector=sector,domain=domain,level=level)
+#     print(skills)
+#     return render(request,'management/dashboard.html')
+# from itertools import groupby
+# import json
+# from django.core.serializers.json import DjangoJSONEncoder
 
 
+# def get_dashboard_data(request):
+#     # students=student_skills.objects.all()
+#     students = list(student_skills.objects.values())
+#     grouped_student_skills = {}
+#     for branch, skills_in_branch in groupby(students,key=lambda x: x['student__branch']):
+#         grouped_student_skills[branch] = list(skills_in_branch)
+#     json_data = json.dumps(grouped_student_skills)
+#     return JsonResponse(json_data)
+
+from django.http import JsonResponse
+from itertools import groupby
+import json
+
+
+def get_dashboard_data(request):
+    skill = request.GET.get('skill')
+    students=student_skills.objects.filter(skill_name=skill)
+    # print(students)
+    students = list(students.select_related('student').values('student__branch'))  
+    # print(students)
+    branch_counts = {item['student__branch']: students.count(item) for item in students}
+    # grouped_student_skills = {}
+    # for branch, skills_in_branch in groupby(students, key=lambda x: x['student__branch']):
+    #     grouped_student_skills[branch] = list(skills_in_branch)
+    # print(grouped_student_skills)
+    return JsonResponse(branch_counts)

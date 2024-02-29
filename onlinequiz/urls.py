@@ -17,9 +17,8 @@ urlpatterns = [
     path('aboutus', views.aboutus_view),
     path('contactus', views.contactus_view),
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
-
-
-
+    # path('get_skills', views.get_skills,name='get_skills'),
+    
     path('adminclick', views.adminclick_view),
     path('adminlogin', LoginView.as_view(template_name='management/adminlogin.html'),name='adminlogin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
@@ -34,7 +33,7 @@ urlpatterns = [
     path('reject-teacher/<int:pk>', views.reject_teacher_view,name='reject-teacher'),
     path('approve-mentor/<int:pk>', views.approve_mentor_view,name='approve-mentor1'),
     path('reject-mentor/<int:pk>', views.reject_mentor_view,name='reject-mentor1'),
-
+    path('get_dashboard_data/',views.get_dashboard_data,name="get_dashboard_data"),
     path('admin-student', views.admin_student_view,name='admin-student'),
     path('admin-view-student', views.admin_view_student_view,name='admin-view-student'),
     path('admin-view-student-marks', views.admin_view_student_marks_view,name='admin-view-student-marks'),

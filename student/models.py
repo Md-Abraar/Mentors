@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from teacher.models import *
+from teacher.models import Teacher as Tmodel
+from management.models import Skill as skill
 from mentor.models import mentor
 class Student(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE)
@@ -9,10 +10,11 @@ class Student(models.Model):
     semester=models.IntegerField(null=True)
     section=models.CharField(max_length=1,blank=True)
     gender=models.CharField(max_length=10,null=True)    
-
+    
     @property
     def get_instance(self):
         return self
+    
         
 class Student_profile(models.Model):
     student_id=models.CharField(max_length=10)
@@ -99,18 +101,20 @@ class Attendance(models.Model):
     phase=models.IntegerField()
     percentage=models.FloatField()
 
-class Achievements(models.Model):
-    student_id=models.CharField(max_length=10)
-    achieve_name=models.CharField(max_length=50,blank=True)
-    achieve_score=models.IntegerField(blank=True)
 
-class Skills(models.Model):
-    student_id=models.CharField(max_length=10)
-    skill_name=models.CharField(max_length=50,null=True,blank=True)
-    test_score=models.IntegerField(null=True,blank=True)
-    project_score=models.IntegerField(null=True,blank=True)
-    updated_date=models.DateField(null=True,blank=True)
-    faculty_id=models.IntegerField(null=True,blank=True)
+
+class students_skills(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.SET_NULL, null=True)
+    # branch=models.CharField(max_length=6,default="CSE")
+    skill_name = models.ForeignKey(skill, on_delete=models.SET_NULL, null=True)
+    test_score = models.IntegerField(null=True, blank=True)
+    project_name = models.CharField(max_length=50, null=True, blank=True)
+    project_type = models.CharField(max_length=50, null=True, blank=True)
+    project_score = models.IntegerField(null=True, blank=True)
+    certification_status = models.BooleanField(default=False)
+    updated_date = models.DateField(null=True, blank=True)
+    assessed_by = models.ForeignKey(Tmodel, on_delete=models.SET_NULL, null=True, blank=True)
+    skill_status = models.CharField(max_length=20, default="pending")
 
 class Certifications(models.Model):
     student_id=models.CharField(max_length=10)

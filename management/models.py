@@ -1,6 +1,6 @@
 from django.db import models
-
-from student.models import Student
+# from teacher.models import Teacher
+# from student.models import Student
 class Course(models.Model):
    course_name = models.CharField(max_length=50)
    question_number = models.PositiveIntegerField()
@@ -30,7 +30,9 @@ class Skill(models.Model):
     sector = models.CharField(max_length=30)
     domain = models.CharField(max_length=50)
     level = models.CharField(max_length=15)
-    parameters = models.TextField()
+    parameters = models.TextField(null=True,blank=True)
+    def __str__(self):
+        return self.skill_name
 
 class Faculty(models.Model):
     faculty_id = models.CharField(max_length=10)
@@ -45,5 +47,25 @@ class Faculty(models.Model):
 class Mentorship(models.Model):
     mentor_id = models.CharField(max_length=30, primary_key=True)
     faculty_id = models.ForeignKey(Faculty, on_delete=models.CASCADE)
+    # def save(self, *args, **kwargs):
+    # # Call the superclass's save method to create the Student object
+    #     super().save(*args, **kwargs)
+    #     # Check if the skill already exists
+    #     existing_skill = Skill.objects.filter(
+    #         skill_name=self.skill_name,
+    #         domain=self.domain,
+    #         sector=self.sector,
+    #         level=self.level
+    #     ).first()
+    #     if existing_skill:
+    #         # Skill already exists, update it
+    #         existing_skill.save()
+    #     else:
+    #         # Skill does not exist, create a new one
+    #         new_skill = Skill.objects.create(
+    #             skill_name=self.skill_name,
+    #             domain=self.domain,
+    #             sector=self.sector,
+    #             level=self.level
+    #         )
     
-
