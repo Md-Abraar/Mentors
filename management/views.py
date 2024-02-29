@@ -1,12 +1,10 @@
 from django.shortcuts import render,redirect,reverse
 from . import forms,models
-from django.db.models import Sum
+from django.db.models import Count
 from django.contrib.auth.models import Group
-from django.http import HttpResponseRedirect,HttpResponse,JsonResponse
+from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
-from datetime import date, timedelta
-from django.db.models import Q
 from django.core.mail import send_mail
 from teacher import models as TMODEL
 from student import models as SMODEL
@@ -15,7 +13,6 @@ from teacher import forms as TFORM
 from student import forms as SFORM
 from django.contrib.auth.models import User
 import pandas as pd
-from django.contrib.auth.decorators import permission_required
 
 # from student.models import *
 # from teacher.models import *
@@ -111,7 +108,7 @@ def admin_dashboard_view(request):
 def admin_teacher_view(request):
     # mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
     mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
-    mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image')
+    mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image').annotate(mentee_count=Count('student')).order_by('mentee_count')
     return render(request,'management/faculty.html',{'mentor_pending':mentor_pending,'mentor_approve':mentor_approve})
 
 @login_required(login_url='adminlogin')
@@ -131,7 +128,8 @@ def mentor_assign(request,empid):
         'department':mentor.department,
         'mobile':mentor.mobile,
         'email':mentor.email,
-        'mentor_image':mentor.mentor_image
+        'mentor_image':mentor.mentor_image,
+        'is_active' : mentor.is_active
     }
 
     
@@ -191,7 +189,6 @@ def mentor_details(request,empid):
     if mentees.values('gender').distinct().count == 1:
         gender = mentees[0].gender
 
-    print(classname,gender)
     return render(request,'management/mentor_details.html',{'details':details, 'class':classname, 'gender':gender, 'mentees':mentees})
 
 @login_required(login_url='adminlogin')
@@ -199,7 +196,13 @@ def mentor_details(request,empid):
 def update_is_active(request,empid):
     mentor_obj=MMODEL.mentor.objects.get(emp_id=empid)
     mentor_obj.is_active=False
-    mentor_obj.save() 
+    mentor_obj.save()
+
+    mentees = SMODEL.Student.objects.filter(mentor=mentor_obj)
+    for mentee in mentees:
+        mentee.mentor = None
+        mentee.save()
+    
     return redirect(reverse('mentor-details',args=[empid]))
 
 @login_required(login_url='adminlogin')
