@@ -88,7 +88,7 @@
   </div>
   {% if details.is_active %}
   <div class="col-md-2" id="filters">
-    <form action="#" method="post">
+    <form action="#" method="get" id="filterForm">
       <label for="class">Class</label><br>
       {% block filter1 %}{% endblock filter1 %}
       <br>
@@ -283,20 +283,6 @@
           }
         });
       }
-      
-      document.addEventListener("DOMContentLoaded", function() {
-        var isActive = {{ details.is_active|lower }};
-        var switchElement = document.getElementById("is_active");
-    
-        // Set the switch state based on the value of isActive
-        switchElement.checked = isActive;
-    
-        // If isActive is false, disable the switch
-        if (!isActive) {
-            switchElement.disabled = true;
-        }
-    });
-    
 
   </script>
 
