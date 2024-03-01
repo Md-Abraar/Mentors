@@ -16,6 +16,7 @@ from django.contrib.auth.models import User
 import pandas as pd
 from django.contrib.auth.decorators import permission_required
 from student.models import students_skills as student_skills
+import math
 # from student.models import *
 # from teacher.models import *
 
@@ -470,7 +471,6 @@ def delete_course_view(request,pk):
 def admin_question_view(request):
     return render(request,'management/admin_question.html')
 
-
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_add_question_view(request):
@@ -548,33 +548,6 @@ def contactus_view(request):
             return render(request, 'management/contactussuccess.html')
     return render(request, 'management/contactus.html', {'form':sub})
 
-
-# def get_skills(request):
-#     sector = request.POST.get('sector')
-#     domain = request.POST.get('domain')
-#     level = request.POST.get('level')
-#     skills=Skill.objects.filter(sector=sector,domain=domain,level=level)
-#     print(skills)
-#     return render(request,'management/dashboard.html')
-# from itertools import groupby
-# import json
-# from django.core.serializers.json import DjangoJSONEncoder
-
-
-# def get_dashboard_data(request):
-#     # students=student_skills.objects.all()
-#     students = list(student_skills.objects.values())
-#     grouped_student_skills = {}
-#     for branch, skills_in_branch in groupby(students,key=lambda x: x['student__branch']):
-#         grouped_student_skills[branch] = list(skills_in_branch)
-#     json_data = json.dumps(grouped_student_skills)
-#     return JsonResponse(json_data)
-
-from django.http import JsonResponse
-from itertools import groupby
-import json
-
-
 def get_dashboard_data(request):
     skill = request.GET.get('skill')
     students=student_skills.objects.filter(skill_name=skill)
@@ -587,3 +560,16 @@ def get_dashboard_data(request):
     #     grouped_student_skills[branch] = list(skills_in_branch)
     # print(grouped_student_skills)
     return JsonResponse(branch_counts)
+
+def leaderboard(request):
+    students = SMODEL.Student.objects.all().order_by('-profile_score')[:10]
+    top=[]
+    for index, row in enumerate(students, start=1):
+        top.append({
+            'roll':row.user.username,
+            'rank':index,
+            'name': row.name,
+            'yb': roman[math.ceil(row.semester)]+' '+row.branch,
+            'score':row.profile_score
+        })
+    return render(request,'leaderboard.html',{'top':top})

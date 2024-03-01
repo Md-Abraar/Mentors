@@ -10,7 +10,9 @@ class Student(models.Model):
     department=models.CharField(max_length=6,null=True)
     semester=models.IntegerField(null=True)
     section=models.CharField(max_length=1,blank=True)
-    gender=models.CharField(max_length=10,null=True)    
+    gender=models.CharField(max_length=10,null=True)
+    profile_score = models.IntegerField(default=0)   
+    name = models.CharField(max_length=40,null=True)
     
     @property
     def get_instance(self):

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static "leaderboard.css" %}">
+</head>
+<body>
+<div class="wrapper">
+  <a class="btn" href="{% url "" %}">
+    <svg width="25" height="25" fill="currentColor" viewBox="0 -3 16 16">
+      <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8" stroke="currentColor" stroke-width="0.5"/>
+    </svg>
+</a>
+  
+  <div class="list">
+    <div class="list__header">
+      <h5>GPREC</h5>
+      <h1>Student leaderboard</h1>
+    </div>
+      <table class="list__table">
+        {% for student in top %}
+            <tr class="list__row" id="r{{roll}}" onclick="window.location.href='{% url "" %}'">
+                <td class="list__cell"><span class="list__value">{{student.rank}}</span></td>
+                <td class="list__cell"><span class="list__value">{{student.name}}</span></td>
+                <td class="list__cell"><span class="list__value">{{student.yb}}</span></td>
+                <td class="list__cell"><span class="list__value">{{student.score}}</span><small class="list__label">Points</small></td>
+            </tr>
+        {% endfor %}
+      </table>
+  </div>
+</div>
+</body>
+</html>
