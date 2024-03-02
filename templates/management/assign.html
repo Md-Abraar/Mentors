@@ -14,13 +14,16 @@
   <option value="Female" {% if gender_filter == "Female" %}selected{% endif %}>Female</option>
 </select>
 {% endblock filter2 %}
-{% block btn %}<button class="btn btn-primary btn-sm mt-3" id="assign">Assign</button>{% endblock btn %}
+{% block btn %}<button class="btn btn-primary btn-sm mt-3" id="assign">Assign</button>
+<br>
+<button class="btn btn-sm mt-1 px-1 text-primary" id="clear">Clear</button>
+{% endblock btn %}
 {% block table-head %}Select{% endblock table-head %}
 {% block table %}
 {% if students|length == 0 %}
     <p class="text-center mt-5">No available students</p>
 {% endif %}
 {% for student in students %}
-    <tr><td><input type="checkbox" name="roll" id="r{{student.user.username}}" value="{{student.user.username}}"><label for="r{{student.user.username}}" class="ms-1">{{student.user.username}}</label></td></tr>
+    <tr><td><input class="selectable" type="checkbox" name="roll" id="r{{student.user.username}}" value="{{student.user.username}}"><label for="r{{student.user.username}}" class="ms-1">{{student.user.username}}</label></td></tr>
 {% endfor %} 
 {% endblock table %}
