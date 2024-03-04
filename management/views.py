@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect,reverse
 from . import forms,models
+from django.views.static import serve
 from django.db.models import Count
 from django.contrib.auth.models import Group,User
 from django.http import HttpResponseRedirect,JsonResponse
@@ -406,7 +407,10 @@ def is_valid(name, branch, department, semester, section, gender, email):
     
     return None
 
-
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def download_sample(request):
+    return serve(request, 'sample.xlsx', document_root=settings.STATIC_DIR)
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required

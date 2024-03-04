@@ -35,6 +35,7 @@ urlpatterns = [
     path('reject-mentor/<int:pk>', views.reject_mentor_view,name='reject-mentor1'),
     path('get_dashboard_data/',views.get_dashboard_data,name="get_dashboard_data"),
     path('admin-student', views.admin_student_view,name='admin-student'),
+    path("download-sample", views.download_sample, name="download-sample"),
     path('admin-view-student', views.admin_view_student_view,name='admin-view-student'),
     path('admin-view-student-marks', views.admin_view_student_marks_view,name='admin-view-student-marks'),
     path('admin-view-marks/<int:pk>', views.admin_view_marks_view,name='admin-view-marks'),
