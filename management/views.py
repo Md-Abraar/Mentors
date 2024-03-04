@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,reverse
 from . import forms,models
 from django.db.models import Count
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group,User
 from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
@@ -12,7 +12,6 @@ from mentor import models as MMODEL
 from teacher import forms as TFORM
 from student import forms as SFORM
 from .models import Skill as Skill
-from django.contrib.auth.models import User
 import pandas as pd
 from django.contrib.auth.decorators import permission_required
 from student.models import students_skills as student_skills
@@ -307,33 +306,107 @@ def admin_view_teacher_salary_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=True)
     return render(request,'management/admin_view_teacher_salary.html',{'teachers':teachers})
 
+# @login_required(login_url='adminlogin')
+# @admin_superuser_required
+# def admin_student_view(request):
+#     if request.method=="POST":
+#         DEFAULT_PASSWORD="GPREC"
+#         uploaded_file = request.FILES['file']
+#         if uploaded_file.name.endswith(('.xls', '.xlsx')):
+#             excel_data = pd.read_excel(uploaded_file)
+#             for index, row in excel_data.iterrows():
+#                 username=row[0]
+#                 mail=row[1]
+#                 user=User(username=username, email=mail, password=DEFAULT_PASSWORD)
+#                 user.save()
+#                 student=SMODEL.Student(user=user)
+#                 student.save()
+#                 student_group = Group.objects.get(name='STUDENT')
+#                 student_group.user_set.add(user)
+#         render(request,'management/create_students_accounts.html')  
+#     return render(request,'management/create_students_accounts.html')
 
-from django.contrib.auth.models import User
 from django.db import transaction
+from django.db.utils import IntegrityError
 
-# from student.models import Student
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_student_view(request):
-    # dict={
-    # 'total_student':SMODEL.Student.objects.all().count(),
-    # }
-    if request.method=="POST":
-        DEFAULT_PASSWORD="GPREC"
-        uploaded_file = request.FILES['file']
-        if uploaded_file.name.endswith(('.xls', '.xlsx')):
+    if request.method == "POST":
+        DEFAULT_PASSWORD = "GPREC"
+        uploaded_file = request.FILES.get('file')
+        
+        if uploaded_file is not None and uploaded_file.name.endswith(('.xls', '.xlsx')):
             excel_data = pd.read_excel(uploaded_file)
-            for index, row in excel_data.iterrows():
-                username=row[0]
-                mail=row[1]
-                user=User(username=username, email=mail, password=DEFAULT_PASSWORD)
-                user.save()
-                student=SMODEL.Student(user=user)
-                student.save()
-                student_group = Group.objects.get(name='STUDENT')
-                student_group.user_set.add(user)
-        render(request,'management/create_students_accounts.html')  
-    return render(request,'management/create_students_accounts.html')
+            
+            with transaction.atomic():
+                try:
+                    for index, row in excel_data.iterrows():
+                        username = row.iloc[0]
+                        name = row.iloc[1]
+                        branch = row.iloc[2]
+                        department = row.iloc[3]
+                        semester = row.iloc[4]
+                        section = row.iloc[5]
+                        gender = row.iloc[6]
+                        email = row.iloc[7]
+                        
+                        # Perform validation
+                        validation = is_valid(name, branch, department, semester, section, gender, email)
+                        if validation != None:
+                            raise ValueError(f"Validation failed due to {validation}")
+                        
+                        # Create User and Student objects
+                        user = User(username=username, email=email, password=DEFAULT_PASSWORD)
+                        user.save()
+                        student = SMODEL.Student(user=user, name=name, branch=branch, department=department, semester=semester, section=section, gender=gender )
+                        student.save()
+                        
+                        # Add user to the 'STUDENT' group
+                        student_group = Group.objects.get(name='STUDENT')
+                        student_group.user_set.add(user)
+                except (ValueError,IntegrityError,TypeError) as e:
+                    transaction.set_rollback(True)
+                    error_message = str(e)+" at row "+str(index+2)
+                    print(f"Error: {error_message}")
+                    return render(request, 'management/create_students_accounts.html', {'error': error_message})
+                
+                return render(request, 'management/create_students_accounts.html',{'success':'Accounts created successfully'})
+        else:
+            return render(request, 'management/create_students_accounts.html', {'error': "Invalid file format"})
+        
+    return render(request, 'management/create_students_accounts.html')
+
+import re
+def is_valid(name, branch, department, semester, section, gender, email):
+    # Validation for name: Should only contain letters and spaces
+    if not re.match(r'^[a-zA-Z\s]+$', name):
+        return "Invalid name"
+    # Validation for branch: Should be one amongst 
+    valid_branches = ['CSE', 'ECE', 'EEE', 'CIV', 'MEC', 'CST', 'CSB', 'CSM', 'CSD']
+    if branch not in valid_branches:
+        return "Invalid branch"
+    # Validation for department: Should be one amongst 
+    valid_departments = ['ECS', 'CSE', 'ECE', 'EEE', 'CIV', 'MEC']
+    if department not in valid_departments:
+        return "Invalid department"
+    # Validation for semester: Should be in the range 1-8 (integers)
+    if not isinstance(semester, int) or semester < 1 or semester > 8:
+        return "Invalid semester"
+    # Validation for section: Should be a single uppercase letter
+    if not re.match(r'^[A-Z]$', section):
+        return "Invalid section"
+    # Validation for gender: Should be amongst
+    valid_genders = ['Male', 'Female', 'Other']
+    if gender not in valid_genders:
+        return "Invalid gender"
+    # Validation for email: Using a simple regex pattern for email validation
+    if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+        return "Invalid email"
+    
+    return None
+
+
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
