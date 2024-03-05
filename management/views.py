@@ -97,21 +97,21 @@ def adminclick_view(request):
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_dashboard_view(request):
-    dict={
-    'total_student':SMODEL.Student.objects.all().count(),
-    'total_teacher':TMODEL.Teacher.objects.all().filter(status=True).count(),
-    'total_course':models.Course.objects.all().count(),
-    'total_question':models.Question.objects.all().count(),
-    }
-    if request.method=="POST":
-        sector = request.POST.get('sector')
-        domain = request.POST.get('domain')
-        level = request.POST.get('level')
-        skills=Skill.objects.filter(sector=sector,domain=domain,level=level) 
+    if request.method=="GET":
+        sector = request.GET.get('sector','')
+        domain = request.GET.get('domain', '')
+        level = request.GET.get('level','')
+        skills=models.Skill.objects.all()   
+        if sector:
+            skills=skills.filter(sector=sector)
+        if domain:
+            skills=skills.filter(domain=domain)
+        if level:
+            skills=skills.filter(level=level)
         list=[]
         for i in skills:
-            list.append(i.skill_name) 
-        return render(request,'management/dashboard.html',{'list':list}) 
+            list.append(i.skill_name)         
+        return render(request,'management/dashboard.html',{'list':list,'level':level,'domain':domain,'sector':sector}) 
     return render(request,'management/dashboard.html')
     # return render(request,'management/admin_dashboard.html',context=dict)
 
@@ -549,13 +549,7 @@ def contactus_view(request):
     return render(request, 'management/contactus.html', {'form':sub})
 
 
-# def get_skills(request):
-#     sector = request.POST.get('sector')
-#     domain = request.POST.get('domain')
-#     level = request.POST.get('level')
-#     skills=Skill.objects.filter(sector=sector,domain=domain,level=level)
-#     print(skills)
-#     return render(request,'management/dashboard.html')
+
 # from itertools import groupby
 # import json
 # from django.core.serializers.json import DjangoJSONEncoder
@@ -578,6 +572,7 @@ import json
 def get_dashboard_data(request):
     skill = request.GET.get('skill')
     students=student_skills.objects.filter(skill_name=skill)
+
     # print(students)
     students = list(students.select_related('student').values('student__branch'))  
     # print(students)

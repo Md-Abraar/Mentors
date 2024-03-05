@@ -55,7 +55,6 @@
                     </div>
                 </div>
                 <div class="row collapse mt-3 float-end" id="filterCollapse">
-                    {% comment %} <div class="col-md-2"></div> {% endcomment %}
                     <div class="col-md-12">
                             <div class="d-flex justify-content-start">
                                 <div class="mx-3 small d-flex">
@@ -98,7 +97,6 @@
                 </div>
             </form>
             </div>
-        
         <div class="card-body">
             <!--Add modal-->
             <div class="modal fade" id="addModal" data-bs-backdrop="static">
@@ -291,41 +289,29 @@
             }
         });
     });
-
     var suggestions = {{domains|safe}} 
-
     $('.domain').typeahead({
         source: suggestions
     });
-
     $(document).ready(function(){
         // Define an object to store the AJAX request parameters and corresponding responses
         var ajaxResponses = {};
-    
         $('#sector_filter').change(function(){
             var sector = $(this).val();
-    
             // Check if the response for this sector is already cached
-            if (ajaxResponses[sector]) {
-                // If the response is cached, use it directly without making a new AJAX request
-                updateDomainsDropdown(ajaxResponses[sector]);
-            } else {
-                $.ajax({
-                    url: '/get_domains',
-                    data: {
-                        'sector': sector
-                    },
-                    dataType: 'json',
-                    success: function (data){
-                        setDomains(data)
-                        // Store the response in the ajaxResponses object
-                        ajaxResponses[sector] = data;
-                    }
-                });
-            }
-            
+            $.ajax({
+                url: '/get_domains',
+                data: {
+                    'sector': sector
+                },
+                dataType: 'json',
+                success: function (data){
+                    setDomains(data)
+                    // Store the response in the ajaxResponses object
+                    ajaxResponses[sector] = data;
+                }
+            }); 
         });
-
         function setDomains(data){
             var d = $('#domain_filter')
             d.empty();
@@ -335,26 +321,23 @@
             });
             d.find("option[value='{{domain_filter|safe}}']").attr("selected","selected");             
         }
-
         $('#sector_filter').trigger("change")
-        
-
     });
     
     // Function to update the domains dropdown with new options
-    function updateDomainsDropdown(domains) {
+    {% comment %} function updateDomainsDropdown(domains) {
         var d = $('#domain_filter')
         d.empty();
         d.append('<option value="">All</option>')
         $.each(domains, function(index, domain){
             d.append('<option value="' + domain + '">' + domain + '</option>');
         });
-    }
+    } {% endcomment %}
     
-    if ( "{{sector_filter|safe}}" || "{{domain_filter|safe}}" || "{{level_filter|safe}}" ) {
+    {% comment %} if ( "{{sector_filter|safe}}" || "{{domain_filter|safe}}" || "{{level_filter|safe}}" ) {
         $('#filterCollapse').addClass('show');
         
-    }
+    } {% endcomment %}
     
 
 </script>
