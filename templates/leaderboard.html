@@ -17,8 +17,34 @@
   
   <div class="list">
     <div class="list__header">
-      <h5 style="text-align:center">GPREC</h5>
-      <h1 style="text-align:center">Student leaderboard</h1>
+      <h5 style="margin-bottom:0">GPREC</h5>
+        <h1>Student leaderboard</h1>
+        <form action="{% url "leaderboard" %}" method="GET" id="filter">
+          <div style="text-align:right;">
+            <select name="year" id="year">
+              <option value="">All Years</option>
+              <option value="1" {% if year_filter == '1' %}selected{% endif %}>I</option>
+              <option value="2" {% if year_filter == '2' %}selected{% endif %}>II</option>
+              <option value="3" {% if year_filter == '3' %}selected{% endif %}>III</option>
+              <option value="4" {% if year_filter == '4' %}selected{% endif %}>IV</option>
+            </select>
+            <select name="department" id="department">
+              <option value="">All Dept</option>
+              <option value="CSE" {% if dept_filter == 'CSE' %}selected{% endif %}>CSE</option>
+              <option value="ECE" {% if dept_filter == 'ECE' %}selected{% endif %}>ECE</option>
+              <option value="EEE" {% if dept_filter == 'EEE' %}selected{% endif %}>EEE</option>
+              <option value="MEC" {% if dept_filter == 'MEC' %}selected{% endif %}>MEC</option>
+              <option value="CIV" {% if dept_filter == 'CIV' %}selected{% endif %}>CIV</option>
+              <option value="ECS" {% if dept_filter == 'ECS' %}selected{% endif %}>ECS</option>
+            </select>
+            <select name="domain" id="domain">
+              <option value="">All Domains</option>
+              {% for domain in domains %}
+                <option value="{{domain}}" {% if domain_filter == domain %}selected{% endif %}>{{domain}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
     </div>
       <table class="list__table">
         {% for student in top %}
@@ -32,5 +58,11 @@
       </table>
   </div>
 </div>
+<script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+<script>
+  $('#year,#department,#domain').change(function(){
+    $('#filter').submit();
+  });
+</script>
 </body>
 </html>

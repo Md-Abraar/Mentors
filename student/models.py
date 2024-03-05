@@ -118,6 +118,7 @@ class students_skills(models.Model):
     updated_date = models.DateField(null=True, blank=True)
     assessed_by = models.ForeignKey(Tmodel, on_delete=models.SET_NULL, null=True, blank=True)
     skill_status = models.CharField(max_length=20, default="pending")
+    overall_score = models.IntegerField(default=0)
 
 class Certifications(models.Model):
     student_id=models.CharField(max_length=10)
