@@ -570,15 +570,17 @@ import json
 
 
 def get_dashboard_data(request):
-    skill = request.GET.get('skill')
-    students=student_skills.objects.filter(skill_name=skill)
-
-    # print(students)
-    students = list(students.select_related('student').values('student__branch'))  
-    # print(students)
-    branch_counts = {item['student__branch']: students.count(item) for item in students}
-    # grouped_student_skills = {}
-    # for branch, skills_in_branch in groupby(students, key=lambda x: x['student__branch']):
-    #     grouped_student_skills[branch] = list(skills_in_branch)
-    # print(grouped_student_skills)
-    return JsonResponse(branch_counts)
+    selected_values= request.GET.getlist('selectedValues[]')
+    dict={}
+    for i in selected_values:
+        students=student_skills.objects.filter(skill_name=i)
+        students = list(students.select_related('student').values('student__branch'))  
+        branch_counts = {item['student__branch']: students.count(item) for item in students}
+        # print(branch_counts)
+        # grouped_student_skills = {}
+        # for branch, skills_in_branch in groupby(students, key=lambda x: x['student__branch']):
+        #     grouped_student_skills[branch] = list(skills_in_branch)
+        dict[i]=branch_counts
+        # print(grouped_student_skills)
+    # print(dict)
+    return JsonResponse(dict)
