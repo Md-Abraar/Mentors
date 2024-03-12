@@ -6,89 +6,169 @@
     form {
       margin: 50px; 
     }
+    .error {
+      border: 1px solid red;
+      box-shadow: 0 0 5px red; /* Adding a red shadow */
+  }
   </style>
 </head>
 <body>
   {% include "management/navbar.html" %}
   <br><br><br>
   {% for i in messages %}
-<h1 style="color:red;"> {{i}} </h1>
-{% endfor %}
-  <h3 style="text-align: center;color: red;">Mentor SIGNUP</h3>
-  <form method="POST" autocomplete="off" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="form-row">
-        <div class="form-group col-md-6">
-
-        <label for="username">Employee ID</label>
-        <input type="text" name="EmployeeID" id="username" class="form-control" placeholder="username" required>
-        </div>
+    {% comment %} <h1 style="color:red;"> {{i}} </h1> {% endcomment %}
+    <div class="alert alert-danger d-flex align-items-center" role="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+      </svg>
+      <div class="ms-2">
+        {{i}}
+      </div>
     </div>
-    <div class="form-row">
+  {% endfor %}
+  <h3 style="text-align: center;color: red;">Mentor SIGNUP</h3>
+  <form method="POST" autocomplete="off" enctype="multipart/form-data" id="signform">
+    {% csrf_token %}
+    <div class="row mb-3">
       <div class="form-group col-md-6">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" class="form-control" placeholder="username" required>
+        {% comment %} <label for="username">Username</label>
+        <input type="text" name="username" id="username" class="form-control" placeholder="username" required> {% endcomment %}
+        <label for="username">Employee ID</label>
+        <input type="text" name="username" id="username" class="form-control" placeholder="username" required onblur="validateUsername()">
       </div>
       <div class="form-group col-md-6">
         <label for="inputPassword4">Password</label>
-        <input type="password" name="password" id="inputPassword4" class="form-control" placeholder="password" required>
+        <input type="password" name="password" id="inputPassword4" class="form-control" placeholder="password" required onblur="validatePassword()">
+        <div id="passwordMessage" class="form-text small"></div>
+
       </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
       <div class="form-group col-md-6">
         <label for="first_name">Name</label>
-        <input type="text" name="full_name" id="full_name" class="form-control" placeholder="Full Name" required>
+        <input type="text" name="full_name" id="full_name" class="form-control" placeholder="Full Name" required onblur="validateName()">
+        <div id="nameMessage" class="form-text small"></div>
       </div>
       <div class="form-group col-md-6">
         <label for="last_name">Department</label>
-        <input type="text" name="department" id="department" class="form-control" placeholder="Department" required>
+        {% comment %} <input type="text" name="department" id="department" class="form-control" placeholder="Department" required> {% endcomment %}
+        <select name="department" id="department" class="form-select">
+          <option value="CSE">CSE</option>
+          <option value="ECE">ECE</option>
+          <option value="EEE">EEE</option>
+          <option value="CIV">CIV</option>
+          <option value="MEC">MEC</option>
+          <option value="ECS">ECS</option>
+        </select>
       </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
       <div class="form-group col-md-6">
         <label for="mobile">Mobile</label>
-        <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile" required>
+        <input type="text" name="mobile" id="mobile" class="form-control" placeholder="Mobile" required onblur="validateMobile()">
+        <div class="form-text small" id="mobileMessage"></div>
       </div>
       <div class="form-group col-md-6">
-        <label for="address">Email</label>
-        <input type="text" name="email" id="address" class="form-control" placeholder="Address" required>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Address" required onblur="validateMail()">
+        <div class="form-text small" id="mailMessage"></div>
       </div>
     </div>
-    <div class="form-row">
+    <div class="row mb-3">
       <div class="form-group col-md-6">
         <label for="mentor_image">Image</label>
-        <input id="imageInput" type="file" name="mentor_image" id="mentor_image" class="form-control" placeholder="mentor_image" required>
+        <input id="imageInput" type="file" name="mentor_image" id="mentor_image" class="form-control" placeholder="mentor_image" required onblur="validateImage()">
       </div>
     </div>
     
 
-    <button type="submit" class="btn btn-primary" onclick="validateImage()">Sign Up</button>
+    <button type="submit" class="btn btn-primary" id="btnsubmit">Sign Up</button>
   </form>
   <br><br>
   {% include "management/footer.html" %}
   <script>
-  function validateImage() {
-    var fileInput = document.getElementById('imageInput');
-    var filePath = fileInput.value;
-    if (filePath) {
-        // Get the file extension
-        var extension = filePath.split('.').pop().toLowerCase();
-        // Check if the file extension is valid
-        if (extension === 'png' || extension === 'jpg' || extension === 'jpeg') {
-          // File is valid
-          console.log('File is valid');
-          // You can submit the form or perform further actions here
-      } else {
-          // File is invalid
-          alert('Only PNG and JPEG images are allowed.');
-          // Clear the file input
-          fileInput.value = '';
-      }
-    } else {
-        // No file selected
-        alert('Please select a file.');
+    $('label').addClass('mb-1')
+
+    function validateImage() {
+      var fileInput = document.getElementById('imageInput');
+      var filePath = fileInput.value;
+      if (filePath) {
+          var extension = filePath.split('.').pop().toLowerCase();
+          if (extension === 'png' || extension === 'jpg' || extension === 'jpeg') {
+            //console.log('File is valid');
+            return true;
+            // You can submit the form or perform further actions here
+        } else {
+            // File is invalid
+            alert('Only PNG and JPEG images are allowed.');
+            // Clear the file input
+            fileInput.value = '';
+            return false;
+        } 
+      } 
     }
-}
+
+    function validate(inputField, regex, errorHtml,errorDiv){
+      let input = document.getElementById(inputField);
+      if(!regex.test(input.value)){
+        document.getElementById(errorDiv).innerHTML = errorHtml;
+        input.classList.add("error");
+        return false;
+      }
+      else{
+        document.getElementById(errorDiv).innerHTML = "";
+        input.classList.remove("error");
+        return true;
+      }
+    }
+
+  
+    function validatePassword() {
+      return validate("inputPassword4",
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/,
+      `Password must atleast<br>
+        <ul>
+          <li>be 8 characters long</li>
+          <li> have one uppercase letter</li>
+          <li>have one lowercase letter</li>
+          <li>have one special character</li>
+          <li> one number</li>
+        </ul>`,
+        "passwordMessage")
+    }
+
+    function validateName(){
+      return validate("full_name",/^[a-zA-Z ]+$/,"Name can only have letters and spaces","nameMessage")
+    }
+
+    function validateMail(){
+      return validate("email",/@gprec\.ac\.in$/,"Mail should end with @gprec.ac.in","mailMessage")
+    }
+
+    function validateMobile(){
+      return validate("mobile",/^\d{10}$/,"Invalid mobile nuber","mobileMessage")
+    }
+
+    function validateUsername(){
+      let username = document.getElementById("username")
+      if(username.value === ''){
+        username.classList.add("error");
+        return false;
+      }
+      else{
+        username.classList.remove("error");
+        return true;
+      }
+    }
+    
+    document.getElementById("signform").addEventListener('submit',function(event){
+      event.preventDefault();
+      let isvalidated = validateName() && validateMail() && validatePassword() && validateMobile() && validateImage() && validateUsername();
+      if(isvalidated){
+        this.submit();
+      }
+
+    })
 </script>
 </body>
 </html>

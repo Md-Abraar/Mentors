@@ -1,16 +1,11 @@
 from django.shortcuts import render
 from django.shortcuts import render,redirect,reverse,get_object_or_404
-# from . import forms,models
-from django.db.models import Sum
 from django.contrib.auth.models import Group
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required,user_passes_test
-from django.conf import settings
-from datetime import date, timedelta
 from management import models as QMODEL
 from student import models as SMODEL
-from management import forms as QFORM
-from django.contrib.auth.models import User,auth
+from django.contrib.auth.models import User
 from django.contrib import messages
 
 from .models import *
@@ -41,19 +36,21 @@ def mentorclick_view(request):
 def mentor_signup_view(request):
     if request.method=='POST':
         username=request.POST['username']
-        EmployeeID=request.POST['EmployeeID']
+        EmployeeID=request.POST['username']
         full_name=request.POST['full_name']
         department=request.POST['department']
         mobile=request.POST['mobile']
         email=request.POST['email']
         password=request.POST['password']
         mentor_image = request.FILES.get('mentor_image')
-
-        if(User.objects.filter(email=email).exists()):
-            messages.info(request,"email already exists !")
-            return redirect("mentorsignup")
-        elif(User.objects.filter(username=username).exists()):
-            messages.info(request,"user already exists !")
+        
+        userExists = User.objects.filter(username=username).exists()
+        emailExists = User.objects.filter(email=email).exists()
+        if(userExists or emailExists):
+            if userExists:
+                messages.info(request,"Employee_id already exists !")
+            if emailExists:
+                messages.info(request,"Email already exists !")
             return redirect("mentorsignup")
         else:
             user = User.objects.create_user(username=username, email=email, password=password)       
