@@ -9,7 +9,10 @@
     .error {
       border: 1px solid red;
       box-shadow: 0 0 5px red; /* Adding a red shadow */
-  }
+    }
+    .spinner-border{
+      animation-duration:1.2s !important;
+    }
   </style>
 </head>
 <body>
@@ -70,8 +73,18 @@
       </div>
       <div class="form-group col-md-6">
         <label for="email">Email</label>
-        <input type="email" name="email" id="email" class="form-control" placeholder="Address" required onblur="validateMail()">
+        <span class="d-flex">
+          <input type="email" name="email" id="email" class="form-control" placeholder="Address" required>
+          <button type="button" class="btn mx-1 btn-success" id="sendotp" onclick="validateMail()">
+            Send_OTP
+          </button>
+          
+        </span>
+        <div class="text-center">
+          <div class="spinner-border mt-3 text-secondary"></div>
+        </div>
         <div class="form-text small" id="mailMessage"></div>
+        <div id="mailVerification" class="d-flex"></div>
       </div>
     </div>
     <div class="row mb-3">
@@ -88,6 +101,7 @@
   {% include "management/footer.html" %}
   <script>
     $('label').addClass('mb-1')
+    $('.spinner-border').hide();
 
     function validateImage() {
       var fileInput = document.getElementById('imageInput');
@@ -142,11 +156,87 @@
     }
 
     function validateMail(){
-      return validate("email",/@gprec\.ac\.in$/,"Mail should end with @gprec.ac.in","mailMessage")
+      let validated =  validate("email",/.+@gprec\.ac\.in$/,"Mail should end with @gprec.ac.in","mailMessage")
+      if(validated){
+        document.getElementById("email").readOnly = true;
+        document.getElementById("sendotp").style.display="none";
+        $('.spinner-border').show();
+        $.ajax({
+          url: '/email-verification', // URL to your Django view
+          type: 'POST',
+          data:{'email':$('#email').val()},
+          success: function(data) {
+            $('.spinner-border').hide();
+            if(data.status === 'sent'){
+              document.getElementById("mailVerification").innerHTML = `<div class="col-md-6">
+                <input type="text" class="form-control" placeholder="Enter otp sent to mail" id="otp" name="otp">
+              </div>
+              <div class="px-1">
+                <button type="button" class="btn btn-success" onclick="verifyMail()">Verify</button>
+              </div>
+              <div class="px-1">
+                <button type="button" class="btn btn-secondary" onclick="changeMail()">Change</button>
+              </div>`
+            }
+            else{
+              $('.spinner-border').hide();
+              document.getElementById("sendotp").style.display="block";
+              document.getElementById("email").readOnly = false;
+            }
+          },
+          error: function(xhr, status, error) {
+            $('.spinner-border').hide();
+            document.getElementById("sendotp").style.display="block";
+            document.getElementById("email").readOnly = false;
+            console.error(error);
+          }
+        });
+      }
+    }
+
+    var emailVerified = false;
+    function verifyMail(){
+      $.ajax({
+        url: '/verify-otp', // URL to your Django view
+        type: 'POST',
+        data:{'otp':$('#otp').val()},
+        success: function(data) {
+          if(data.verified === true){
+            document.getElementById("otp").classList.remove("error");
+            sendbtn = document.getElementById("sendotp");
+            sendbtn.innerHTML = 
+            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+              <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
+            </svg>`
+            sendbtn.style.display="block";
+            sendbtn.disabled=true;
+            sendbtn.classList.remove("btn-success");
+            document.getElementById("mailVerification").innerHTML="";
+            
+            emailVerified=true;
+          }
+          else{
+            document.getElementById("otp").classList.add("error");
+            emailVerified = false;
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error(error);
+          emailVerified =  false;
+        }
+      });
+    }
+
+    function changeMail(){
+      document.getElementById("email").readOnly = false;
+      document.getElementById("email").value = '';
+      document.getElementById("sendotp").style.display="block";
+      document.getElementById("sendotp").innerHTML="Send_OTP";
+      document.getElementById("mailVerification").innerHTML = '';
     }
 
     function validateMobile(){
-      return validate("mobile",/^\d{10}$/,"Invalid mobile nuber","mobileMessage")
+      return validate("mobile",/^\d{10}$/,"Invalid mobile number","mobileMessage")
     }
 
     function validateUsername(){
@@ -163,11 +253,10 @@
     
     document.getElementById("signform").addEventListener('submit',function(event){
       event.preventDefault();
-      let isvalidated = validateName() && validateMail() && validatePassword() && validateMobile() && validateImage() && validateUsername();
+      let isvalidated = validateName() && emailVerified && validatePassword() && validateMobile() && validateImage() && validateUsername();
       if(isvalidated){
         this.submit();
       }
-
     })
 </script>
 </body>

@@ -624,6 +624,7 @@ def contactus_view(request):
             send_mail(str(name)+' || '+str(email),message,settings.EMAIL_HOST_USER, settings.EMAIL_RECEIVING_USER, fail_silently = False)
             return render(request, 'management/contactussuccess.html')
     return render(request, 'management/contactus.html', {'form':sub})
+
 def get_dashboard_data(request):
     selected_values= request.GET.getlist('selectedValues[]')
     dict={}
@@ -671,3 +672,46 @@ def leaderboard(request):
         })
     domains = Skill.objects.values_list('domain',flat=True).distinct()
     return render(request,'leaderboard.html',{'top':top, 'domains':domains,'year_filter':year_filter, 'dept_filter':dept_filter, 'domain_filter':domain_filter})
+
+# views.py
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.conf import settings
+import random
+import string
+
+def email_verification(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        if email:
+            try:
+                otp = ''.join(random.choices(string.digits, k=6))  # Generate 6-digit OTP
+                send_mail(
+                    'OTP for Email Verification',
+                    f'Your OTP is: {otp}',
+                    settings.EMAIL_HOST_USER,  # Change this to your sender email
+                    [email],
+                    fail_silently=False,
+                )
+                request.session['otp'] = otp
+                request.session['email'] = email
+                # return redirect('verify-otp')
+                return JsonResponse({'status':'sent'})
+            except:
+                return JsonResponse({'status':'fail'})
+    return render(request, 'mentor/mentorsignup.html')
+    
+def verify_otp(request):
+    if request.method == 'POST':
+        otp = request.POST.get('otp')
+        if otp == request.session.get('otp'):
+            # OTP matched, do further actions like marking email as verified
+            del request.session['otp']
+            email = request.session.get('email')
+            del request.session['email']
+            return JsonResponse({'verified':True,'email': email})
+        else:
+            # Incorrect OTP
+            return JsonResponse({'verified':False})
+    return render(request, 'mentor/mentorsignup.html')
+
