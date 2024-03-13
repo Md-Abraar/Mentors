@@ -608,11 +608,9 @@ def admin_check_marks_view(request,pk):
     results= models.Result.objects.all().filter(exam=course).filter(student=student)
     return render(request,'management/admin_check_marks.html',{'results':results})
     
-@admin_superuser_required
 def aboutus_view(request):
     return render(request,'management/aboutus.html')
 
-@admin_superuser_required
 def contactus_view(request):
     sub = forms.ContactusForm()
     if request.method == 'POST':
@@ -631,10 +629,6 @@ def get_dashboard_data(request):
         students=student_skills.objects.filter(skill_name=i)
         students = list(students.select_related('student').values('student__branch'))  
         branch_counts = {item['student__branch']: students.count(item) for item in students}
-        # print(branch_counts)
-        # grouped_student_skills = {}
-        # for branch, skills_in_branch in groupby(students, key=lambda x: x['student__branch']):
-        #     grouped_student_skills[branch] = list(skills_in_branch)
         dict[i]=branch_counts
         # print(grouped_student_skills)
     # print(dict)
