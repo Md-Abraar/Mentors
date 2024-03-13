@@ -12,9 +12,9 @@ urlpatterns = [
     
 
 
-    path('',views.home_view,name=''),
+    path('',views.home_view,name='home'),
     path('logout', LogoutView.as_view(template_name='management/logout.html'),name='logout'),
-    path('aboutus', views.aboutus_view),
+    path('aboutus/', views.aboutus_view),
     path('contactus', views.contactus_view),
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
     # path('get_skills', views.get_skills,name='get_skills'),
@@ -23,6 +23,7 @@ urlpatterns = [
     path('adminlogin', LoginView.as_view(template_name='management/adminlogin.html'),name='adminlogin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
+    path('examiner',views.examiner, name='examiner'),
     path('admin-view-teacher', views.admin_view_teacher_view,name='admin-view-teacher'),
     path('update-teacher/<int:pk>', views.update_teacher_view,name='update-teacher'),
     path('delete-teacher/<int:pk>', views.delete_teacher_view,name='delete-teacher'),

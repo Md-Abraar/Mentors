@@ -118,6 +118,14 @@ def admin_dashboard_view(request):
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
+def examiner(request):
+    # mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
+    #mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
+    #mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image').annotate(mentee_count=Count('student')).order_by('mentee_count','name')
+    return render(request,'management/examiner.html')
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
 def admin_teacher_view(request):
     # mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
     mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
