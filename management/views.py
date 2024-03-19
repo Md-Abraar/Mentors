@@ -307,26 +307,6 @@ def admin_view_teacher_salary_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=True)
     return render(request,'management/admin_view_teacher_salary.html',{'teachers':teachers})
 
-# @login_required(login_url='adminlogin')
-# @admin_superuser_required
-# def admin_student_view(request):
-#     if request.method=="POST":
-#         DEFAULT_PASSWORD="GPREC"
-#         uploaded_file = request.FILES['file']
-#         if uploaded_file.name.endswith(('.xls', '.xlsx')):
-#             excel_data = pd.read_excel(uploaded_file)
-#             for index, row in excel_data.iterrows():
-#                 username=row[0]
-#                 mail=row[1]
-#                 user=User(username=username, email=mail, password=DEFAULT_PASSWORD)
-#                 user.save()
-#                 student=SMODEL.Student(user=user)
-#                 student.save()
-#                 student_group = Group.objects.get(name='STUDENT')
-#                 student_group.user_set.add(user)
-#         render(request,'management/create_students_accounts.html')  
-#     return render(request,'management/create_students_accounts.html')
-
 from django.db import transaction
 from django.db.utils import IntegrityError
 
@@ -334,7 +314,7 @@ from django.db.utils import IntegrityError
 @admin_superuser_required
 def admin_student_view(request):
     if request.method == "POST":
-        DEFAULT_PASSWORD = "GPREC"
+        DEFAULT_PASSWORD = "GPREC123"
         uploaded_file = request.FILES.get('file')
         
         if uploaded_file is not None and uploaded_file.name.endswith(('.xls', '.xlsx')):
