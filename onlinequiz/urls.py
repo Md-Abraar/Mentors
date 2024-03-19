@@ -12,9 +12,9 @@ urlpatterns = [
     
 
 
-    path('',views.home_view,name=''),
+    path('',views.home_view,name='home'),
     path('logout', LogoutView.as_view(template_name='management/logout.html'),name='logout'),
-    path('aboutus', views.aboutus_view),
+    path('aboutus/', views.aboutus_view),
     path('contactus', views.contactus_view),
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
     # path('get_skills', views.get_skills,name='get_skills'),
@@ -23,16 +23,22 @@ urlpatterns = [
     path('adminlogin', LoginView.as_view(template_name='management/adminlogin.html'),name='adminlogin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
+    
     path('admin-view-teacher', views.admin_view_teacher_view,name='admin-view-teacher'),
     path('update-teacher/<int:pk>', views.update_teacher_view,name='update-teacher'),
     path('delete-teacher/<int:pk>', views.delete_teacher_view,name='delete-teacher'),
     path('update-is-active/<str:empid>', views.update_is_active, name="update-is-active"),
+    path('update-status/<str:empid>', views.update_status, name="update-status"),
+
     path('admin-view-pending-teacher', views.admin_view_pending_teacher_view,name='admin-view-pending-teacher'),
     path('admin-view-teacher-salary', views.admin_view_teacher_salary_view,name='admin-view-teacher-salary'),
     path('approve-teacher/<int:pk>', views.approve_teacher_view,name='approve-teacher'),
     path('reject-teacher/<int:pk>', views.reject_teacher_view,name='reject-teacher'),
     path('approve-mentor/<int:pk>', views.approve_mentor_view,name='approve-mentor1'),
     path('reject-mentor/<int:pk>', views.reject_mentor_view,name='reject-mentor1'),
+    path('approve-examiner/<int:pk>', views.approve_examiner,name='approve-examiner'),
+    path('reject-examiner/<int:pk>', views.reject_examiner,name='reject-examiner'),
+    
     path('get_dashboard_data/',views.get_dashboard_data,name="get_dashboard_data"),
     path('admin-student', views.admin_student_view,name='admin-student'),
     path("download-sample", views.download_sample, name="download-sample"),
@@ -53,6 +59,10 @@ urlpatterns = [
 
     path("mentor-assign/<str:empid>", views.mentor_assign, name="mentor-assign"),
     path("mentor-details/<str:empid>", views.mentor_details, name="mentor-details"),
+
+    path('examiner',views.examiner, name='examiner'),
+    path('examiner-details/<str:empid>',views.examiner_details, name='examiner-details'),
+
 
     path('admin-question', views.admin_question_view,name='admin-question'),
     path('admin-add-question', views.admin_add_question_view,name='admin-add-question'),
