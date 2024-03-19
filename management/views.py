@@ -122,7 +122,26 @@ def examiner(request):
     # mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
     #mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
     #mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image').annotate(mentee_count=Count('student')).order_by('mentee_count','name')
-    return render(request,'management/examiner.html')
+    examiners=TMODEL.Examiner.objects.all()
+    examiner_pending = TMODEL.Examiner.objects.filter(status=False).values('emp_id','name', 'department', 'examiner_image')
+    examiner_approve = TMODEL.Examiner.objects.filter(status=True).values('emp_id','name', 'department', 'examiner_image')
+    return render(request,'management/examiner.html',{'examiner_pending':examiner_pending,'examiner_approve':examiner_approve})
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def examiner_details(request,empid):
+    examiner = TMODEL.Examiner.objects.get(emp_id=empid)
+    details = {
+        'emp_id':examiner.emp_id,
+        'name':examiner.name,
+        'department':examiner.department,
+        'mobile':examiner.mobile,
+        'email':examiner.email,
+        'examiner_image':examiner.examiner_image,
+        'is_active' : examiner.status
+    }
+    return render(request,'management/examiner_details.html',{'details':details})
+
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
@@ -214,6 +233,18 @@ def mentor_details(request,empid):
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
+def update_status(request,empid):
+    # examiner_obj=TMODEL.Examiner.objects.get(emp_id=empid)
+    # examiner_obj.is_active=False
+    # examiner_obj.save()
+    examiner=TMODEL.Examiner.objects.get(emp_id=empid)
+    user=User.objects.get(id=examiner.user_id)
+    user.delete()
+    examiner.delete()
+    return HttpResponseRedirect('/examiner')
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
 def update_is_active(request,empid):
     mentor_obj=MMODEL.mentor.objects.get(emp_id=empid)
     mentor_obj.is_active=False
@@ -277,12 +308,27 @@ def approve_mentor_view(request,pk):
     return HttpResponseRedirect('/admin-teacher')
 
 @login_required(login_url='adminlogin')
+def approve_examiner(request,pk):
+    examiner=TMODEL.Examiner.objects.get(emp_id=pk)
+    examiner.status=True
+    examiner.save()
+    return HttpResponseRedirect('/examiner')
+
+@login_required(login_url='adminlogin')
 def reject_mentor_view(request,pk):
     mentor=MMODEL.mentor.objects.get(emp_id=pk)
     user=User.objects.get(id=mentor.user_id)
     user.delete()
     mentor.delete()
     return HttpResponseRedirect('/admin-teacher')
+
+@login_required(login_url='adminlogin')
+def reject_examiner(request,pk):
+    examiner=TMODEL.Examiner.objects.get(emp_id=pk)
+    user=User.objects.get(id=examiner.user_id)
+    user.delete()
+    examiner.delete()
+    return HttpResponseRedirect('/examiner')
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required

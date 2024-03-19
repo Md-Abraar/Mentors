@@ -94,46 +94,47 @@ button:hover, a:hover {
 </head>
 <body>
 <div class="search">
-    <h2 style="margin: 20px;">Faculty Profiles</h2>
+    <h2 style="margin: 20px;">Examiner Profiles</h2>
     <input type="text" id="searchInput" name="search" onkeyup="searchProfile()" placeholder="Search by names.." style="margin: 20px;">   
     
  </div> 
 
-{% if mentor_pending %}
+{% if examiner_pending %}
 <br><br>
 <p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approval Pending Accounts</i></b></p>
 {% endif %}
 <div class="container" id="pendingContent" >
   
-    {% for mentor in  mentor_pending%}
+    {% for examiner in examiner_pending%}
       <div class="mycard">
-        <img src= "{% static mentor.mentor_image %}" alt="John" style="width:100%; height:60%">
-        <h4>{{mentor.name}}</h4>
-        <p class="mytitle">{{mentor.department}}</p>
-        <p><button data-bs-toggle="modal" data-bs-target="#a{{mentor.emp_id}}" class="mybutton" style="background-color: #ffc107; color: #000;">Action Required 
+        <img src= "{% static examiner.examiner_image %}" alt="John" style="width:100%; height:60%">
+        <h4>{{examiner.name}}</h4>
+        <p class="mytitle">{{examiner.department}}</p>
+
+        <p><button data-bs-toggle="modal" data-bs-target="#a{{examiner.emp_id}}" class="mybutton" style="background-color: #ffc107; color: #000;">Action Required 
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-arrow-right-circle " viewBox="0 0 16 16">
             <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
           </svg>
         </button></p>
       </div>
-      <div class="modal fade" id="a{{mentor.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal fade" id="a{{examiner.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">Emp id: {{mentor.emp_id}}</h1>
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Emp id: {{examiner.emp_id}}</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{mentor.name}}</p>
-              <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{mentor.department}}</p>
-              <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{mentor.email}}</p>
-              <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{mentor.mobile}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{examiner.name}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{examiner.department}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{examiner.email}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{examiner.mobile}}</p>
               <div class="row">
                 <div class="col-md-6">
-                  <a href=" {% url 'approve-mentor1' mentor.emp_id %} "><button type="button" class="btn btn-success">Accept</button></a>
+                  <a href=" {% url 'approve-examiner' examiner.emp_id %} "><button type="button" class="btn btn-success">Accept</button></a>
                 </div>
                 <div class="col-md-6">
-                  <a href=" {% url 'reject-mentor1' mentor.emp_id %} "><button type="button" class="btn btn-danger">Reject</button></a>
+                  <a href=" {% url 'reject-examiner' examiner.emp_id %} "><button type="button" class="btn btn-danger">Reject</button></a>
                 </div>
               </div>
             </div>
@@ -148,13 +149,13 @@ button:hover, a:hover {
 <p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approved Accounts</i></b></p>
 <div class="container" id="approvedContent" >
   
-  {% for mentor in  mentor_approve%}
+  {% for examiner in  examiner_approve%}
     <div class="mycard position-relative">
-      <span style="top:5%; left:85%; font-size:14px" class="badge rounded-pill text-bg-dark position-absolute translate-middle" data-bs-toggle="tooltip" data-bs-title="Mentees">{{mentor.mentee_count}}</span>
-      <img src= "{% static mentor.mentor_image %}" alt="John" style="width:100%; height:60%">
-      <h4>{{mentor.name}}</h4>
-      <p class="mytitle">{{mentor.department}}</p>
-      <p><a href="{% url "mentor-details" mentor.emp_id %}" class="mybutton">More Details</a></p>
+      {% comment %} <span style="top:5%; left:85%; font-size:14px" class="badge rounded-pill text-bg-dark position-absolute translate-middle" data-bs-toggle="tooltip" data-bs-title="Mentees">{{mentor.mentee_count}}</span> {% endcomment %}
+      <img src= "{% static examiner.examiner_image %}" alt="John" style="width:100%; height:60%">
+      <h4>{{examiner.name}}</h4>
+      <p class="mytitle">{{examiner.department}}</p>
+      <p><a href="{% url "examiner-details" examiner.emp_id %}" class="mybutton">More Details</a></p>
     </div>
   {% endfor %}  
 </div>
