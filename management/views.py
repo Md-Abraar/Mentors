@@ -98,21 +98,21 @@ def adminclick_view(request):
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def admin_dashboard_view(request):
-    dict={
-    'total_student':SMODEL.Student.objects.all().count(),
-    'total_teacher':TMODEL.Teacher.objects.all().filter(status=True).count(),
-    'total_course':models.Course.objects.all().count(),
-    'total_question':models.Question.objects.all().count(),
-    }
-    if request.method=="POST":
-        sector = request.POST.get('sector')
-        domain = request.POST.get('domain')
-        level = request.POST.get('level')
-        skills=Skill.objects.filter(sector=sector,domain=domain,level=level) 
+    if request.method=="GET":
+        sector = request.GET.get('sector','')
+        domain = request.GET.get('domain', '')
+        level = request.GET.get('level','')
+        skills=models.Skill.objects.all()   
+        if sector:
+            skills=skills.filter(sector=sector)
+        if domain:
+            skills=skills.filter(domain=domain)
+        if level:
+            skills=skills.filter(level=level)
         list=[]
         for i in skills:
-            list.append(i.skill_name) 
-        return render(request,'management/dashboard.html',{'list':list}) 
+            list.append(i.skill_name)         
+        return render(request,'management/dashboard.html',{'list':list,'level':level,'domain':domain,'sector':sector}) 
     return render(request,'management/dashboard.html')
     # return render(request,'management/admin_dashboard.html',context=dict)
 
@@ -680,17 +680,20 @@ def contactus_view(request):
     return render(request, 'management/contactus.html', {'form':sub})
 
 def get_dashboard_data(request):
-    skill = request.GET.get('skill')
-    students=student_skills.objects.filter(skill_name=skill)
-    # print(students)
-    students = list(students.select_related('student').values('student__branch'))  
-    # print(students)
-    branch_counts = {item['student__branch']: students.count(item) for item in students}
-    # grouped_student_skills = {}
-    # for branch, skills_in_branch in groupby(students, key=lambda x: x['student__branch']):
-    #     grouped_student_skills[branch] = list(skills_in_branch)
-    # print(grouped_student_skills)
-    return JsonResponse(branch_counts)
+    selected_values= request.GET.getlist('selectedValues[]')
+    dict={}
+    for i in selected_values:
+        students=student_skills.objects.filter(skill_name=i)
+        students = list(students.select_related('student').values('student__branch'))  
+        branch_counts = {item['student__branch']: students.count(item) for item in students}
+        # print(branch_counts)
+        # grouped_student_skills = {}
+        # for branch, skills_in_branch in groupby(students, key=lambda x: x['student__branch']):
+        #     grouped_student_skills[branch] = list(skills_in_branch)
+        dict[i]=branch_counts
+        # print(grouped_student_skills)
+    # print(dict)
+    return JsonResponse(dict)
 
 def leaderboard(request):
     year_filter = request.GET.get('year','')
@@ -723,3 +726,54 @@ def leaderboard(request):
         })
     domains = Skill.objects.values_list('domain',flat=True).distinct()
     return render(request,'leaderboard.html',{'top':top, 'domains':domains,'year_filter':year_filter, 'dept_filter':dept_filter, 'domain_filter':domain_filter})
+
+# views.py
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.conf import settings
+import random
+import string
+
+def email_verification(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        reset = request.POST.get('reset','')
+        if reset:
+            try:
+                userExists = User.objects.filter(email=email).exists()
+                if not userExists:
+                    return JsonResponse({'status':'nomail'})
+            except:
+                return JsonResponse({'status':'fail'})
+        if email:
+            try:
+                otp = ''.join(random.choices(string.digits, k=6))  # Generate 6-digit OTP
+                send_mail(
+                    'OTP for Email Verification',
+                    f'Your OTP is: {otp}',
+                    settings.EMAIL_HOST_USER,  # Change this to your sender email
+                    [email],
+                    fail_silently=False,
+                )
+                request.session['otp'] = otp
+                request.session['email'] = email
+                # return redirect('verify-otp')
+                return JsonResponse({'status':'sent'})
+            except:
+                return JsonResponse({'status':'fail'})
+    return render(request, 'mentor/mentorsignup.html')
+    
+def verify_otp(request):
+    if request.method == 'POST':
+        otp = request.POST.get('otp')
+        if otp == request.session.get('otp'):
+            # OTP matched, do further actions like marking email as verified
+            del request.session['otp']
+            email = request.session.get('email')
+            del request.session['email']
+            return JsonResponse({'verified':True,'email': email})
+        else:
+            # Incorrect OTP
+            return JsonResponse({'verified':False})
+    return render(request, 'mentor/mentorsignup.html')
+

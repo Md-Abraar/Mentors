@@ -81,3 +81,15 @@ def mentor_dashboard_view(request):
     }
     return render(request,'mentor/mentor_dashboard.html',context=dict)
 
+def mentor_forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        newpassword = request.POST.get('newpassword')
+        if newpassword:
+            user = User.objects.get(email=email)
+            user.set_password(newpassword)
+            user.save()
+        return redirect('mentorlogin')
+    return render(request, 'mentor/mentor_forgot_password.html')
+
+
