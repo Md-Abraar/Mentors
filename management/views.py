@@ -683,6 +683,14 @@ import string
 def email_verification(request):
     if request.method == 'POST':
         email = request.POST.get('email')
+        reset = request.POST.get('reset','')
+        if reset:
+            try:
+                userExists = User.objects.filter(email=email).exists()
+                if not userExists:
+                    return JsonResponse({'status':'nomail'})
+            except:
+                return JsonResponse({'status':'fail'})
         if email:
             try:
                 otp = ''.join(random.choices(string.digits, k=6))  # Generate 6-digit OTP
