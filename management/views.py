@@ -55,8 +55,38 @@ def admin_superuser_required(view_func):
 
 def home_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')  
-    return render(request,'management/index.html')
+        return HttpResponseRedirect('afterlogin')
+    else:
+        year_filter = request.GET.get('year','')
+        dept_filter = request.GET.get('department','')
+        domain_filter = request.GET.get('domain','')
+        students = SMODEL.Student.objects.all()
+        if year_filter:
+            sem_filter = 2*int(year_filter)-1 #calculating the first sem of particular yr
+            students = students.filter(Q(semester=sem_filter)|Q(semester=sem_filter+1))
+        if dept_filter:
+            students = students.filter(department=dept_filter)
+        if domain_filter:
+            students = students.filter(
+                students_skills__skill_status="Evaluated",
+                students_skills__skill_name__domain=domain_filter,
+            ).annotate(
+                total_score=Sum('students_skills__overall_score')
+            )
+            student_top = students.order_by('-total_score')[:10]
+        else:
+            student_top = students.order_by('-profile_score')[:10]
+        top=[]
+        for index, row in enumerate(student_top, start=1):
+            top.append({
+                'roll':row.user.username,
+                'rank':index,
+                'name': row.name,
+                'yb': roman[math.ceil(row.semester/2)]+' '+row.branch,
+                'score': row.total_score if domain_filter else row.profile_score
+            })
+        domains = Skill.objects.values_list('domain',flat=True).distinct()
+        return render(request,'management/index.html',{'top':top, 'domains':domains,'year_filter':year_filter, 'dept_filter':dept_filter, 'domain_filter':domain_filter})  
 
 
 def is_teacher(user):
