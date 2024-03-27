@@ -3,7 +3,7 @@ from student import views
 from django.contrib.auth.views import LoginView
 
 urlpatterns = [
-path('studentclick', views.studentclick_view),
+path('studentclick', views.studentclick_view,name="studentclick"),
 path('studentlogin', LoginView.as_view(template_name='student/studentlogin.html'),name='studentlogin'),
 path('studentsignup', views.student_signup_view,name='studentsignup'),
 path('student-dashboard', views.student_dashboard_view,name='student-dashboard'),
@@ -15,4 +15,6 @@ path('calculate-marks', views.calculate_marks_view,name='calculate-marks'),
 path('view-result', views.view_result_view,name='view-result'),
 path('check-marks/<int:pk>', views.check_marks_view,name='check-marks'),
 path('student-marks', views.student_marks_view,name='student-marks'),
+path("student-forgot-password", views.student_forgot_password, name="student-forgot-password")
+
 ]

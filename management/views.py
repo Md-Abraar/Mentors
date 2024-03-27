@@ -55,8 +55,38 @@ def admin_superuser_required(view_func):
 
 def home_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')  
-    return render(request,'management/index.html')
+        return HttpResponseRedirect('afterlogin')
+    else:
+        year_filter = request.GET.get('year','')
+        dept_filter = request.GET.get('department','')
+        domain_filter = request.GET.get('domain','')
+        students = SMODEL.Student.objects.all()
+        if year_filter:
+            sem_filter = 2*int(year_filter)-1 #calculating the first sem of particular yr
+            students = students.filter(Q(semester=sem_filter)|Q(semester=sem_filter+1))
+        if dept_filter:
+            students = students.filter(department=dept_filter)
+        if domain_filter:
+            students = students.filter(
+                students_skills__skill_status="Evaluated",
+                students_skills__skill_name__domain=domain_filter,
+            ).annotate(
+                total_score=Sum('students_skills__overall_score')
+            )
+            student_top = students.order_by('-total_score')[:10]
+        else:
+            student_top = students.order_by('-profile_score')[:10]
+        top=[]
+        for index, row in enumerate(student_top, start=1):
+            top.append({
+                'roll':row.user.username,
+                'rank':index,
+                'name': row.name,
+                'yb': roman[math.ceil(row.semester/2)]+' '+row.branch,
+                'score': row.total_score if domain_filter else row.profile_score
+            })
+        domains = Skill.objects.values_list('domain',flat=True).distinct()
+        return render(request,'management/index.html',{'top':top, 'domains':domains,'year_filter':year_filter, 'dept_filter':dept_filter, 'domain_filter':domain_filter})  
 
 
 def is_teacher(user):
@@ -115,6 +145,33 @@ def admin_dashboard_view(request):
         return render(request,'management/dashboard.html',{'list':list,'level':level,'domain':domain,'sector':sector}) 
     return render(request,'management/dashboard.html')
     # return render(request,'management/admin_dashboard.html',context=dict)
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def examiner(request):
+    # mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
+    #mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
+    #mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image').annotate(mentee_count=Count('student')).order_by('mentee_count','name')
+    examiners=TMODEL.Examiner.objects.all()
+    examiner_pending = TMODEL.Examiner.objects.filter(status=False).values('emp_id','name', 'department', 'examiner_image')
+    examiner_approve = TMODEL.Examiner.objects.filter(status=True).values('emp_id','name', 'department', 'examiner_image')
+    return render(request,'management/examiner.html',{'examiner_pending':examiner_pending,'examiner_approve':examiner_approve})
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
+def examiner_details(request,empid):
+    examiner = TMODEL.Examiner.objects.get(emp_id=empid)
+    details = {
+        'emp_id':examiner.emp_id,
+        'name':examiner.name,
+        'department':examiner.department,
+        'mobile':examiner.mobile,
+        'email':examiner.email,
+        'examiner_image':examiner.examiner_image,
+        'is_active' : examiner.status
+    }
+    return render(request,'management/examiner_details.html',{'details':details})
+
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
@@ -206,6 +263,18 @@ def mentor_details(request,empid):
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
+def update_status(request,empid):
+    # examiner_obj=TMODEL.Examiner.objects.get(emp_id=empid)
+    # examiner_obj.is_active=False
+    # examiner_obj.save()
+    examiner=TMODEL.Examiner.objects.get(emp_id=empid)
+    user=User.objects.get(id=examiner.user_id)
+    user.delete()
+    examiner.delete()
+    return HttpResponseRedirect('/examiner')
+
+@login_required(login_url='adminlogin')
+@admin_superuser_required
 def update_is_active(request,empid):
     mentor_obj=MMODEL.mentor.objects.get(emp_id=empid)
     mentor_obj.is_active=False
@@ -269,12 +338,27 @@ def approve_mentor_view(request,pk):
     return HttpResponseRedirect('/admin-teacher')
 
 @login_required(login_url='adminlogin')
+def approve_examiner(request,pk):
+    examiner=TMODEL.Examiner.objects.get(emp_id=pk)
+    examiner.status=True
+    examiner.save()
+    return HttpResponseRedirect('/examiner')
+
+@login_required(login_url='adminlogin')
 def reject_mentor_view(request,pk):
     mentor=MMODEL.mentor.objects.get(emp_id=pk)
     user=User.objects.get(id=mentor.user_id)
     user.delete()
     mentor.delete()
     return HttpResponseRedirect('/admin-teacher')
+
+@login_required(login_url='adminlogin')
+def reject_examiner(request,pk):
+    examiner=TMODEL.Examiner.objects.get(emp_id=pk)
+    user=User.objects.get(id=examiner.user_id)
+    user.delete()
+    examiner.delete()
+    return HttpResponseRedirect('/examiner')
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
@@ -307,26 +391,6 @@ def admin_view_teacher_salary_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=True)
     return render(request,'management/admin_view_teacher_salary.html',{'teachers':teachers})
 
-# @login_required(login_url='adminlogin')
-# @admin_superuser_required
-# def admin_student_view(request):
-#     if request.method=="POST":
-#         DEFAULT_PASSWORD="GPREC"
-#         uploaded_file = request.FILES['file']
-#         if uploaded_file.name.endswith(('.xls', '.xlsx')):
-#             excel_data = pd.read_excel(uploaded_file)
-#             for index, row in excel_data.iterrows():
-#                 username=row[0]
-#                 mail=row[1]
-#                 user=User(username=username, email=mail, password=DEFAULT_PASSWORD)
-#                 user.save()
-#                 student=SMODEL.Student(user=user)
-#                 student.save()
-#                 student_group = Group.objects.get(name='STUDENT')
-#                 student_group.user_set.add(user)
-#         render(request,'management/create_students_accounts.html')  
-#     return render(request,'management/create_students_accounts.html')
-
 from django.db import transaction
 from django.db.utils import IntegrityError
 
@@ -334,7 +398,7 @@ from django.db.utils import IntegrityError
 @admin_superuser_required
 def admin_student_view(request):
     if request.method == "POST":
-        DEFAULT_PASSWORD = "GPREC"
+        DEFAULT_PASSWORD = "GPREC123"
         uploaded_file = request.FILES.get('file')
         
         if uploaded_file is not None and uploaded_file.name.endswith(('.xls', '.xlsx')):
@@ -622,6 +686,7 @@ def contactus_view(request):
             send_mail(str(name)+' || '+str(email),message,settings.EMAIL_HOST_USER, settings.EMAIL_RECEIVING_USER, fail_silently = False)
             return render(request, 'management/contactussuccess.html')
     return render(request, 'management/contactus.html', {'form':sub})
+
 def get_dashboard_data(request):
     selected_values= request.GET.getlist('selectedValues[]')
     dict={}
@@ -665,3 +730,54 @@ def leaderboard(request):
         })
     domains = Skill.objects.values_list('domain',flat=True).distinct()
     return render(request,'leaderboard.html',{'top':top, 'domains':domains,'year_filter':year_filter, 'dept_filter':dept_filter, 'domain_filter':domain_filter})
+
+# views.py
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+from django.conf import settings
+import random
+import string
+
+def email_verification(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        reset = request.POST.get('reset','')
+        if reset:
+            try:
+                userExists = User.objects.filter(email=email).exists()
+                if not userExists:
+                    return JsonResponse({'status':'nomail'})
+            except:
+                return JsonResponse({'status':'fail'})
+        if email:
+            try:
+                otp = ''.join(random.choices(string.digits, k=6))  # Generate 6-digit OTP
+                send_mail(
+                    'OTP for Email Verification',
+                    f'Your OTP is: {otp}',
+                    settings.EMAIL_HOST_USER,  # Change this to your sender email
+                    [email],
+                    fail_silently=False,
+                )
+                request.session['otp'] = otp
+                request.session['email'] = email
+                # return redirect('verify-otp')
+                return JsonResponse({'status':'sent'})
+            except:
+                return JsonResponse({'status':'fail'})
+    return render(request, 'mentor/mentorsignup.html')
+    
+def verify_otp(request):
+    if request.method == 'POST':
+        otp = request.POST.get('otp')
+        if otp == request.session.get('otp'):
+            # OTP matched, do further actions like marking email as verified
+            del request.session['otp']
+            email = request.session.get('email')
+            del request.session['email']
+            return JsonResponse({'verified':True,'email': email})
+        else:
+            # Incorrect OTP
+            return JsonResponse({'verified':False})
+    return render(request, 'mentor/mentorsignup.html')
+

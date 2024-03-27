@@ -31,7 +31,7 @@ def is_approved(user):
 def mentorclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
-    return render(request,'mentor/mentorclick.html')
+    return redirect('mentorlogin')
 
 def mentor_signup_view(request):
     if request.method=='POST':
@@ -80,4 +80,16 @@ def mentor_dashboard_view(request):
     'total_student':SMODEL.Student.objects.all().count()
     }
     return render(request,'mentor/mentor_dashboard.html',context=dict)
+
+def mentor_forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        newpassword = request.POST.get('newpassword')
+        if newpassword:
+            user = User.objects.get(email=email)
+            user.set_password(newpassword)
+            user.save()
+        return redirect('mentorlogin')
+    return render(request, 'management/forgot_password.html')
+
 
