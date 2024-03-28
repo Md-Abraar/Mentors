@@ -185,12 +185,7 @@ def admin_teacher_view(request):
 @admin_superuser_required
 def mentor_assign(request,empid):
     mentor = MMODEL.mentor.objects.get(emp_id=empid)
-    
-    #Clear previous mentees
     mentees = SMODEL.Student.objects.filter(mentor=mentor)
-    for mentee in mentees:
-        mentee.mentor = None
-        mentee.save()
 
     details = {
         'emp_id':mentor.emp_id,
@@ -219,9 +214,13 @@ def mentor_assign(request,empid):
             semester, branch, section = classname.split(' ')
             semester = numbers[semester]
             students = students.filter(semester=semester,branch=branch,section=section)
-        return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes, 'class_filter':classname, 'gender_filter':gender})
+        return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes, 'class_filter':classname, 'gender_filter':gender, 'mentees':mentees})
     if request.method == 'POST':
         rolls = request.POST.getlist('roll')
+        #Clear previous mentees
+        for mentee in mentees:
+            mentee.mentor = None
+            mentee.save()
         for roll in rolls:
             try:
                 user = User.objects.get(username=roll)

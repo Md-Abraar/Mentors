@@ -10,11 +10,15 @@
       .table-container{
         height: 400px;
         border:1px solid;
-        overflow-y:scroll;
+        {% comment %} overflow-y:scroll; {% endcomment %}
         -webkit-user-select: none;  /* Chrome all / Safari all */
         -moz-user-select: none;     /* Firefox all */
         -ms-user-select: none;      /* IE 10+ */
         user-select: none; 
+      }
+
+      #selectingArea, #nonselect{
+        overflow-y:scroll; 
       }
       
       table td{
@@ -45,9 +49,6 @@
         {% block mentee_count %}{% endblock mentee_count %}
         <div class="form-check form-switch">
           {% if details.is_active %}
-          {% comment %} <a href=" {% url 'update-is-active' details.emp_id %} "><button type="submit" class="btn btn-danger" id="alert_message" onclick="alert_message()">deactivate</button></a>
-          <p>Clicking this button deactivates the account.</p> {% endcomment %}
-          <!-- Button to trigger the modal -->
         <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#alertmessage">Deactivate</button>
         <div class="modal" id="alertmessage" tabindex="-1" aria-labelledby="alertmessageLabel" aria-hidden="true">
           <div class="modal-dialog">
@@ -85,10 +86,8 @@
     
       <form action="#" method="POST" id="rollform">
       <div class="table-container">
-        <h6 class="text-center mt-2">Mentees</h6>
-        <table class="ms-2">
-           {% block table %}{% endblock table %}   
-        </table>
+        {% block table1 %}{% endblock table1 %}
+        {% block table2 %}{% endblock table2 %}
       </div>
   </form>
   </div>   
@@ -106,146 +105,6 @@
 {% comment %} <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> {% endcomment %}
 <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-{% comment %} <script>
-    var sx;
-    var sy;
-    var ex;
-    var ey;
-    var ta;
-    var drag = false;
-    var scrollSpeed = 8;
-
-    $(document).ready(function () {
-      var dragArea = document.createElement("div");
-      dragArea.setAttribute('class', 'dragArea');
-      document.body.appendChild(dragArea);
-
-    });
-
-     document.oncontextmenu = function() {
-       if (event.which === 1) { // Check if the left mouse button is pressed
-         return false; // Prevent context menu for non-left clicks
-        }
-     }
-
-    $('#assign').click(function(){
-        $('#rollform').submit()
-    });
-
-    $('#class,#gender').change(function(){
-      $('#filterForm').submit();
-    });
-
-    $('#lorem,#filters').on('mousedown', function (event) {
-        event.stopPropagation();
-    });
-
-    var sidebar = $('.sidebar')
-    sidebar.on('mousedown', function (event) {
-          event.stopPropagation();
-    });
-
-    $(document).on("mousemove", function (event) {
-      if (drag) {
-
-        var flipX = "";
-        var flipY = "";
-        var top = sy;
-        var left = sx;
-        var height = event.pageY - sy;
-        var width = event.pageX - sx;
-
-        if ((event.pageX - sx) < 0) {
-          flipX = "scaleX(-1)";
-          width = sx - event.pageX;
-          left = event.pageX;
-        }
-
-        if ((event.pageY - sy) < 0) {
-          flipY = "scaleY(-1)";
-          height = sy - event.pageY;
-          top = event.pageY;
-        }
-
-
-
-        $(".dragArea").attr("style", "display:block; top:" + top + "px;  left:" + left + "px; width:" + width + "px; height: " + height + "px; transform:" + flipX + " " + flipY + ";");
-
-              //Scroll with drag
-              // Check if mouse is near the top or bottom edge of the container
-              /* var containerTop = $('.table-container').offset().top;
-              var containerBottom = containerTop + $('.table-container').height();
-              var scrollTop = $('.table-container').scrollTop();
-          
-              if (event.pageY < containerTop + 20 && scrollTop > 0) {
-                $('.table-container').scrollTop(scrollTop - scrollSpeed);
-              } else if (event.pageY > containerBottom - 20 && scrollTop < $('.table-container')[0].scrollHeight - $('.table-container').height()) {
-                $('.table-container').scrollTop(scrollTop + scrollSpeed);
-              } */
-
-      }
-    });
-
-    $(document).on("mousedown", function (event) {
-      if (event.which === 1) { // Only allow left mouse button
-        drag = true;
-        sx = event.pageX;
-        sy = event.pageY;
-
-        $(".dragArea").addClass("add");
-        $(".dragArea").removeClass("remove");
-
-        $(".dragArea").attr("style", "display:block; top:" + event.pageY + "px; left:" + event.pageX + "px; width:0; height:0;");
-      }
-    });
-
-    $(document).on("mouseup", function (event) {
-      if (drag) {
-        drag = false;
-        $(".dragArea").attr("style", "display:none;");
-
-        ex = event.pageX;
-        ey = event.pageY;
-
-        if (ex < sx) {
-          ta = ex;
-          ex = sx;
-          sx = ta;
-        }
-
-        if (ey < sy) {
-          ta = ey;
-          ey = sy;
-          sy = ta;
-        }
-
-        selectItems();
-      }
-    });
-
-    function selectItems() {
-        $('.table-container input[type=checkbox]').each(function () {
-          if (!$(this).is(':disabled')) {
-            var pos = $(this).position();
-            var cxLow = pos.left;
-            var cxHi = pos.left + $(this).width();
-            var cyLow = pos.top;
-            var cyHi = pos.top + $(this).height();
-            if (cxLow <= sx && sx <= cxHi && cxLow <= ex && ex <= cxHi) {
-              if (cyLow <= sy && sy <= cyHi && cyLow <= ey && ey <= cyHi) {
-                $(this).prop("checked", !$(this).prop("checked"));
-              }
-            }
-            else if (sx <= cxHi && ex >= cxLow) {
-              if (sy <= cyHi && ey >= cyLow) {
-                $(this).prop("checked", !$(this).prop("checked"));
-              }
-            }
-          }
-        });
-      }
-
-</script> {% endcomment %}
 <script type="module">
   import { dragSelect } from "{% static "drag-select.js" %}";
     function onUpdatechecked(intersected,nonIntersected,allElements){
@@ -258,7 +117,9 @@
         if(elem){elem.checked=false;}
       });
     }
-    dragSelect(document.querySelector(`.table-container`),{itemSelector : ".selectable", onUpdate: onUpdatechecked})
+    dragSelect(document.querySelector(`#selectingArea`),{itemSelector : ".selectable", onUpdate: onUpdatechecked})
+    dragSelect(document.querySelector(`#nonselect`),{itemSelector : ".selectable", onUpdate: onUpdatechecked})
+
 </script>
 <script>
   $('#assign').click(function(){

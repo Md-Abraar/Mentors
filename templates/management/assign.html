@@ -1,29 +1,47 @@
 {% extends "management/mentorbase.html" %}
 {% block filter1 %}
-<select class="mb-2" name="class" id="class">
-    <option value="">All</option>
-    {% for class in classes %}
-      <option value="{{class}}" {% if class_filter == class %}selected{% endif %}>{{class}}</option>
-    {% endfor %}
-</select>
+  <select class="mb-2" name="class" id="class">
+      <option value="">All</option>
+      {% for class in classes %}
+        <option value="{{class}}" {% if class_filter == class %}selected{% endif %}>{{class}}</option>
+      {% endfor %}
+  </select>
 {% endblock filter1 %}
 {% block filter2 %}
-<select class="mb-2" name="gender" id="gender">
-  <option value="" {% if gender_filter == "" %}selected{% endif %}>All</option>
-  <option value="Male" {% if gender_filter == "Male" %}selected{% endif %}>Male</option>
-  <option value="Female" {% if gender_filter == "Female" %}selected{% endif %}>Female</option>
-</select>
+  <select class="mb-2" name="gender" id="gender">
+    <option value="" {% if gender_filter == "" %}selected{% endif %}>All</option>
+    <option value="Male" {% if gender_filter == "Male" %}selected{% endif %}>Male</option>
+    <option value="Female" {% if gender_filter == "Female" %}selected{% endif %}>Female</option>
+  </select>
 {% endblock filter2 %}
-{% block btn %}<button class="btn btn-primary btn-sm mt-3" id="assign">Assign</button>
-<br>
-<button class="btn btn-sm mt-1 px-1 text-primary" id="clear">Clear</button>
+{% block btn %}
+  <button class="btn btn-primary btn-sm mt-3" id="assign">Assign</button>
+  <br>
+  <button class="btn btn-sm mt-1 px-1 text-primary" id="clear">Clear</button>
 {% endblock btn %}
-{% block table-head %}Select{% endblock table-head %}
-{% block table %}
-{% if students|length == 0 %}
-    <p class="text-center mt-5">No available students</p>
-{% endif %}
-{% for student in students %}
-    <tr><td><input class="selectable" type="checkbox" name="roll" id="r{{student.user.username}}" value="{{student.user.username}}"><label for="r{{student.user.username}}" class="ms-1">{{student.user.username}}</label></td></tr>
-{% endfor %} 
-{% endblock table %}
+{% block table1 %}
+  <h6 class="text-center mt-2">Mentees</h6>
+  <div style="width:100%; height:38%" id="nonselect">
+    <table class="ms-2">
+      {% if mentees|length == 0 %}
+        <p class="text-center mt-5">No previous mentees</p>
+      {% endif %}
+      {% for mentee in mentees %}
+        <tr><td><input class="selectable" type="checkbox" name="roll" id="r{{mentee.user.username}}" value="{{mentee.user.username}}" checked><label for="r{{mentee.user.username}}" class="ms-1">{{mentee.user.username}}</label></td></tr>
+      {% endfor %}
+    </table>
+  </div>
+{% endblock table1 %}
+{% block table2 %}
+  <h6 class="text-center mt-2">Select new</h6>
+  <div style="width:100%; height:38%" id="selectingArea">
+    <table class="ms-2">
+      {% if students|length == 0 %}
+        <p class="text-center mt-5">No available students</p>
+      {% endif %}
+      {% for student in students %}
+        <tr><td><input class="selectable" type="checkbox" name="roll" id="r{{student.user.username}}" value="{{student.user.username}}"><label for="r{{student.user.username}}" class="ms-1">{{student.user.username}}</label></td></tr>
+      {% endfor %}   
+    </table>
+  </div> 
+{% endblock table2 %}
