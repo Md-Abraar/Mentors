@@ -31,7 +31,7 @@ def is_approved(user):
 def mentorclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
-    return render(request,'mentor/mentorclick.html')
+    return redirect('mentorlogin')
 
 def mentor_signup_view(request):
     if request.method=='POST':
@@ -90,6 +90,6 @@ def mentor_forgot_password(request):
             user.set_password(newpassword)
             user.save()
         return redirect('mentorlogin')
-    return render(request, 'mentor/mentor_forgot_password.html')
+    return render(request, 'management/forgot_password.html')
 
 

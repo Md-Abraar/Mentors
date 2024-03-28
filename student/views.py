@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,reverse
 from . import forms,models
 from django.db.models import Sum
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group,User
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
@@ -14,7 +14,7 @@ from teacher import models as TMODEL
 def studentclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
-    return render(request,'student/studentclick.html')
+    return redirect('studentlogin')
 
 def student_signup_view(request):
     userForm=forms.StudentUserForm()
@@ -125,40 +125,13 @@ def student_marks_view(request):
     courses=QMODEL.Course.objects.all()
     return render(request,'student/student_marks.html',{'courses':courses})
 
-from django.contrib.auth.models import User
-from django.db import transaction
-
-# Define a default password
-# DEFAULT_PASSWORD = 'default_password'
-
-# # Assuming you have a list of student data in the format of (username, email)
-# student_data = [
-#     ('student1', 'student1@example.com'),
-#     ('student2', 'student2@example.com'),
-#     # Add more student data as needed
-# ]
-
-# @transaction.atomic
-# def create_students_with_default_password(student_data):
-#     # Create User instances
-#     users_to_create = [
-#         User(username=username, email=email, password=DEFAULT_PASSWORD)
-#         for username, email in student_data
-#     ]
-
-#     # Bulk create User instances
-#     created_users = User.objects.bulk_create(users_to_create)
-
-#     # Create Student instances associated with created Users
-#     students_to_create = [
-#         models.Student(user=user)
-#         for user in created_users
-#     ]
-
-#     # Bulk create Student instances
-#     created_students = models.Student.objects.bulk_create(students_to_create)
-
-#     return created_students
-
-# # Call the function to create students
-# created_students = create_students_with_default_password(student_data)
+def student_forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        newpassword = request.POST.get('newpassword')
+        if newpassword:
+            user = User.objects.get(email=email)
+            user.set_password(newpassword)
+            user.save()
+        return redirect('studentlogin')
+    return render(request, 'management/forgot_password.html')

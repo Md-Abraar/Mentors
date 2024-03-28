@@ -55,8 +55,38 @@ def admin_superuser_required(view_func):
 
 def home_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')  
-    return render(request,'management/index.html')
+        return HttpResponseRedirect('afterlogin')
+    else:
+        year_filter = request.GET.get('year','')
+        dept_filter = request.GET.get('department','')
+        domain_filter = request.GET.get('domain','')
+        students = SMODEL.Student.objects.all()
+        if year_filter:
+            sem_filter = 2*int(year_filter)-1 #calculating the first sem of particular yr
+            students = students.filter(Q(semester=sem_filter)|Q(semester=sem_filter+1))
+        if dept_filter:
+            students = students.filter(department=dept_filter)
+        if domain_filter:
+            students = students.filter(
+                students_skills__skill_status="Evaluated",
+                students_skills__skill_name__domain=domain_filter,
+            ).annotate(
+                total_score=Sum('students_skills__overall_score')
+            )
+            student_top = students.order_by('-total_score')[:10]
+        else:
+            student_top = students.order_by('-profile_score')[:10]
+        top=[]
+        for index, row in enumerate(student_top, start=1):
+            top.append({
+                'roll':row.user.username,
+                'rank':index,
+                'name': row.name,
+                'yb': roman[math.ceil(row.semester/2)]+' '+row.branch,
+                'score': row.total_score if domain_filter else row.profile_score
+            })
+        domains = Skill.objects.values_list('domain',flat=True).distinct()
+        return render(request,'management/index.html',{'top':top, 'domains':domains,'year_filter':year_filter, 'dept_filter':dept_filter, 'domain_filter':domain_filter})  
 
 
 def is_teacher(user):
@@ -168,12 +198,7 @@ def admin_teacher_view(request):
 @admin_superuser_required
 def mentor_assign(request,empid):
     mentor = MMODEL.mentor.objects.get(emp_id=empid)
-    
-    #Clear previous mentees
     mentees = SMODEL.Student.objects.filter(mentor=mentor)
-    for mentee in mentees:
-        mentee.mentor = None
-        mentee.save()
 
     details = {
         'emp_id':mentor.emp_id,
@@ -202,9 +227,13 @@ def mentor_assign(request,empid):
             semester, branch, section = classname.split(' ')
             semester = numbers[semester]
             students = students.filter(semester=semester,branch=branch,section=section)
-        return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes, 'class_filter':classname, 'gender_filter':gender})
+        return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes, 'class_filter':classname, 'gender_filter':gender, 'mentees':mentees})
     if request.method == 'POST':
         rolls = request.POST.getlist('roll')
+        #Clear previous mentees
+        for mentee in mentees:
+            mentee.mentor = None
+            mentee.save()
         for roll in rolls:
             try:
                 user = User.objects.get(username=roll)
@@ -387,26 +416,6 @@ def admin_view_teacher_salary_view(request):
     teachers= TMODEL.Teacher.objects.all().filter(status=True)
     return render(request,'management/admin_view_teacher_salary.html',{'teachers':teachers})
 
-# @login_required(login_url='adminlogin')
-# @admin_superuser_required
-# def admin_student_view(request):
-#     if request.method=="POST":
-#         DEFAULT_PASSWORD="GPREC"
-#         uploaded_file = request.FILES['file']
-#         if uploaded_file.name.endswith(('.xls', '.xlsx')):
-#             excel_data = pd.read_excel(uploaded_file)
-#             for index, row in excel_data.iterrows():
-#                 username=row[0]
-#                 mail=row[1]
-#                 user=User(username=username, email=mail, password=DEFAULT_PASSWORD)
-#                 user.save()
-#                 student=SMODEL.Student(user=user)
-#                 student.save()
-#                 student_group = Group.objects.get(name='STUDENT')
-#                 student_group.user_set.add(user)
-#         render(request,'management/create_students_accounts.html')  
-#     return render(request,'management/create_students_accounts.html')
-
 from django.db import transaction
 from django.db.utils import IntegrityError
 
@@ -414,7 +423,7 @@ from django.db.utils import IntegrityError
 @admin_superuser_required
 def admin_student_view(request):
     if request.method == "POST":
-        DEFAULT_PASSWORD = "GPREC"
+        DEFAULT_PASSWORD = "GPREC123"
         uploaded_file = request.FILES.get('file')
         
         if uploaded_file is not None and uploaded_file.name.endswith(('.xls', '.xlsx')):
@@ -697,11 +706,9 @@ def admin_check_marks_view(request,pk):
     results= models.Result.objects.all().filter(exam=course).filter(student=student)
     return render(request,'management/admin_check_marks.html',{'results':results})
     
-@admin_superuser_required
 def aboutus_view(request):
     return render(request,'management/aboutus.html')
 
-@admin_superuser_required
 def contactus_view(request):
     sub = forms.ContactusForm()
     if request.method == 'POST':
@@ -721,10 +728,6 @@ def get_dashboard_data(request):
         students=student_skills.objects.filter(skill_name=i)
         students = list(students.select_related('student').values('student__branch'))  
         branch_counts = {item['student__branch']: students.count(item) for item in students}
-        # print(branch_counts)
-        # grouped_student_skills = {}
-        # for branch, skills_in_branch in groupby(students, key=lambda x: x['student__branch']):
-        #     grouped_student_skills[branch] = list(skills_in_branch)
         dict[i]=branch_counts
         # print(grouped_student_skills)
     # print(dict)

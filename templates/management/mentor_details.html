@@ -7,13 +7,12 @@
 {{gender}}
 {% endblock filter2 %}
 {% block btn %}
-<button type="button" class="btn btn-success btn-sm mt-3" id="update" data-bs-toggle="modal" data-bs-target="#caution">Update</button>
+{% comment %} <button type="button" class="btn btn-success btn-sm mt-3" id="update" data-bs-toggle="modal" data-bs-target="#caution">Update</button>
 <div class="modal fade" data-bs-backdrop="static" id="caution" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h6 class=" text-primary" id="exampleModalLabel">All the previously assigned mentees will be removed !</h6>
-          {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -21,13 +20,19 @@
         </div>
       </div>
     </div>
-  </div>
+</div> {% endcomment %}
+<a href=" {% url "mentor-assign" details.emp_id %}" class="btn btn-success btn-sm mt-3" id="update">Update</a>
 {% endblock btn %}
-{% block table %}
-  {% if mentees|length == 0 %}
-      <p class="text-center mt-5">No assigned students</p>
-  {% endif %}
-  {% for mentee in mentees %}
-    <tr><td><label class="exclude ms-3">{{mentee.user.username}}</label></td></tr>
-  {% endfor %} 
-{% endblock table %}
+{% block table1 %}
+  <h6 class="text-center mt-2">Mentees</h6>
+  <div style="width:100%; height:88%" id="nonselect">
+    <table class="ms-2">
+      {% if mentees|length == 0 %}
+        <p class="text-center mt-5">No assigned students</p>
+      {% endif %}
+      {% for mentee in mentees %}
+        <tr><td><label class="exclude ms-3">{{mentee.user.username}}</label></td></tr>
+      {% endfor %}
+    </table>
+  </div> 
+{% endblock table1 %}
