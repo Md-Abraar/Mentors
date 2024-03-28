@@ -30,7 +30,8 @@ class Skill(models.Model):
     sector = models.CharField(max_length=30)
     domain = models.CharField(max_length=50)
     level = models.CharField(max_length=15)
-    parameters = models.TextField(null=True,blank=True)
+    status= models.BooleanField(default=False)
+
     def __str__(self):
         return self.skill_name
 

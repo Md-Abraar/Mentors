@@ -17,6 +17,12 @@
     .smooth{
         transition: all 0.4s ease-in-out;
     }
+    p{
+        color: grey;
+        text-align: center;
+        font-size: large;
+        font-weight: bolder;
+    }
 </style>
 <div class="container mt-3">
     <div class="card">
@@ -26,6 +32,7 @@
                     <div class="col-md-6">
                         <h4 class="p-1">Skills Board</h4>
                     </div>
+                    
                     <div class="col-md-6">
                         
                             <!-- Search or Filter Input -->
@@ -149,10 +156,6 @@
                                         <label class="btn btn-outline-danger" for="Advanced">Advanced</label>
                                     </div>
                                 </div>
-                                <div class="form-group mb-3">
-                                    <label for="parameters">Parameters:</label>
-                                    <textarea name="parameters" id="parameters" class="form-control" placeholder="" ></textarea>
-                                </div>
                                 <button type="submit" class="btn btn-primary">Add</button>
                             </form>
                         </div>
@@ -164,10 +167,13 @@
                     <button class="btn btn-success float-end mb-4" data-bs-toggle="modal" data-bs-target="#addModal">Add Record</a>
                 </div>
             </div>
+            
+{% if skill_pending %}
+<p>Pending skills</p>            
             <!-- Records Table -->
             <div class="row">
                 <div class="table-responsive tab" id="table-container">
-                    <table class="table" id="dataTable">
+                    <table class="table" id="dataTable1">
                         <!-- Table Header -->
                         <thead>
                             <tr>
@@ -179,7 +185,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for skill in skills %}
+                            {% for skill in skill_pending %}
                                 <tr>
                                     <td>{{skill.skill_name}}</td>
                                     <td>{{skill.sector}}</td>
@@ -237,10 +243,104 @@
                                                                     <label class="btn btn-outline-danger" for="Advanced{{skill.skill_name}}">Advanced</label>
                                                                 </div>
                                                             </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                  <a href=" {% url 'accept-skill' skill.skill_name %} "><button type="button" class="btn btn-success">Accept</button></a>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                  <a href=" {% url 'reject-skill' skill.skill_name %} "><button type="button" class="btn btn-danger">Delete </button></a>
+                                                                </div>
+                                                              </div>
+                                                        
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {% endif %}
+            <p>Evaluated skills</p>
+            <!-- Records Table -->
+            <div class="row">
+                <div class="table-responsive tab" id="table-container">
+                    <table class="table" id="dataTable2">
+                        <!-- Table Header -->
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Sector</th>
+                                <th>Domain</th>
+                                <th>Level</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for skill in skill_approve %}
+                                <tr>
+                                    <td>{{skill.skill_name}}</td>
+                                    <td>{{skill.sector}}</td>
+                                    <td>{{skill.domain}}</td>
+                                    <td>{{skill.level}}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{skill.skill_name|cut:" "}}">
+                                            <svg width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
+                                                <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001" />
+                                            </svg>
+                                        </button>
+                                        <div class="modal fade" id="editModal{{skill.skill_name|cut:" "}}" data-bs-backdrop="static">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content">
+            
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Edit skill</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+            
+                                                    <!-- Modal Body -->
+                                                    <div class="modal-body">
+                                                        <form method="POST" action="{% url "admin-edit-skill" skill.skill_name %}">
+                                                            {% csrf_token %}
                                                             <div class="form-group mb-3">
-                                                                <label for="parameters">Parameters:</label>
-                                                                <textarea name="parameters" id="parameters" class="form-control" placeholder="" >{{skill.parameters}}</textarea>
+                                                                <label for="skill_name">Skill name:</label>
+                                                                <input class="form-control" id="skill_name" name="skill_name" value="{{skill.skill_name}}">
                                                             </div>
+                                                            <div class="form-group mb-3">
+                                                                <label for="sector">Sector:</label>
+                                                                <select class="form-select" id="sector" name="sector" placeholder="">
+                                                                    <option value="IT" {% if skill.sector == "IT" %}selected{% endif %}>IT</option>
+                                                                    <option value="Construction" {% if skill.sector == "Construction" %}selected{% endif %}>Construction</option>
+                                                                    <option value="Mechanics" {% if skill.sector == "Mechanics" %}selected{% endif %}>Mechanics</option>
+                                                                    <option value="Electronics" {% if skill.sector == "Electronics" %}selected{% endif %}>Electronics</option>
+                                                                    <option value="Electricals" {% if skill.sector == "Electricals" %}selected{% endif %}>Electricals</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group mb-3">
+                                                                <label for="domain">Domain:</label>
+                                                                <input class="form-control domain" id="domain" name="domain" value="{{skill.domain}}">
+                                                            </div>
+                                                            <div class="form-group mb-3">
+                                                                <label>Level:</label>
+                                                                <div class="btn-group ms-5" role="group" aria-label="Basic radio toggle button group">
+                                                                    <input type="radio" class="btn-check" name="level" id="Basic{{skill.skill_name}}" value="Basic" autocomplete="off" {% if skill.level == "Basic" %}checked{% endif %}>
+                                                                    <label class="btn btn-outline-success" for="Basic{{skill.skill_name}}">Basic</label>
+                                                                  
+                                                                    <input type="radio" class="btn-check" name="level" id="Intermediate{{skill.skill_name}}" value="Intermediate" autocomplete="off" {% if skill.level == "Intermediate" %}checked{% endif %}>
+                                                                    <label class="btn btn-outline-secondary" for="Intermediate{{skill.skill_name}}">Intermediate</label>
+                                                                  
+                                                                    <input type="radio" class="btn-check" name="level" id="Advanced{{skill.skill_name}}" value="Advanced" autocomplete="off" {% if skill.level == "Advanced" %}checked{% endif %}>
+                                                                    <label class="btn btn-outline-danger" for="Advanced{{skill.skill_name}}">Advanced</label>
+                                                                </div>
+                                                            </div>
+
                                                             <button type="submit" class="btn btn-primary">Save Changes</button>
                                                         </form>
                                                     </div>
@@ -272,23 +372,67 @@
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-    document.addEventListener('DOMContentLoaded', function () {
+    /*document.addEventListener('DOMContentLoaded', function () {
         var input = document.getElementById('searchInput');
-        var table = document.getElementById('dataTable');
-        var rows = table.getElementsByTagName('tr');
+        var filter = input.value.toLowerCase();
 
+        var table1 = document.getElementById('dataTable1');
+        var rows1 = table1.getElementsByTagName('tr');
+        
+        var table2 = document.getElementById('dataTable2');
+        var rows2 = table2.getElementsByTagName('tr');
+        console.log(rows1,rows2);
         input.addEventListener('keyup', function () {
-            var filter = input.value.toLowerCase();
-            for (var i = 1; i < rows.length; i++) {
-                var skill = rows[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+            
+            for (let i = 1; i < rows1.length; i++) {
+                
+                let skill = rows1[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+                
                 if (skill.indexOf(filter) > -1) {
-                    rows[i].style.display = '';
+                    rows1[i].style.display = '';
                 } else {
-                    rows[i].style.display = 'none';
+                    rows1[i].style.display = 'none';
                 }
             }
         });
+        input.addEventListener('keyup', function () {
+            
+            for (let i = 1; i < rows2.length; i++) {
+                
+                let skill = rows2[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+                
+                if (skill.indexOf(filter) > -1) {
+                    rows2[i].style.display = '';
+                } else {
+                    rows2[i].style.display = 'none';
+                }
+            }
+        });
+    });*/
+
+    document.addEventListener('DOMContentLoaded', function () {
+    var input = document.getElementById('searchInput');
+    var table1 = document.getElementById('dataTable1');
+    var rows1 = table1.getElementsByTagName('tr');
+    var table2 = document.getElementById('dataTable2');
+    var rows2 = table2.getElementsByTagName('tr');
+
+    input.addEventListener('keyup', function () {
+        var filter = input.value.toLowerCase();
+
+        for (let i = 1; i < rows1.length; i++) {
+            let skill = rows1[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+            rows1[i].style.display = skill.indexOf(filter) > -1 ? '' : 'none';
+        }
+
+        for (let i = 1; i < rows2.length; i++) {
+            let skill = rows2[i].getElementsByTagName('td')[0].textContent.toLowerCase();
+            rows2[i].style.display = skill.indexOf(filter) > -1 ? '' : 'none';
+        }
     });
+});
+
+
     var suggestions = {{domains|safe}} 
     $('.domain').typeahead({
         source: suggestions
@@ -334,10 +478,10 @@
         });
     } {% endcomment %}
     
-    {% comment %} if ( "{{sector_filter|safe}}" || "{{domain_filter|safe}}" || "{{level_filter|safe}}" ) {
+     if ( "{{sector_filter|safe}}" || "{{domain_filter|safe}}" || "{{level_filter|safe}}" ) {
         $('#filterCollapse').addClass('show');
         
-    } {% endcomment %}
+    } 
     
 
 </script>

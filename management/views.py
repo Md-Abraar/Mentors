@@ -127,6 +127,19 @@ def examiner(request):
     examiner_approve = TMODEL.Examiner.objects.filter(status=True).values('emp_id','name', 'department', 'examiner_image')
     return render(request,'management/examiner.html',{'examiner_pending':examiner_pending,'examiner_approve':examiner_approve})
 
+# @login_required(login_url='adminlogin')
+# @admin_superuser_required
+# def skill(request):
+#     # mentors = MMODEL.mentor.objects.all() #.values('emp_id','name','department','mobile','email','status','mentor_image')
+#     #mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
+#     #mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image').annotate(mentee_count=Count('student')).order_by('mentee_count','name')
+#     skills=Skill.objects.all()
+#     skill_pending = Skill.objects.filter(status=False).values('emp_id','name', 'department', 'examiner_image')
+#     skill_approve = Skill.objects.filter(status=True).values('emp_id','name', 'department', 'examiner_image')
+#     return render(request,'management/skill.html',{'skill_pending':skill_pending,'skill_approve':skill_approve})
+
+
+
 @login_required(login_url='adminlogin')
 @admin_superuser_required
 def examiner_details(request,empid):
@@ -313,6 +326,19 @@ def approve_examiner(request,pk):
     examiner.status=True
     examiner.save()
     return HttpResponseRedirect('/examiner')
+
+@login_required(login_url='adminlogin')
+def accept_skill(request,name):
+    skill=Skill.objects.get(skill_name=name)
+    skill.status=True
+    skill.save()
+    return HttpResponseRedirect('/admin-skill')
+
+@login_required(login_url='adminlogin')
+def reject_skill(request,name):
+    skill=Skill.objects.get(skill_name=name)
+    skill.delete()
+    return HttpResponseRedirect('/admin-skill')
 
 @login_required(login_url='adminlogin')
 def reject_mentor_view(request,pk):
@@ -526,22 +552,31 @@ def admin_skill_view(request):
     sector_filter = request.GET.get('sector_filter', '')
     level_filter = request.GET.get('level_filter', '')  
 
-    skills = models.Skill.objects.all()
+    skill_pending = Skill.objects.filter(status=False)
+    skill_approve = Skill.objects.filter(status=True)
     domains = models.Skill.objects.values_list('domain',flat=True).distinct()
 
     if domain_filter:
-        skills = skills.filter(domain=domain_filter)
+        skill_pending = skill_pending.filter(domain=domain_filter)
+        skill_approve = skill_approve.filter(domain=domain_filter)
+
     if sector_filter:
-        skills = skills.filter(sector=sector_filter)
+        skill_pending = skill_pending.filter(sector=sector_filter)
+        skill_approve = skill_approve.filter(sector=sector_filter)
     if level_filter:
-        skills = skills.filter(level=level_filter)
+        skill_pending = skill_pending.filter(level=level_filter)
+        skill_approve = skill_approve.filter(level=level_filter)
+    
+    
+    # return render(request,'management/examiner.html',{'examiner_pending':examiner_pending,'examiner_approve':examiner_approve})
 
     context = {
-        'skills':skills,
         'domain_filter':domain_filter,
         'sector_filter':sector_filter,
         'level_filter':level_filter,
-        'domains':list(domains)
+        'domains':list(domains),
+        'skill_pending':skill_pending,
+        'skill_approve':skill_approve
     }
     return render(request,'management/skills.html',context)
 
@@ -568,7 +603,7 @@ def admin_edit_skill(request,skill_name):
         level = request.POST.get('level')
         parameters = request.POST.get('parameters')
 
-        models.Skill.objects.filter(skill_name=skill_name).update(skill_name = new_skill_name,sector = sector,domain = domain,level = level,parameters = parameters)
+        models.Skill.objects.filter(skill_name=skill_name).update(skill_name = new_skill_name,sector = sector,domain = domain,level = level)
     return redirect(admin_skill_view)
 
 @login_required(login_url='adminlogin')

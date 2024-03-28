@@ -38,6 +38,10 @@ urlpatterns = [
     path('reject-mentor/<int:pk>', views.reject_mentor_view,name='reject-mentor1'),
     path('approve-examiner/<int:pk>', views.approve_examiner,name='approve-examiner'),
     path('reject-examiner/<int:pk>', views.reject_examiner,name='reject-examiner'),
+    path('reject-skill/<str:name>', views.reject_skill,name='reject-skill'),
+    path('accept-skill/<str:name>', views.accept_skill,name='accept-skill'),
+
+
     
     path('get_dashboard_data/',views.get_dashboard_data,name="get_dashboard_data"),
     path('admin-student', views.admin_student_view,name='admin-student'),
