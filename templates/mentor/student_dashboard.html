@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        label{
+            font-weight: bold;
+        }
+        .saveBtn {
+            background-color: #ffc107;
+            /* Yellow color */
+            color: #212529;
+            /* Black color */
+        }
+
+        .card-title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            /* Added position relative */
+        }
+
+        .card-buttons {
+            position: absolute;
+            /* Added position absolute */
+            top: 0;
+            /* Positioned at the top */
+            right: 0;
+            /* Positioned at the right */
+        }
+
+        .card-header {
+            position: relative;
+            background-color: #212529;
+        }
+
+        .card-title {
+            margin: 0;
+            color: white;
+        }
+
+        .card-buttons button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .icon {
+            font-size: 2rem;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <form method="post" enctype="multipart/form-data">
+         {% csrf_token %}
+        <div class="container">
+            
+        {% for i  in  per_det %}
+        <section id="Personal_details">
+        <div class="container">
+            <div class="card mb-4">
+                <div class="card-body">
+
+                    <div class="card-header">
+                        <div class="text-center">
+                            <h5 class="card-title fw-bold ">Student Details</h5>
+                        </div>
+                        {% if user11 == "student" %}
+                        <div class="card-buttons">
+                            <button class="btn editBtn" id="sd-edit"><i class="fas fa-edit fa-sm"></i></button>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="inputs-container">
+                        <div class="input-set">
+                            <div class="form-group row mb-3">
+                                <div class="">
+                                    <b><label for="student_fullname" class="form-label small">Student Full Name:</label></b>
+                                    <input type="text" class="form-control " id="student_fullname" name="student_fullname" value="{{ i.student_fullname }}" readonly>
+                                </div>
+                                
+                            </div>
+                            <div class="form-group row mb-3">
+                                <div class="col-md-3">
+                                    <b><label for="sid" class="form-label small">Roll Number:</label></b>
+                                    <input type="text" class="form-control " id="sid" name="sid" value="{{ i.student_id }}"  readonly>
+                                </div>
+                                <div class="col-md-3">
+                                    <b><label for="branch" class="form-label small ">Branch:</label></b>
+                                    <select name="branch" id="branch" class="form-select" disabled>
+                                        <option value="" {% if i.branch == "" %} selected {% endif %}>Select</option>
+                                        <option value="CSE" {% if i.branch == "CSE" %} selected {% endif %}>CSE</option>
+                                        <option value="ECE" {% if i.branch == "ECE" %} selected {% endif %}>ECE</option>
+                                        <option value="EEE" {% if i.branch == "EEE" %} selected {% endif %}>EEE</option>
+                                        <option value="MECH" {% if i.branch == "MECH" %} selected {% endif %}>MECH</option>
+                                        <option value="CIVIL" {% if i.branch == "CIVIL" %} selected {% endif %}>CIVIL</option>
+                                        <option value="CSBS" {% if i.branch == "CSBS" %} selected {% endif %}>CSBS</option>
+                                        <option value="CSM" {% if i.branch == "CSM" %} selected {% endif %}>CSM</option>
+                                        <option value="CSD" {% if i.branch == "CSD" %} selected {% endif %}>CSD</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <b>  <label for= "section" class="form-label small">Section:</label></b>
+                                    <select name="section" id="section" class="form-select" disabled>
+                                        <option value="" {% if i.section == "" %} selected {% endif %}>Select</option>
+                                        <option value="A" {% if i.section == "A" %} selected {% endif %}>A</option>
+                                        <option value="B" {% if i.section == "B" %} selected {% endif %}>B</option>
+                                        <option value="C" {% if i.section == "C" %} selected {% endif %}>C</option>
+                                        <option value="D" {% if i.section == "D" %} selected {% endif %}>D</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <b><label for="scheme" class="form-label small ">Scheme:</label></b>
+                                    <input type="text" class="form-control" id="scheme" name="scheme"  value="{{ i.scheme }}" readonly>
+                                </div>
+                               
+                            </div>
+                            
+                            <div class="form-group row mb-3">
+                                <div class="col-md-3">
+                                    <b><label for="student_phone_no" class="form-label small">Phone Number:</label></b>
+                                    <div class="input-group">
+                                        <span class="input-group-text">+91</span>
+                                        <input type="number" class="form-control " id="student_phone_no" maxlength="10" value="{{ i.student_phone_no }}"
+                                            name="student_phone_no" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <b><label for="student_email_id" class="form-label small ">Email Id:</label></b>
+                                    <input type="email" class="form-control" id="student_email_id" name="student_email_id" value="{{ i.student_email_id }}" readonly>
+                                </div>
+                                <div class="col-md-2">
+                                    <b><label for="year_of_boarding" class="form-label small ">Year of Boarding:</label></b>
+                                    <input type="date" class="form-control" id="year_of_boarding" name="year_of_boarding" value="{{ i.yob|date:'Y-m-d'}}"  readonly>
+                                </div>
+                                <div class="col-md-2">
+                                    <b><label for="year_of_passing" class="form-label small ">Year of Passing:</label></b>
+                                    <input type="date" class="form-control" id="year_of_passing" name="year_of_passing" value="{{ i.yop|date:'Y-m-d'}}" readonly>
+                                </div>
+
+                            </div>
+                            <div class="form-group row mb-3">
+                                <div class="col-md-4">
+                                    <b><label for="dob" class="form-label small">Date of Birth:</label></b>
+                                    <input type="date" class="form-control " id="dob" name="dob" value="{{ i.dob|date:'Y-m-d'}}" eradonly>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <b><label for="gender" class="form-label small ">Gender:</label></b>
+                                    <select name="gender" id="gender" class="form-select" disabled>
+                                        <option value="" {% if i.gender == "" %} selected {% endif %}>Select</option>
+                                        <option value="Male" {% if i.gender == "Male" %} selected {% endif %}>Male</option>
+                                        <option value="Female" {% if i.gender == "Female" %} selected {% endif %}>Female</option>
+                                        <option value="Others" {% if i.gender == "Others" %} selected {% endif %}>Others</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <b><label for="aadhar_number" class="form-label small">Aadhar Number:</label></b>
+                                    <input type="text" class="form-control required" id="aadhar_number" maxlength="12" value="{{ i.aadhar_number }}"
+                                        name="aadhar_number" readonly>
+                                </div>
+                            </div>
+                            <div>
+                                <b><label for="Local_address" class="control-label col-sm-3 small ">Local/Present Address:</label></b>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4 mt-2" id="l_hno">
+                                        <input type="text" name="l_hno" placeholder="Enter House No."   class="form-control" value="{{ i.L_hno }}"readonly></div>
+                                    <div class="col-md-4 mt-2" id="l_street"> <input type="text" name="l_street" placeholder="Enter Street Name" class="form-control" value="{{ i.L_street }}" readonly> </div>
+                                    <div class="col-md-4 mt-2" id="l_city"> <input type="text" name="l_city" value="{{ i.L_city }}"
+                                           placeholder="Enter your City " class="form-control"  readonly> </div>
+
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4 mb-2" id="l_district"><input type="text" name="l_district" value="{{ i.L_district }}"
+                                         placeholder="Enter your district"   class="form-control " readonly></div>
+                                    <div class="col-md-4 mb-2" id="l_state"> <input type="text" name="l_state" value="{{ i.L_state }}"
+                                           placeholder="Enter Your State" class="form-control " readonly> </div>
+                                    <div class="col-md-4 mb-2" id="l_pincode"> <input type="number" name="l_pincode" value="{{ i.L_pincode }}"
+                                           placeholder="Enter Pincode" class="form-control " readonly> </div>
+
+                                </div>
+                            </div>
+                            <div>
+                                <b><label for="Present_address" class="control-label col-sm-3 small ">Permanent
+                                        Address:</label></b>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4 mt-2" id="p_hno"><input type="text" name="p_hno" value="{{ i.P_hno }}"
+                                          placeholder="Enter House No."  class="form-control " readonly></div>
+                                    <div class="col-md-4 mt-2" id="p_street"> <input type="text" name="p_street" value="{{ i.P_street }}"
+                                          placeholder="Enter Street Name"  class="form-control " readonly> </div>
+                                    <div class="col-md-4 mt-2" id="p_city"> <input type="text" name="p_city" value="{{ i.P_city }}"
+                                           placeholder="Enter your city" class="form-control " readonly> </div>
+
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4 mb-2" id="p_district"><input type="text" name="p_district" value="{{ i.P_district }}"
+                                          placeholder="Enter your District"  class="form-control " readonly></div>
+                                    <div class="col-md-4 mb-2" id="p_state"> <input type="text" name="p_state" value="{{ i.P_state }}"
+                                           placeholder="Enter your State" class="form-control " readonly> </div>
+                                    <div class="col-md-4 mb-2" id="p_pincode"> <input type="text" name="p_pincode" value="{{ i.P_pincode }}"
+                                           placeholder="Enter Pincode" class="form-control " readonly> </div>
+
+                                </div>
+                            </div>
+                            <div class="form-group row mb-3">
+                                
+                                <div class="col-md-4">
+                                    <b><label for="category" class="form-label small">Category:</label></b>
+                                    <select name="category" id="category" class="form-select" disabled>
+                                        <option value="" {% if i.category == "" %} selected {% endif %}>Select</option>
+                                        <option value="convenor" {% if i.category == "convenor" %} selected {% endif %}>convenor</option>
+                                        <option value="category-b" {% if i.category == "category-b" %} selected {% endif %}>category-b</option>
+                                        <option value="spot" {% if i.category == "spot" %} selected {% endif %}>spot</option>
+                                        <option value="Lateral" {% if i.category == "Lateral" %} selected {% endif %}>Lateral Entry</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <b><label for="reservation_category" class="form-label small"> Reservation Category:</label></b>
+                                    <select name="reservation_category" id="reservation_category" class="form-select">
+                                        <option value="" {% if i.reservation_category == "" %} selected {% endif %}>Select</option>
+                                        <option value="OC" {% if i.reservation_category == "OC" %} selected {% endif %}>OC</option>
+                                        <option value="BC-A" {% if i.reservation_category == "BC-A" %} selected {% endif %}>BC-A</option>
+                                        <option value="BC-B" {% if i.reservation_category == "BC-B" %} selected {% endif %}>BC-B</option>
+                                        <option value="BC-C" {% if i.reservation_category == "BC-C" %} selected {% endif %}>BC-C</option>
+                                        <option value="BC-D" {% if i.reservation_category == "BC-D" %} selected {% endif %}>BC-D</option>
+                                        <option value="BC-E" {% if i.reservation_category == "BC-E" %} selected {% endif %}>BC-E</option>
+                                        <option value="SC" {% if i.reservation_category == "SC" %} selected {% endif %}>SC</option>
+                                        <option value="ST" {% if i.reservation_category == "ST" %} selected {% endif %}>ST</option>
+                                        <option value="EWS" {% if i.reservation_category == "EWS" %} selected {% endif %}>EWS</option>
+                                        <option value="PWD" {% if i.reservation_category == "PWD" %} selected {% endif %}>PWD</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                <b><label for="scholarship" class="form-label small"> Scholarship:</label></b>
+                                    <input type="text" name="scholarship" placeholder="Scholarship (if any)" class="form-control " id="scholarship" value="{{ i.scholarship }}" readonly> 
+                                </div>
+                            </div>
+                            <div class="form-group row mb-3">
+                                <div class="col-md-4">
+                                    <b><label for="nationality" class="form-label small">Nationality:</label></b>
+                                    <input type="text" class="form-control " id="nationality" name="nationality"  value="{{ i.nationality }}" readonly>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <b><label for="residential_details" class="form-label small ">Residential
+                                            Details:</label></b>
+                                    <select name="residential_details" id="residential_details" class="form-select" disabled>
+                                        <option value="" {% if i.residential_details == "" %} selected {% endif %}>Select</option>
+                                        <option value="Day Scholar" {% if i.residential_details == "Day Scholar" %} selected {% endif %}>Day Scholar</option>
+                                        <option value="Guardian" {% if i.residential_details == "Guardian" %} selected {% endif %}>Guardian</option>
+                                        <option value="College Hostel" {% if i.residential_details == "College Hostel" %} selected {% endif %}>College Hostel</option>
+                                        <option value="Outside Hostel" {% if i.residential_details == "Outside Hostel" %} selected {% endif %}>Outside Hostel</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <b><label for="mother_tongue" class="form-label small">Mother Tongue:</label></b>
+                                    <input type="text" class="form-control required" id="mother_tongue"  value="{{ i.mother_tongue }}"
+                                        name="mother_tongue" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-3">
+                                <div class="col-md-4">
+                                    <b><label for="transport_mode" class="form-label small">Mode of
+                                            Transport:</label></b>
+                                    <select name="transport_mode" id="transport_mode" class="form-select" disabled>
+                                        <option value="" {% if i.transport_mode == "" %} selected {% endif %}>Select</option>
+                                        <option value="Own" {% if i.transport_mode == "Own" %} selected {% endif %}>Own</option>
+                                        <option value="College Bus" {% if i.transport_mode == "College Bus" %} selected {% endif %}>College Bus</option>
+                                        <option value="Public Transport" {% if i.transport_mode == "Public Transport" %} selected {% endif %}>Public Transport</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <b><label for="hobbies" class="form-label small">Hobbies:</label></b>
+                                    <input type="text" class="form-control required" id="hobbies"  value="{{ i.hobbies }}"
+                                        name="hobbies" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-3">
+                                <div class="col-md-4">
+                                    <b><label for="height" class="form-label small">Height:</label></b>
+                                    <input type="text" class="form-control required" id="height" value="{{ i.height }}"
+                                        name="height" readonly>
+
+                                </div>
+
+                                <div class="col-md-4">
+                                    <b><label for="weight" class="form-label small">Weight:</label></b>
+                                    <input type="text" class="form-control required" id="weight" value="{{ i.weight }}"
+                                        name="weight" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <b><label for="blood_group" class="form-label small">Blood Group:</label></b>
+                                    <select name="blood_group" id="blood_group" class="form-select">
+                                        <option value="" {% if i.bloodgroup == "" %} selected {% endif %}>Select</option>
+                                        <option value="O+" {% if i.bloodgroup == "O+" %} selected {% endif %}>O+</option>
+                                        <option value="O-" {% if i.bloodgroup == "O-" %} selected {% endif %}>O-</option>
+                                        <option value="A+" {% if i.bloodgroup == "A+" %} selected {% endif %}>A+</option>
+                                        <option value="A-" {% if i.bloodgroup == "A-" %} selected {% endif %}>A-</option>
+                                        <option value="B+" {% if i.bloodgroup == "B+" %} selected {% endif %}>B+</option>
+                                        <option value="B-" {% if i.bloodgroup == "B-" %} selected {% endif %}>B-</option>
+                                        <option value="AB+" {% if i.bloodgroup == "AB+" %} selected {% endif %}>AB+</option>
+                                        <option value="AB-" {% if i.bloodgroup == "AB-" %} selected {% endif %}>AB-</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-3">
+                                <div class="col-md-4">
+                                    <b><label for="ph_status" class="form-label small">Are you physically
+                                            handicapped?</label></b>
+                                    <select name="ph_status" id="ph_status" class="form-select" disabled>
+                                        <option value="" {% if i.ph_status == "" %} selected {% endif %} >Select</option>
+                                        <option value="False" {% if i.ph_status == False %} selected {% endif %}>No</option>
+                                        <option value="True" {% if i.ph_status == True %} selected {% endif %}>Yes</option>
+                                        
+                                    </select>
+                                </div>
+                                <div class="col-md-8">
+                                    <b><label for="illness" class="form-label small">Illness:</label></b>
+                                    <input type="text" class="form-control required" id="illness" value="{{ i.illness }}"
+                                        name="illness" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endfor %}
+        
+    {% for i in par_det  %}
+        <section id="Parents_details">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center">
+                                <h5 class="card-title fw-bold">Parent Details</h5>
+                                {% if user11 == "student" %}
+                                <div class="card-buttons">
+                                    <button class="btn editBtn" id="pd-edit"><i class="fas fa-edit fa-sm"></i></button>
+                                </div>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                        <div class="inputs-container">
+                            <div class="input-set">
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="father_name" class="form-label small">Father name:</label></b>
+                                        <input type="text" class="form-control " id="father_name" name="father_name"  value="{{ i.father_name }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="father_occupation" class="form-label small ">Father
+                                                Occupation:</label></b>
+                                        <input type="text" class="form-control" id="father_occupation" name="father_occupation" value="{{ i.father_occupation }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="father_phone" class="form-label small">Father's Phone
+                                                Number:</label></b>
+                                        <input type="number" class="form-control " id="father_phone" name="father_phone" value="{{ i.father_phone_number }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="mother_name" class="form-label small">Mother name:</label></b>
+                                        <input type="text" class="form-control " id="mother_name" name="mother_name" value="{{ i.mother_name }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="mother_occupation" class="form-label small ">Mother
+                                                Occupation:</label></b>
+                                        <input type="text" class="form-control" id="mother_occupation" name="mother_occupation"  value="{{ i.mother_occupation }}"readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="mother_phone" class="form-label small">Mother's Phone
+                                                Number:</label></b>
+                                        <input type="number" class="form-control " id="mother_phone" name="mother_phone" value="{{ i.mother_phone_number }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="guardian_name" class="form-label small">Guardian name:</label></b>
+                                        <input type="text" class="form-control " id="guardian_name" name="guardian_name" value="{{ i.guardian_name }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="guardian_occupation" class="form-label small ">Guardian
+                                                Occupation:</label></b>
+                                        <input type="text" class="form-control" id="guardian_occupation" name="guardian_occupation" value="{{ i.guardian_occupation }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="guardian_phone" class="form-label small">Guardian's Phone
+                                                Number:</label></b>
+                                        <input type="number" class="form-control " id="guardian_phone" name="guardian_phone"  value="{{ i.guardian_phone_number }}"readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="pg_email" class="form-label small">Parent/Guardian Email:</label></b>
+                                        <input type="email" class="form-control " id="pg_email" name="pg_email" value="{{ i.parent_email }}" readonly>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endfor %}
+        <section id="Education_details">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center">
+                                <h5 class="card-title fw-bold">Education Details</h5>
+                            </div>
+                            {% if user11 == "student" %}
+                            <div class="card-buttons">
+                                <button class="btn editBtn" id="ed-edit"><i class="fas fa-edit fa-sm"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% with i=edu_det.all %}
+                        <div class="inputs-container">
+                            <div class="input-set">
+                                <h6 class="card-title text-center fw-bold">SSC or Equivalent Details:</h6>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-6">
+                                        <b><label for="s_qualification" class="form-label small">Qualification:</label></b>
+                                        <select name="s_qualification" id="s_qualification" class="form-select" disabled>
+                                            <option value="" {% if i.first.qualification == "" %} selected {% endif %}>Select</option>
+                                            <option value="SSC" {% if i.first.qualification == "SSC" %} selected {% endif %}>SSC</option>
+                                            <option value="SSC Equivalent" {% if i.first.qualification == "SSC Equivalent" %} selected {% endif %}>SSC Equivalent</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <b><label for="s_board" class="form-label small">Board:</label></b>
+                                        <input type="text" class="form-control " id="s_board" name="s_board" value="{{ i.first.board }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="s_YOP" class="form-label small">Year of passing:</label></b>
+                                        <input type="date" class="form-control " id="s_YOP" name="s_YOP" value="{{ i.first.YOP|date:'Y-m-d' }}"readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="s_institute_name" class="form-label small ">Institute Name:</label></b>
+                                        <input type="text" class="form-control" id="s_institute_name" name="s_institute_name"  value="{{ i.first.institute_name }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="s_institute_location" class="form-label small">Institute Place:</label></b>
+                                        <input type="text" class="form-control " id="s_institute_location" name="s_institute_location"  value="{{ i.first.institute_location }}"readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="s_percentage" class="form-label small">Percentage:</label></b>
+                                        <input type="number" class="form-control " id="s_percentage" name="s_percentage" value="{{ i.first.percentage }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="s_gpa" class="form-label small ">Gpa:</label></b>
+                                        <input type="number" class="form-control" id="s_gpa" name="s_gpa" value="{{ i.first.gpa }}" readonly>
+                                    </div>
+                                    <div class="col-md-4 mb-2">
+                                        <b><label for="s_medium" class="form-label small">Medium:</label></b>
+                                        <input type="text" class="form-control " id="s_medium" name="s_medium"  value="{{ i.first.medium }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            {% endwith %}
+                            {% comment %} {% with i= %}{% endwith %} {% endcomment %}
+                            {% with i=edu_det.all %}
+                            <h6 class="card-title text-center fw-bold">Intermediate or Diploma Details</h6>
+                            <div class="input-set">
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="h_qualification" class="form-label small">Qualification:</label></b>
+                                        <select name="h_qualification" id="h_qualification" class="form-select"  disabled>
+                                            <option value="" {% if i.last.qualification == "" %} selected {% endif %}>Select</option>
+                                            <option value="Intermediate" {% if i.last.qualification == "Intermediate" %} selected {% endif %}>Intermediate</option>
+                                            <option value="Diploma" {% if i.last.qualification == "Diploma" %} selected {% endif %}>Diploma</option>
+
+
+                                     
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="h_course" class="form-label small ">Group/course:</label></b>
+                                        <input type="text" class="form-control" id="h_course" name="h_course" value="{{ i.last.course }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="h_board" class="form-label small">Board:</label></b>
+                                        <input type="text" class="form-control " id="h_board" name="h_board" value="{{ i.last.board }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="h_YOP" class="form-label small">Year of passing:</label></b>
+                                        <input type="date" class="form-control " id="h_YOP" name="h_YOP" value="{{ i.last.YOP|date:'Y-m-d' }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="h_institute_name" class="form-label small ">Institute Name:</label></b>
+                                        <input type="text" class="form-control" id="h_institute_name" name="h_institute_name" value="{{ i.last.institute_name }}" readonly >
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="h_institute_location" class="form-label small">Institute Place:</label></b>
+                                        <input type="text" class="form-control " id="h_institute_location" name="h_institute_location" value="{{ i.last.institute_location }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="h_percentage" class="form-label small">Percentage:</label></b>
+                                        <input type="number" class="form-control " id="h_percentage" name="h_percentage" value="{{ i.last.percentage }}" readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="h_gpa" class="form-label small ">Gpa:</label></b>
+                                        <input type="number" class="form-control" id="h_gpa" name="h_gpa"  value="{{ i.last.gpa }}"readonly>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="h_medium" class="form-label small">Medium:</label></b>
+                                        <input type="text" class="form-control " id="h_medium" name="h_medium" value="{{ i.last.medium }}" readonly>
+                                    </div>
+                                </div>
+                            </div>
+{% endwith %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="Competitive_exam">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center">
+                                <h5 class="card-title fw-bold">Competitive Exams</h5>
+                            </div>
+                            {% if user11 == "student" %}
+                            <div class="card-buttons">
+                                <button class="btn editBtn" id="ce-edit"><i class="fas fa-edit fa-sm"></i></button>
+                                <button class="btn addMoreBtn" id="ce-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                <button class=" btn deleteBtn" id="ce-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% for i in com_det %}
+                        <div class="inputs-container">
+                            <div class="input-set">
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="test_name" class="form-label small">Test Name:</label></b>
+                                        <select name="test_name" id="test_name" class="form-select" disabled>
+                                            <option value="" {% if i.test_name == "" %} selected {% endif %}>Select</option>
+                                            <option value="JEE MAINS" {% if i.test_name == "JEE MAINS" %} selected {% endif %}>JEE MAINS</option>
+                                            <option value="AP EAMCET" {% if i.test_name == "AP EAMCET" %} selected {% endif %}>AP EAMCET</option>
+                                            <option value="AP ECET" {% if i.test_name == "AP ECET" %} selected {% endif %}>AP ECET</option>
+                                            <option value="GATE" {% if i.test_name == "GATE" %} selected {% endif %}>GATE</option>
+                                            <option value="GRE" {% if i.test_name == "GRE" %} selected {% endif %}>GRE</option>
+                                            <option value="TOEFL" {% if i.test_name == "TOEFL" %} selected {% endif %}>TOEFL</option>
+                                            <option value="IES" {% if i.test_name == "IES" %} selected {% endif %}>IES</option>
+                                            <option value="CAT" {% if i.test_name == "CAT" %} selected {% endif %}>CAT</option>
+                                            <option value="others" {% if i.test_name == "other" %} selected {% endif %}>others</option>
+                                        </select>
+                                        <input type="text" id="otherInput" class="form-control" style="display:none;"
+                                            placeholder="Please specify">
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="rank_obtained" class="form-label small ">Rank Obtained:</label></b>
+                                        <input type="number" class="form-control" id="rank_obtained" name="rank_obtained" value="{{ i.rank_obtained }}" readonly placeholder="rank">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <b><label for="score_obtained" class="form-label small">Score Obtained:</label></b>
+                                        <input type="number" class="form-control " id="score_obtained" name="score_obtained" value="{{ i.score_obtained }}" readonly placeholder="score">
+                                    </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if not forloop.last  %}
+                            <hr>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="Profile">   
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center"> <!-- Added text-center class -->
+                                <h5 class="card-title fw-bold">Profile</h5>
+                            </div>
+                            {% if user11 == "student" %}
+                            <div class="card-buttons"> <!-- Added card-buttons class -->
+                                <button class="btn  editBtn" id="a-edit"><i class="fas fa-edit fa-sm"></i> </button>
+                                <button class="btn  addMoreBtn" id="a-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                <button class="btn deleteBtn" id="a-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% for  i in prof_det %}    
+                        <div class="inputs-container">
+                            <!-- Initial set of inputs -->
+                            <div class="row mb-3 input-set">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <b><label class="form-label small">Platform name:</label></b>
+                                        
+                                        <select name="sub_type" id="profile_name" class="form-select" disabled >
+                                            <option value="" {% if i.profile_name == "" %} selected {% endif %}>Select</option>
+                                            <option value="LinkedIn" {% if i.profile_name == "LinkedIn" %} selected {% endif %}>LinkedIn</option>
+                                            <option value="GitHub" {% if i.profile_name == "GitHub" %} selected {% endif %}>GitHub</option>
+                                            <option value="LeetCode" {% if i.profile_name == "LeetCode" %} selected {% endif %}>LeetCode</option>
+                                            <option value="GeeksforGeeks" {% if i.profile_name == "GeeksforGeeks" %} selected {% endif %}>GeeksforGeeks</option>
+                                            <option value="HackerRank" {% if i.profile_name == "HackerRank" %} selected {% endif %}>HackerRank</option>
+                                            <option value="CodeChef" {% if i.profile_name == "CodeChef" %} selected {% endif %}>CodeChef</option>
+                                            <option value="HackerEarth" {% if i.profile_name == "HackerEarth" %} selected {% endif %}>HackerEarth</option>
+                                            <option value="Other" {% if i.profile_name == "Other" %} selected {% endif %}>Other</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <b> <label class="form-label small">Url:</label></b>
+                                        <input type="text" class="form-control" id="profile_url" value="{{i.profile_url}}" placeholder="role"
+                                            name="profile_url" readonly>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        {% if not forloop.last  %}
+                            <hr>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            </section>
+
+
+
+            <section id="Semwise_grades">
+                <div class="container">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="card-header">
+                                <div class="text-center">
+                                    <h5 class="card-title fw-bold">Semester-wise Grades</h5>
+                                </div>
+                                {% if user11 == "student" %}
+                                <div class="card-buttons">
+                                    <button class="editBtn" id="sw-edit"><i class="fas fa-edit fa-sm"></i> </button>
+                                    <button class="addMoreBtn" id="sw-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                    <button class=" btn deleteBtn" id="sw-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                        {% for i in sem_wise_det %}
+                        <div class="inputs-container">
+                            <div class="input-set">
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="grades_sem" class="form-label small">Semester:</label></b>
+                                        <select name="grades_sem" id="grades_sem" class="form-select"  disabled>
+                                            <option value="" {% if i.grades_sem == "" %} selected {% endif %}>Select</option>
+                                            <option value="1" {% if i.grades_sem == 1 %} selected {% endif %}>1</option>
+                                            <option value="2" {% if i.grades_sem == 2 %} selected {% endif %}>2</option>
+                                            <option value="3" {% if i.grades_sem == 3 %} selected {% endif %}>3</option>
+                                            <option value="4" {% if i.grades_sem == 4 %} selected {% endif %}>4</option>
+                                            <option value="5" {% if i.grades_sem == 5 %} selected {% endif %}>5</option>
+                                            <option value="6" {% if i.grades_sem == 6 %} selected {% endif %}>6</option>
+                                            <option value="7" {% if i.grades_sem == 7 %} selected {% endif %}>7</option>
+                                            <option value="8" {% if i.grades_sem == 8 %} selected {% endif %}>8</option>
+
+                                        </select>                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="sgpa" class="form-label small ">SGPA:</label></b>
+                                        <input type="number" class="form-control" id="sgpa" name="sgpa" value="{{i.sgpa}}" readonly placeholder="sgpa">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <b<label for="cgpa" class="form-label small">CGPA:</label></b>
+                                            <input type="number" class="form-control " id="cgpa" name="cgpa"  value="{{i.cgpa}}" placeholder="cgpa"
+                                                readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if not forloop.last  %}
+                            <hr>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="Semester_marks">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center">
+                                <h5 class="card-title fw-bold">Semester Marks</h5>
+                            </div>
+                            {% if user11 == "student" %}
+                            <div class="card-buttons">
+                                <button class="editBtn" id="sm-edit"><i class="fas fa-edit fa-sm"></i></button>
+                                <button class="addMoreBtn" id="sm-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                <button class=" btn deleteBtn" id="sm-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% for i in marks_det %}
+                        <div class="inputs-container">
+                            <div class="input-set">
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="sname" class="form-label small">Subject Name:</label></b>
+                                        <input type="text" class="form-control " id="sname" name="sname" value="{{i.subject_name}}" readonly placeholder="Subject Name">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="sub_type" class="form-label small ">Subject Type:</label></b>
+                                        <select name="sub_type" id="sub_type" class="form-select" disabled >
+                                            <option value="" {% if i.subject_type == "" %} selected {% endif %}>Select</option>
+                                            <option value="Class" {% if i.subject_type == "Class" %} selected {% endif %}>Class</option>
+                                            <option value="Lab" {% if i.subject_type == "Lab" %} selected {% endif %}>Lab</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <b><label for="marks_sem" class="form-label small">Semester(1-8):</label></b>
+                                        <select name="marks_sem" id="marks_sem" class="form-select" disabled>
+                                            <option value="" {% if i.marks_sem == "" %} selected {% endif %}>Select</option>
+                                            <option value="1" {% if i.marks_sem == 1 %} selected {% endif %}>1</option>
+                                            <option value="2" {% if i.marks_sem == 2 %} selected {% endif %}>2</option>                                            <option value="" {% if i.marks_sem == "" %} selected {% endif %}>Select</option>
+                                            <option value="3" {% if i.marks_sem == 3 %} selected {% endif %}>3</option>
+                                            <option value="4" {% if i.marks_sem == 4 %} selected {% endif %}>4</option>
+                                            <option value="5" {% if i.marks_sem == 5 %} selected {% endif %}>5</option>
+                                            <option value="6" {% if i.marks_sem == 6 %} selected {% endif %}>6</option>
+                                            <option value="7" {% if i.marks_sem == 7 %} selected {% endif %}>7</option>
+                                            <option value="8" {% if i.marks_sem == 8 %} selected {% endif %}>8</option>
+                                        </select>                                 
+                                      </div>
+                                </div>
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-4">
+                                        <b><label for="first_ses" class="form-label small">First Sessional
+                                                Marks:</label></b>
+                                        <input type="number" class="form-control " id="first_ses" name="first_ses" value="{{i.first_sessional}}" readonly placeholder="first sessional_marks">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <b><label for="second_ses" class="form-label small ">Final Sessional
+                                                Marks:</label></b>
+                                        <input type="number" class="form-control" id="second_ses" name="second_ses" value="{{i.second_sessional}}" readonly placeholder="second sessional_marks">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <b><label for="grade" class="form-label small"> Grade:</label></b>
+                                        <input type="number" class="form-control " id="grade" name="grade" value="{{i.grade_obtained}}" readonly placeholder="grade">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if not forloop.last  %}
+                            <hr>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="Placements">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center">
+                                <h5 class="card-title  fw-bold">Placements</h5>
+                            </div> 
+                            {% if user11 == "mentor" %}
+                            <div class="card-buttons">
+                                <button class="editBtn" id="p-edit"><i class="fas fa-edit fa-sm"></i></button>
+                                <button class="addMoreBtn" id="p-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                <button class="btn deleteBtn" id="p-delete"><i class="fas fa-trash-alt fa"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% for i in  pla_det %}
+                        <div class="inputs-container">
+                            <div class="input-set">
+                                <div class="form-group row mb-3">
+                                    <div class="col-md-3">
+                                        <b><label for="company" class="form-label small">Company:</label></b>
+                                        <input type="text" class="form-control " id="company" name="company" value="{{i.company}}" readonly placeholder="company name">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <b><label for="date_placed" class="form-label small ">Date Placed:</label></b>
+                                        <input type="date" class="form-control" id="date_placed" name="date_placed" value="{{i.date_placed|date:'Y-m-d'}}"  readonly placeholder="date placed">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <b><label for="package" class="form-label small">Package:</label></b>
+                                        <input type="number" class="form-control " id="package" name="package" value="{{i.package}}"  readonly placeholder="package">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <b><label for="drive_mode" class="form-label small">Drive Mode:</label></b>
+                                        <select name="drive_mode" id="drive_mode" class="form-select" disabled>
+                                            <option value="" {% if i.drive_mode == "" %} selected {% endif %}>Select</option>
+                                            <option value="On Campus" {% if i.drive_mode == "On Campus" %} selected {% endif %}>On Campus</option>
+                                            <option value="Off Campus" {% if i.drive_mode == "Off Campus" %} selected {% endif %}>Off Campus</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% if not forloop.last  %}
+                            <hr>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="Skills">
+            <div class="container">
+                <div class="card mb-4 " >
+                    <div class="card-body">
+                        <div class="card-header ">
+                            <div class="text-center">
+                                <h5 class="card-title fw-bold ">Skills</h5>
+                            </div>
+                            {% if user11 == "mentor" %}
+                            <div class="card-buttons">
+                                <button class="btn editBtn" id="s-edit"><i class="fas fa-edit fa-sm"></i></button>
+                                <button class="btn addMoreBtn" id="s-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                <button class="btn deleteBtn" id="s-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% for i in ski_det %}
+                        <div class="inputs-container">
+                            <!-- Initial set of inputs -->
+                            <div class="row mb-3 input-set">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <b><label  class="form-label small">Name of the Skill:</label></b>
+                                        <input type="text" class="form-control" name="skill_name" id="skill_name" value="{{i.skill_name}}" readonly placeholder="skill name">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <b><label class="from-label small">Score of the test:</label></b>
+                                        <input type="number" class="form-control" name="test_score" id="test_score" value="{{i.test_score}}" placeholder="score in test"
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <b><label class="form-label small">Score assigned for project:</label></b>
+                                        <input type="number" class="form-control" name="project_score" id="project_score" value="{{i.project_score}}" placeholder="score"
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <b><label class="form-label small">Date:</label></b>
+                                        <input type="date" class="form-control" name="updated_date" id="updated_date" value="{{i.updated_date|date:'Y-m-d'}}"
+                                            readonly>
+                                    </div>
+                                </div>
+                            </div>   
+                            <div class="row mb-3 input-set">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <b><label class="form-label small">Faculty approved by:</label></b>
+                                        <input type="number" class="form-control" name="faculty_id" id="faculty_id" value="{{i.faculty_id}}" placeholder=" Faculty Id"
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <b><label class="from-label small">Certification Status:</label></b>
+                                            <select name="certification_status" id="certification_status" class="form-select" disabled>
+                                                <option value="" {% if i.certification_status == "" %} selected {% endif %}>Select</option>
+                                                <option value="False" {% if i.certification_status == False %} selected {% endif %}>No</option>
+                                                <option value="True" {% if i.certification_status == True %} selected {% endif %}>Yes</option>
+                                                </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <b><label class="form-label small">Name of the project:</label></b>
+                                        <input type="text" class="form-control" name="project_name" id="project_name" value="{{i.project_name}}" placeholder=""
+                                            readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 ">
+                                    <div class="form-group">
+                                        <b><label class="form-label small">Type of project:</label></b>
+                                        <select name="project_type" id="project_type" class="form-select" disabled>
+                                            <option value="" {% if i.project_type == "" %} selected {% endif %}>Select</option>
+                                            <option value="Individual" {% if i.project_type == "Individual" %} selected {% endif %}>Individual</option>
+                                            <option value="Team" {% if i.project_type == "Team" %} selected {% endif %}>Team</option>
+                                        </select>
+                                    </div>
+                                </div>    
+                    
+                            </div>
+                        
+                        </div>
+                        {% if not forloop.last  %}
+                            <hr>
+                        {% endif %}
+                    {% endfor %}
+                    
+                </div>
+            </div>
+            </div>
+        </section>
+        <section id="Achievements">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center">
+                                <h5 class="card-title fw-bold">Achievements</h5>
+                            </div>
+                            {% if user11 == "mentor" %}
+                            <div class="card-buttons">
+                                <button class="btn editBtn" id="ac-edit"><i class="fas fa-edit fa-sm"></i></button>
+                                <button class="btn addMoreBtn" id="ac-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                <button class="btn deleteBtn" id="ac-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% for i in ach_det %}
+                    <div class="inputs-container">
+                        <!-- Initial set of inputs -->
+                        <div class="row mb-3 input-set">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Name of the Achievement:</label></b>
+                                    <input type="text" class="form-control" id="achieve_name" name="achieve_name" placeholder="achievement Name"
+                                        value="{{ i.achieve_name }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Score for the Achievement:</label></b>
+                                    <input type="number" class="form-control" id="achieve_score" name="achieve_score" placeholder="Score"
+                                     value="{{ i.achieve_score}}"  readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if not forloop.last  %}
+                            <hr>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+             </div>
+        </section>
+    
+        <section id="Certifications">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center"> <!-- Added text-center class -->
+                                <h5 class="card-title fw-bold">Certifications</h5>
+                            </div>
+                            {% if user11 == "mentor" %}
+                            <div class="card-buttons"> <!-- Added card-buttons class -->
+                                <button class="btn editBtn" id="c-edit"><i class="fas fa-edit fa-sm"></i></button>
+                                <button class="btn addMoreBtn" id="c-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                <button class="btn deleteBtn" id="c-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% for i in cer_det  %}
+                    <div class="inputs-container">
+                        <div class="row mb-3 input-set">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Name of the certification:</label></b>
+                                    <input type="text" class="form-control" id="certificate_name"value="{{i.certificate_name}}" placeholder="Certificate name"
+                                        name="certificate_name" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <b> <label class="form-label small">Score allotted for certification:</label></b>
+                                    <input type="number" class="form-control" id="certificate_score" value="{{i.certificate_score}}" placeholder="score allotted"
+                                        name="certificate_score" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b> <label class="form-label small">Date approved:</label></b>
+                                    <input type="date" class="form-control" name="certification_date" value="{{i.certification_date|date:'Y-m-d'}}" placeholder="date approved"
+                                        id="certification_date" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if not forloop.last  %}
+                            <hr>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            </div>
+        </section>
+        <section id="Internships">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center"> 
+                                <h5 class="card-title fw-bold">Internships</h5>
+                            </div>
+                            {% if user11 == "mentor" %}
+                                <div class="card-buttons"> 
+                                    <button class="btn editBtn" id="i-edit"><i class="fas fa-edit fa-sm"></i></button>
+                                    <button class="btn addMoreBtn" id="i-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                    <button class="btn deleteBtn" id="i-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                                </div>
+                            {% endif %}
+                    </div>
+                    {% for i in int_det %}
+                    <div class="inputs-container">
+                        <div class="row mb-3 input-set">
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Technology/Domain:</label></b>
+                                    <input type="text" class="form-control" name="tech_name" id="tech_name" value="{{i.tech_name}}" readonly placeholder="technology/domain">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Company Name:</label></b>
+                                    <input type="text" class="form-control" name="internship_name" 
+                                     value="{{i.internship_name}}"   id="internship_name" readonly placeholder="Company Name">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Mode of Internship:</label></b>
+                                    <select name="internship_mode" id="internship_mode" class="form-select" disabled>
+                                        <option value="" {% if i.internship_mode == "" %} selected {% endif %}>select</option>
+                                        <option value="Offline" {% if i.internship_mode == "Offline" %} selected {% endif %}>Offline</option>
+                                        <option value="Online" {% if i.internship_mode == "Online" %} selected {% endif %}>Online</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Duration(in months):</label></b>
+                                    <input type="number" class="form-control" name="internship_duration" placeholder="Duration of Internship"
+                                        id="internship_duration" value="{{i.internship_duration}}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Date of Completion:</label></b>
+                                    <input type="date" class="form-control" name="date_of_completion" 
+                                       value="{{i.date_of_completion|date:'Y-m-d'}}" id="date_of_completion" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Stipend:</label></b>
+                                    <select name="stipend" id="stipend" class="form-select" disabled>
+                                    <option value="" {% if i.stipend == "" %} selected {% endif %} >Select</option>
+                                        <option value="False" {% if i.stipend == False %} selected {% endif %}>No</option>
+                                        <option value="True" {% if i.stipend == True %} selected {% endif %}>Yes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if not forloop.last  %}
+                            <hr>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
+        </section>
+        
+    
+        
+
+        <section id="Extra_Curriculars">   
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center"> <!-- Added text-center class -->
+                                <h5 class="card-title fw-bold">Extra Curriculars</h5>
+                            </div>
+                            <div class="card-buttons"> <!-- Added card-buttons class -->
+                                <button class="btn  editBtn" id="a-edit"><i class="fas fa-edit fa-sm"></i> </button>
+                                <button class="btn  addMoreBtn" id="a-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                <button class="btn deleteBtn" id="a-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                        </div>
+                    {% for  i in ext_det %}
+                    <div class="inputs-container">
+                        <div class="row mb-3 input-set">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Activity:</label></b>
+                                    <input type="text" class="form-control" id="activity"value="{{i.activity}}" placeholder="activity"
+                                        name="activity" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <b> <label class="form-label small">Role Held:</label></b>
+                                    <input type="text" class="form-control" id="role" value="{{i.role}}" placeholder="role"
+                                        name="role" readonly>
+                                </div>
+                            </div>
+                                               
+                        </div>
+                    </div>
+                    {% if not forloop.last  %}
+                            <hr>
+                    {% endif %}
+                    {% endfor %} 
+                </div>
+            </div>
+        </div>
+        </section>
+
+
+
+
+
+
+         
+
+
+        <section id="Attendance_details">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center"> <!-- Added text-center class -->
+                                <h5 class="card-title fw-bold">Attendance</h5>
+                            </div>
+                            {% if user11 == "mentor" %}
+                            <div class="card-buttons"> <!-- Added card-buttons class -->
+                                <button class="btn  editBtn" id="a-edit"><i class="fas fa-edit fa-sm"></i> </button>
+                                <button class="btn  addMoreBtn" id="a-addmore"><i class="fas fa-plus fa-sm"></i></button>
+                                <button class="btn deleteBtn" id="a-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% for i in att_det %}
+                    <div class="inputs-container">
+                        <div class="row mb-3 input-set">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b> <label class="form-label small">Semester:</label></b>
+                                    <select name="attendance_sem" id="attendance_sem" class="form-select" disabled>
+                                        <option value="" {% if i.attendance_sem == "" %} selected {% endif %}>Select</option>
+                                        <option value="1" {% if i.attendance_sem == 1 %} selected {% endif %}>1</option>
+                                        <option value="2" {% if i.attendance_sem == 2 %} selected {% endif %}>2</option>                                            
+                                        <option value="3" {% if i.attendance_sem == 3 %} selected {% endif %}>3</option>
+                                        <option value="4" {% if i.attendance_sem == 4 %} selected {% endif %}>4</option>
+                                        <option value="5" {% if i.attendance_sem == 5 %} selected {% endif %}>5</option>
+                                        <option value="6" {% if i.attendance_sem == 6 %} selected {% endif %}>6</option>
+                                        <option value="7" {% if i.attendance_sem == 7 %} selected {% endif %}>7</option>
+                                        <option value="8" {% if i.attendance_sem == 8 %} selected {% endif %}>8</option>
+                                    </select>  
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Month:</label></b>
+                                    <select name="month" id="month" class="form-select" disabled>
+                                        <option value="" {% if i.month == "" %} selected {% endif %}>Select</option>
+                                        <option value="January" {% if i.month == "January" %} selected {% endif %}>January</option>
+                                        <option value="Feb" {% if i.month == "Feb" %} selected {% endif %}>February</option>
+                                        <option value="march" {% if i.month == "march" %} selected {% endif %}>March</option>
+                                        <option value="April" {% if i.month == "April" %} selected {% endif %}>April</option>
+                                        <option value="May" {% if i.month == "May" %} selected {% endif %}>May</option>
+                                        <option value="June" {% if i.month == "June" %} selected {% endif %}>June</option>
+                                        <option value="July" {% if i.month == "July" %} selected {% endif %}>July</option>
+                                        <option value="August" {% if i.month == "August" %} selected {% endif %}>August</option>
+                                        <option value="September" {% if i.month == "September" %} selected {% endif %}>September</option>
+                                        <option value="October" {% if i.month == "October" %} selected {% endif %}>October</option>
+                                        <option value="November" {% if i.month == "November" %} selected {% endif %}>November</option>
+                                        <option value="December" {% if i.month == "December" %} selected {% endif %}>December</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Phase:</label></b>
+                                    <select name="phase" id="phase" class="form-select" disabled>
+                                        <option value="" {% if i.phase == "" %} selected {% endif %}>Select</option>
+                                        <option value="1" {% if i.phase == 1 %} selected {% endif %}>1</option>
+                                        <option value="2" {% if i.phase == 2 %} selected {% endif %}>2</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Percentage:</label></b>
+                                    <input type="text" class="form-control" id="attendance_percentage" name="attendance_percentage" value="{{i.attendance_percentage}}" placeholder="Enter Percentage"
+                                        readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if not forloop.last  %}
+                            <hr>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        </section>
+        <section id="Backlogs">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center"> <!-- Added text-center class -->
+                                <h5 class="card-title fw-bold">Backlogs</h5>
+                            </div>
+                            {% if user11 == "mentor" %}
+                            <div class="card-buttons"> <!-- Added card-buttons class -->
+                                <button class="btn  editBtn" id="b-edit"><i class="fas fa-edit fa-xs"></i> </button>
+                                <button class="btn  addMoreBtn" id="b-addmore"><i class="fas fa-plus fa-xs"></i></button>
+                                <button class="btn deleteBtn" id="b-trash"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                            {% endif %}
+                        </div>
+                    {% for i in bac_det %}
+                    <div class="inputs-container">
+                        <div class="row mb-3 input-set">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b><label class="form-label small">subject Name:</label></b>
+                                    <input type="text" class="form-control" name="sname"  id="sname" value="{{i.subject_name}}" readonly placeholder="Subject Name">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Semester:</label></b>
+                                    <select name="backlog_sem" id="backlog_sem" class="form-select" disabled>
+                                        <option value="" {% if i.backlog_sem == "" %} selected {% endif %}>Select</option>
+                                        <option value="1" {% if i.backlog_sem == 1 %} selected {% endif %}>1</option>
+                                        <option value="2" {% if i.backlog_sem == 2 %} selected {% endif %}>2</option>                                           
+                                        <option value="3" {% if i.backlog_sem == 3 %} selected {% endif %}>3</option>
+                                        <option value="4" {% if i.backlog_sem == 4 %} selected {% endif %}>4</option>
+                                        <option value="5" {% if i.backlog_sem == 5 %} selected {% endif %}>5</option>
+                                        <option value="6" {% if i.backlog_sem == 6 %} selected {% endif %}>6</option>
+                                        <option value="7" {% if i.backlog_sem == 7 %} selected {% endif %}>7</option>
+                                        <option value="8" {% if i.backlog_sem == 8 %} selected {% endif %}>8</option>
+                                    </select> 
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Semester Cleared:</label></b>
+                                        <select name="sem_cleared" id="sem_cleared" class="form-select" disabled>
+                                        <option value="" {% if i.sem_cleared == "" %} selected {% endif %}>Select</option>
+                                        <option value="1" {% if i.sem_cleared == 1 %} selected {% endif %}>1</option>
+                                        <option value="2" {% if i.sem_cleared == 2 %} selected {% endif %}>2</option>                                            
+                                        <option value="3" {% if i.sem_cleared == 3 %} selected {% endif %}>3</option>
+                                        <option value="4" {% if i.sem_cleared == 4 %} selected {% endif %}>4</option>
+                                        <option value="5" {% if i.sem_cleared == 5 %} selected {% endif %}>5</option>
+                                        <option value="6" {% if i.sem_cleared == 6 %} selected {% endif %}>6</option>
+                                        <option value="7" {% if i.sem_cleared == 7 %} selected {% endif %}>7</option>
+                                        <option value="8" {% if i.sem_cleared == 8 %} selected {% endif %}>8</option>
+                                        </select> 
+                            </div>
+                        </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Academic Year:</label></b>
+                                    <input type="date" class="form-control" name="ayoc" id="ayoc" value="{{i.ayoc|date:'Y-m-d'}}" readonly placeholder="Academic Year">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if not forloop.last  %}
+                            <hr>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        </section>
+        <section id="Remarks">
+            <div class="container">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="text-center">
+                                <b>
+                                    <h5 class="card-title fw-bold">Remarks</h5>
+                                </b>
+                            </div>
+                            <div class="card-buttons"> <!-- Added card-buttons class -->
+                                <button class="btn  editBtn" id="r-edit"><i class="fas fa-edit fa-xs"></i> </button>
+                                <button class="btn  addMoreBtn" id="r-addmore"><i class="fas fa-plus fa-xs"></i></button>
+                                <button class="btn deleteBtn" id="r-delete"><i class="fas fa-trash-alt fa-sm"></i></button>
+                            </div>
+                        </div>
+                        {% for i in rem_det %}
+                        <div class="inputs-container">
+                            <div class="row mb-3 input-set">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="form-label small">Remarks Date:</label></b>
+                                    <input type="date" class="form-control" name="remarks_date" id="remarks_date" placeholder="Date"
+                                      value="{{i.remarks_date|date:'Y-m-d'}}"  readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Semester:</label></b>
+                                    <select name="remarks_sem" id="remarks_sem" class="form-select" disabled>
+                                        <option value="" {% if i.remarks_sem == "" %} selected {% endif %}>Select</option>
+                                        <option value="1" {% if i.remarks_sem == 1 %} selected {% endif %}>1</option>
+                                        <option value="2" {% if i.remarks_sem == 2 %} selected {% endif %}>2</option>                                           
+                                        <option value="3" {% if i.remarks_sem == 3 %} selected {% endif %}>3</option>
+                                        <option value="4" {% if i.remarks_sem == 4 %} selected {% endif %}>4</option>
+                                        <option value="5" {% if i.remarks_sem == 5 %} selected {% endif %}>5</option>
+                                        <option value="6" {% if i.remarks_sem == 6 %} selected {% endif %}>6</option>
+                                        <option value="7" {% if i.remarks_sem == 7 %} selected {% endif %}>7</option>
+                                        <option value="8" {% if i.remarks_sem == 8 %} selected {% endif %}>8</option>
+                                    </select> 
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b><label class="form-label small"> Student Opinions:</label></b>
+                                    <input type="text" class="form-control" name="student_opinions" id="student_opinions" value="{{i.student_opinions}}" placeholder="student opinions"
+                                        readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <b><label class="form-label small">Mentor Remarks:</label></b>
+                                    <input type="text" class="form-control" name="mentor_remarks" id="mentor_remarks"  value="{{i.remarks_sem}}"placeholder="Mentor Remarks"
+                                        readonly>
+                                </div>
+                            </div>
+
+                        </div>
+                        {% if not forloop.last  %}
+                            <hr>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+    </div>
+    <button type="submit" class="text-center">submit</button> 
+    </form>
+
+<script>  
+    var editBtns = document.querySelectorAll('.editBtn');
+    editBtns.forEach(function (editBtn) {
+        editBtn.addEventListener("click", function () {
+            event.preventDefault(); // Prevent form submission
+            var container = this.closest('.container');
+            var inputs = container.querySelectorAll('.form-control');
+            var selects = container.querySelectorAll('.form-select');
+            if (!this.classList.contains('editing')) {
+                this.classList.add('editing');
+                this.innerHTML = '<i class="fas fa-save"></i>'; // Change button icon to "Save"
+                inputs.forEach(function (input) {
+                    input.removeAttribute("readonly");
+                });
+                selects.forEach(function (select) {
+                    select.disabled = false;
+                });
+            } else {
+                this.classList.remove('editing');
+                this.innerHTML = '<i class="fas fa-edit"></i>'; // Change button icon back to "Edit"
+                inputs.forEach(function (input) {
+                    input.setAttribute("readonly", true);
+                });
+                selects.forEach(function (select) {
+                    select.disabled = true;
+                });
+            }
+        });
+    });
+    var addMoreBtns = document.querySelectorAll('.addMoreBtn');
+    addMoreBtns.forEach(function(addMoreBtn) {
+    addMoreBtn.addEventListener("click", function() {
+        event.preventDefault(); // Prevent form submission
+        var inputsContainer = event.target.closest('.card').querySelector('.inputs-container');
+        //var inputsContainer = this.parentElement.parentElement.querySelector('.inputs-container');
+        var newInputSet = inputsContainer.querySelector('.input-set').cloneNode(true);
+        // Remove labels from the cloned input set
+        newInputSet.querySelectorAll('label').forEach(function(label) {
+            label.remove();
+        });
+        inputsContainer.appendChild(newInputSet);
+    });
+});
+var deleteBtns = document.querySelectorAll('.deleteBtn');
+    deleteBtns.forEach(function (deleteBtn) {
+        deleteBtn.addEventListener("click", function () {
+            event.preventDefault(); // Prevent form submission
+            var inputsContainer = event.target.closest('.card').querySelector('.inputs-container');
+            var inputSets = inputsContainer.querySelectorAll('.input-set');
+            if (inputSets.length > 1) {
+                inputsContainer.removeChild(inputSets[inputSets.length - 1]);
+            } else {
+                alert("Cannot delete the last entry.");
+            }
+        });
+    });
+    function handleSubmit(event) {
+        // event.preventDefault(); // Prevent form submission
+
+        // Collect data from all input fields
+        const formData = {};
+        const inputFields = document.querySelectorAll('input, select');
+        inputFields.forEach(field => {
+            formData[field.name] = field.value;
+        });
+
+        // Here you can send formData to respective field models
+        console.log(formData); // Just logging for demonstration
+        
+        // You can use fetch or any other method to send the formData to the server
+        // Example using fetch:
+        // fetch('url/to/your/api', {
+        //     method: 'POST',
+        //     body: JSON.stringify(formData),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }
+        // }).then(response => {
+        //     // Handle response
+        // }).catch(error => {
+        //     // Handle error
+        // });
+    }
+
+    // Attach event listener for the form submit
+    document.querySelector('form').addEventListener('submit', handleSubmit);
+</script>
+
+</body>
+</html>
+    

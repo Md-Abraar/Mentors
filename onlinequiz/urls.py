@@ -2,13 +2,17 @@ from django.urls import path,include
 from django.contrib import admin
 from management import views
 from django.contrib.auth.views import LogoutView,LoginView
+import student.views as s_views
+
+from examiner.views import *
+from management import views
 
 urlpatterns = [
    
     path('admin/', admin.site.urls),
-    path('teacher/',include('teacher.urls')),
-    path('student/',include('student.urls')),
-    path("mentor/", include('mentor.urls')),
+    # path('teacher/',include('teacher.urls')),
+    # path('student/',include('student.urls')),
+    # path("mentor/", include('mentor.urls')),
     
 
 
@@ -20,6 +24,11 @@ urlpatterns = [
     # path('get_skills', views.get_skills,name='get_skills'),
     
     path('adminclick', views.adminclick_view, name='adminclick'),
+    path('examinerclick', examinerclick_view, name='examinerclick'),
+    path('studentclick', s_views.studentclick_view, name='studentclick'),
+
+    path('adminclick', views.adminclick_view, name='adminclick'),
+
     path('adminlogin', LoginView.as_view(template_name='management/adminlogin.html'),name='adminlogin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
@@ -76,7 +85,67 @@ urlpatterns = [
 
     path('leaderboard', views.leaderboard, name="leaderboard"),
     path("email-verification", views.email_verification, name="email-verification"),
-    path("verify-otp", views.verify_otp, name="verify-otp")
+    path("verify-otp", views.verify_otp, name="verify-otp"),
 
 
+    
+
+
+
+
+
+
+
+    path('examiner/',include('examiner.urls')),
+    path('student/',include('student.urls')),
+    path('mentor/',include('mentor.urls')),
+    path('student/',include('student.urls')),
+
+
+
+
+
+
+
+
+    # path('adminlogin', LoginView.as_view(template_name='quiz/adminlogin.html'),name='adminlogin'),
+    # path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
+    # path('admin-examiner', views.admin_examiner_view,name='admin-examiner'),
+    # path('admin-view-examiner', views.admin_view_examiner_view,name='admin-view-examiner'),
+    # path('update-examiner/<int:pk>', views.update_examiner_view,name='update-examiner'),
+    # path('delete-examiner/<int:pk>', views.delete_examiner_view,name='delete-examiner'),
+    # path('admin-view-pending-examiner', views.admin_view_pending_examiner_view,name='admin-view-pending-examiner'),
+    # path('admin-view-pending-mentor', views.admin_view_pending_mentor_view,name='admin-view-pending-mentor'),
+
+    # path('admin-view-examiner-salary', views.admin_view_examiner_salary_view,name='admin-view-examiner-salary'),
+    # path('approve-examiner/<int:pk>', views.approve_examiner_view,name='approve-examiner'),
+    # path('reject-examiner/<int:pk>', views.reject_examiner_view,name='reject-examiner'),
+    # path('approve-mentor/<int:pk>', views.approve_mentor_view,name='approve-mentor'),
+    # path('reject-mentor/<int:pk>', views.reject_mentor_view,name='reject-mentor'),
+
+ 
+    # path('admin-student', views.admin_student_view,name='admin-student'),
+    # path('admin-view-student', views.admin_view_student_view,name='admin-view-student'),
+    # path('admin-view-student-marks', views.admin_view_student_marks_view,name='admin-view-student-marks'),
+    # path('admin-view-marks/<int:pk>', views.admin_view_marks_view,name='admin-view-marks'),
+    # path('admin-check-marks/<int:pk>', views.admin_check_marks_view,name='admin-check-marks'),
+    # path('update-student/<int:pk>', views.update_student_view,name='update-student'),
+    # path('delete-student/<int:pk>', views.delete_student_view,name='delete-student'),
+
+
+    # path('admin-course', views.admin_course_view,name='admin-course'),
+    # path('admin-add-course', views.admin_add_course_view,name='admin-add-course'),
+    # path('admin-view-course', views.admin_view_course_view,name='admin-view-course'),
+    # path('delete-course/<int:pk>', views.delete_course_view,name='delete-course'),
+
+    # path('admin-question', views.admin_question_view,name='admin-question'),
+    # path('admin-add-question', views.admin_add_question_view,name='admin-add-question'),
+    # path('admin-view-question', views.admin_view_question_view,name='admin-view-question'),
+    # path('view-question/<int:pk>', views.view_question_view,name='view-question'),
+    # path('delete-question/<int:pk>', views.delete_question_view,name='delete-question'),
+
+    path('student_profile/<str:roll>/', views.student_profile, name='student_profile'),
+    # path('idgen/', include('idgen.urls')),
+    path('get_domains',s_views.get_domains,name="get_domains"),
+    path('get_skills',s_views.get_skills,name="get_skills"),
 ]

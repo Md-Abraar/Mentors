@@ -1,0 +1,530 @@
+{% extends 'student/studentbase.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Statuses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        #autocomplete {
+            padding: 10px;
+            font-size: 16px;
+        }
+        .autocomplete-items {
+            border: 1px solid #ddd;
+            border-top: none;
+            background-color: #fff;
+            z-index: 99;
+            position: absolute;
+        }
+        .autocomplete-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+        .autocomplete-item:hover {
+            background-color: #f1f1f1;
+        }
+        .autocomplete-item.active {
+            background-color: rgb(174, 181, 191);
+            color: #fff;
+        }
+        .other-input {
+            display: none;
+            margin-top: 10px;
+        }
+        td,th{
+            text-align:center;
+        }
+        /* Custom styles */
+
+        .btn-add-skill {
+            background-color: green;
+            color: #fff;
+            border: none;
+        }
+        .btn-add-skill:hover {
+            background-color: #218838;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+ 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+</head>
+<body>
+{% if status == True %}
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Request Made</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><i class="fas fa-check-circle text-success me-2"></i>Request made for new skill.</p>
+                <p>Skill can be added after checking by admin.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to toggle the Bootstrap 5 modal
+    function toggleModal() {
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        myModal.toggle();
+    }
+    // Toggle the modal when the document is ready
+    document.addEventListener('DOMContentLoaded', function () {
+        toggleModal();
+    });
+</script>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endif %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                {% if messages %}
+                {% for message in messages %}
+                    <div id="message" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <!-- JavaScript to remove the message after a few seconds -->
+            <script>
+                setTimeout(function() {
+                    var messageElement = document.getElementById('message');
+                    if (messageElement) {
+                        messageElement.remove();
+                    }
+                }, 3000); // Remove message after 3 seconds (adjust as needed)
+            </script>
+                <div style="display:flex;justify-content:start;">
+                    <button type="button" class="btn btn-add-skill btn-muted   mb-3 bg-primary text-light" data-bs-toggle="modal" data-bs-target="#request_to_add" style="background-color:#ffff">
+                        <i class="fas fa-plus "></i> Request New
+                    </button>
+
+                <div class="ms-auto">
+                    <button type="button" class="btn btn-add-skill btn-muted   mb-3 bg-primary text-light" data-bs-toggle="modal" data-bs-target="#addSkillModal">
+                        <i class="fas fa-plus "></i> Apply  Skill
+                    </button>
+                </div>
+            </div>
+                <div class="card">
+                <div class="card-header text-center fw-bold"> <i>Application Status</i></div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="skilltable">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>Skill Name</th>
+                                    <th>Certification Status</th>
+                                    <th>Project Type</th>
+                                    <th>Skill Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for application in student_applications %}
+                                    {% if application.skill_status == "pending" %}
+                                        <tr>
+                                            <td>{{ application.skill_name }}</td>
+                                            <td>{% if application.certification_status %}Certified{% else %}Not Certified{% endif %}</td>
+                                            <td>{% if application.project_type %}{{ application.project_type }}{% else %}Unspecified{% endif %}</td>
+                                            <td>{{ application.skill_status }}</td>
+                                            <td>
+                                                <a class="btn btn-danger btn-sm" href="{% url 'delete_application' application.id %}">
+                                                    <i class="fas fa-trash-alt"></i> Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for application in student_applications %}
+                                    {% if application.skill_status != "pending" %}
+                                        <tr>
+                                            <td>{{ application.skill_name }}</td>
+                                            <td>{% if application.certification_status %}Certified{% else %}Not Certified{% endif %}</td>
+                                            <td>{% if application.project_type %}{{ application.project_type }}{% else %}Unspecified{% endif %}</td>
+                                            <td>{{ application.skill_status }}</td>
+                                            <td><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 48 48">
+                                                <path fill="#c8e6c9" d="M36,42H12c-3.314,0-6-2.686-6-6V12c0-3.314,2.686-6,6-6h24c3.314,0,6,2.686,6,6v24C42,39.314,39.314,42,36,42z"></path><path fill="#4caf50" d="M34.585 14.586L21.014 28.172 15.413 22.584 12.587 25.416 21.019 33.828 37.415 17.414z"></path>
+                                                </svg></td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap Modal for adding another skill application -->
+<div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="addSkillModalLabel">Add Another Skill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="alert alert-danger alert-dismissible fade show small" role="alert" id="customAlert" style="display: none;">
+                        Please select a valid option from the list.
+                        <button type="button" class="btn-close " data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div> 
+                    {% csrf_token %}
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <label for="sector" for="new_skills_applying" class="form-label fw-bold small">Select Sector:</label>
+                            <select name="sector" id="sector" class="form-select">
+                                <option value="">All</option>
+                                {% for i in sectors %}
+                                <option value="{{i.sector}}">{{i.sector}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="new_skills_applying" class="form-label fw-bold small">Select Domain:</label>
+                            <select name="domain" id="domain" class="form-select">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="skill" class="form-label fw-bold small">Skill Applying:</label>
+                        <select name="skill_applying" id="skill" class="form-select">
+                            <option value="">Select</option>
+                            
+                        </select>
+                        <p class="small text-secondary mt-2" style="font-style: italic;"> Note : If the desired skill is not listed, click the "Request New" button to make a request to add it by admin.</p>
+
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="new_certification_status" name="certification_status">
+                        <label class="form-check-label small" for="new_certification_status small">Certification Status</label>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="new_project_status_checkbox" name="project_status">
+                        <label class="form-check-label small" for="new_project_status_checkbox">Project Status</label>
+                    </div>
+                    <div class="mb-3" id="new_project_select_div" style="display: none;">
+                        <label for="new_project_select" class="form-label">Select Project:</label>
+                        <select class="form-select" id="new_project_select" name="project_select">
+                            <option value="">Select Project</option>
+                            <option value="individual">Individual Project</option>
+                            <option value="group">Group Project</option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="request_to_add" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title " id="addSkillModalLabel">Request To Add Skill</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form enctype="multipart/form-data" action="{% url "request_to_add_new_skill" %}" method="post" >
+                    <div class="alert alert-danger alert-dismissible fade show small" role="alert" id="customAlert" style="display: none;">
+                        Please select a valid option from the list.
+                        <button type="button" class="btn-close " data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div> 
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="new_skills_applying" class="form-label fw-bold small">Select Sector:</label>
+                            <select name="sector_r" id="" class="form-select">
+                                <option value="">Select</option>
+                                {% for i in sectors %}
+                                <option value="{{i.sector}}">{{i.sector}}</option>
+                                {% endfor %}
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="new_skills_applying" class="form-label fw-bold small">Select Domain:</label>
+                            <select name="domain_r" id="" class="form-select">
+                                <option value="">Select</option>
+                                {% comment %} {% for i in domains %}
+                                <option value="{{i.domain}}">{{i.domain}}</option>
+                                {% endfor %} {% endcomment %}
+                                <option value="other">other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    </div>
+
+                    <div class="mb-3 ps-3 pe-3">
+                        <label for="new_skills_applying" class="form-label fw-bold small">Skill Applying:</label>
+                        <input type="text" name="skill_name_r" id="" class="form-control" placeholder="e.g. Java"> 
+                    </div>
+                    <div class="text-center p-3">
+                        <button type="submit" class="btn btn-primary ">Apply</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $('#skilltable').DataTable({
+            "paging": true, 
+            "ordering": true,
+            "searching": true
+        });
+        $('#sector').change(function(){
+            var sector = $(this).val(); 
+            var domain=$('#domain').val();
+            // Check if the response for this sector is already cached
+                $.ajax({
+                    url: '/get_domains',
+                    method:'POST',
+                    data: {
+                        'sector': sector
+                    },
+                    dataType: 'json',
+                    success: function (data){
+                        setDomains(data)
+                    }
+                });
+                $.ajax({
+                    url: '/get_skills',
+                    method:'POST',
+                    data: {
+                        'sector': sector,
+                        'domain':domain
+
+                    },
+                    dataType: 'json',
+                    success: function (data){
+                        setSkills(data)
+                    }
+                });
+        });
+        $('#domain').change(function(){
+            var domain=$('#domain').val();
+            var sector=$('#sector').val();
+            $.ajax({
+                url: '/get_skills',
+                method:'POST',
+                data: {
+                    'sector': sector,
+                    'domain':domain
+
+                },
+                dataType: 'json',
+                success: function (data){
+                    setSkills(data)
+                }
+            }); 
+        });
+        function setSkills(data){
+            var d = $('#skill')
+            d.empty();
+            d.append('<option value="">All</option>');
+            $.each(data, function(index, skill){
+                d.append('<option value="' + skill + '">' + skill + '</option>');
+            });   
+
+        }
+        function setDomains(data){
+            var d = $('#domain')
+            d.empty();
+            d.append('<option value="">All</option>');
+            $.each(data, function(index, domain){
+                d.append('<option value="' + domain + '">' + domain + '</option>');
+            });   
+            d.find("option[value='{{domain|safe}}']").attr("selected","selected");         
+        }
+        $('#sector').trigger("change");
+        $('#domain').trigger("change");
+
+    });
+    document.getElementById('new_project_status_checkbox').addEventListener('change', function() {
+        // Get a reference to the select project field
+        const projectSelectDiv = document.getElementById('new_project_select_div');
+        // If the checkbox is checked, display the select project field; otherwise, hide it
+        projectSelectDiv.style.display = this.checked ? 'block' : 'none';
+    });
+
+    // List of options for autocomplete
+    var options = ["Apple", "Banana", "Orange", "Pineapple", "Grapes", "Other"];
+
+    // Get the input element
+    var input = document.getElementById("autocomplete");
+
+    // Initialize the autocomplete function
+    autocomplete(input, options);
+    function autocomplete(inp, arr) {
+        /*the autocomplete function takes two arguments,
+        the text field element and an array of possible autocompleted values:*/
+        var currentFocus;
+        // Execute a function when someone writes in the text field
+        inp.addEventListener("input", function(e) {
+            var a, b, i, val = this.value;
+            // Close any already open lists of autocompleted values
+            closeAllLists();
+            if (!val) { return false;}
+            currentFocus = -1;
+            // Create a DIV element that will contain the items (values):
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            // Set width of dropdown to match width of input box
+            a.style.width = (this.offsetWidth + "px");
+            // Append the DIV element as a child of the autocomplete container:
+            this.parentNode.appendChild(a);
+            // For each item in the array...
+            for (i = 0; i < arr.length; i++) {
+                // Check if the item starts with the same letters as the text field value:
+                if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    // Create a DIV element for each matching element:
+                    b = document.createElement("DIV");
+                    // Highlight the matching part of the text:
+                    b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                    b.innerHTML += arr[i].substr(val.length);
+                    // Insert a hidden input field that will hold the current array item's value:
+                    b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                    // Execute a function when someone clicks on the item value (DIV element):
+                    b.addEventListener("click", function(e) {
+                        var selectedValue = this.getElementsByTagName("input")[0].value;
+                        // If "Other" is selected, show the additional input field
+                        if (selectedValue === "Other") {
+                            document.getElementById("otherInputContainer").style.display = "block";
+                        } else {
+                            document.getElementById("otherInputContainer").style.display = "none";
+                        }
+                        // Insert the value for the autocomplete text field:
+                        inp.value = selectedValue;
+                        // Close the list of autocompleted values,
+                        // or any other open lists of autocompleted values:
+                        closeAllLists();
+                    });
+                    b.classList.add("autocomplete-item");
+                    a.appendChild(b);
+                }
+            }
+        });
+
+        // Execute a function when a key is pressed in the text field:
+        inp.addEventListener("keydown", function(e) {
+            var x = document.getElementById(this.id + "autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) {
+                // If the arrow DOWN key is pressed, increase the currentFocus variable:
+                currentFocus++;
+                // and make the current item more visible:
+                addActive(x);
+            } else if (e.keyCode == 38) { //up
+                // If the arrow UP key is pressed, decrease the currentFocus variable:
+                currentFocus--;
+                // and make the current item more visible:
+                addActive(x);
+            } else if (e.keyCode == 13) {
+                // If the ENTER key is pressed, prevent the form from being submitted,
+                e.preventDefault();
+                if (currentFocus > -1) {
+                    // and simulate a click on the "active" item:
+                    if (x) x[currentFocus].click();
+                }
+            }
+        });
+        function addActive(x) {
+            // A function to classify an item as "active":
+            if (!x) return false;
+            // Start by removing the "active" class on all items:
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            // Add class "autocomplete-active":
+            x[currentFocus].classList.add("active");
+        }
+        function removeActive(x) {
+            // A function to remove the "active" class from all autocomplete items:
+            for (var i = 0; i < x.length; i++) {
+                x[i].classList.remove("active");
+            }
+        }
+
+        function closeAllLists(elmnt) {
+            // Close all autocomplete lists in the document, except the one passed as an argument:
+            var x = document.getElementsByClassName("autocomplete-items");
+            for (var i = 0; i < x.length; i++) {
+                if (elmnt != x[i] && elmnt != inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+
+        // Execute a function when someone clicks in the document:
+        document.addEventListener("click", function (e) {
+            closeAllLists(e.target);
+        });
+    }
+    function showAlert(duration) {
+        var alertDiv = document.getElementById('customAlert');
+        alertDiv.style.display = 'block';
+        setTimeout(function(){
+            alertDiv.style.display = "none";
+        }, duration);
+    }
+    // Validation to ensure only options from the provided list are accepted
+    document.getElementById("autocomplete").addEventListener("change", function() {
+        var enteredValue = this.value.trim();
+        if (enteredValue === "Other") {
+            document.getElementById("otherInputContainer").style.display = "block";
+        } else {
+            document.getElementById("otherInputContainer").style.display = "none";
+            if (!options.includes(enteredValue)) {
+                this.value = ""; // Clear the input if the value is not in the options list
+                showAlert(3000);
+            }
+        }
+    });
+   
+
+</script>
+
+{% endblock content %}
+</body>
+</html>
