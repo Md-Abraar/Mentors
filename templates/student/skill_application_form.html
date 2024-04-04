@@ -169,6 +169,7 @@
                                 {% endfor %}
                                 {% for application in student_applications %}
                                     {% if application.skill_status != "pending" %}
+                                    
                                         <tr>
                                             <td>{{ application.skill_name }}</td>
                                             <td>{% if application.certification_status %}Certified{% else %}Not Certified{% endif %}</td>
@@ -178,6 +179,7 @@
                                                 <path fill="#c8e6c9" d="M36,42H12c-3.314,0-6-2.686-6-6V12c0-3.314,2.686-6,6-6h24c3.314,0,6,2.686,6,6v24C42,39.314,39.314,42,36,42z"></path><path fill="#4caf50" d="M34.585 14.586L21.014 28.172 15.413 22.584 12.587 25.416 21.019 33.828 37.415 17.414z"></path>
                                                 </svg></td>
                                         </tr>
+
                                     {% endif %}
                                 {% endfor %}
                             </tbody>
@@ -217,6 +219,10 @@
                         <div class="col-6">
                             <label for="new_skills_applying" class="form-label fw-bold small">Select Domain:</label>
                             <select name="domain" id="domain" class="form-select">
+                                <option value="">All</option>
+                                {% for i in domains %}
+                                <option value="{{i.domain}}">{{i.domain}}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -394,8 +400,8 @@
     var input = document.getElementById("autocomplete");
 
     // Initialize the autocomplete function
-    autocomplete(input, options);
-    function autocomplete(inp, arr) {
+    {% comment %} autocomplete(input, options); {% endcomment %}
+    {% comment %} function autocomplete(inp, arr) {
         /*the autocomplete function takes two arguments,
         the text field element and an array of possible autocompleted values:*/
         var currentFocus;
@@ -500,7 +506,7 @@
         document.addEventListener("click", function (e) {
             closeAllLists(e.target);
         });
-    }
+    } {% endcomment %}
     function showAlert(duration) {
         var alertDiv = document.getElementById('customAlert');
         alertDiv.style.display = 'block';

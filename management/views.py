@@ -92,7 +92,8 @@ def home_view(request):
 def is_teacher(user):
     return user.groups.filter(name='TEACHER').exists()
 def is_examiner(user):
-    return user.groups.filter(name='examiner').exists()
+    return user.groups.filter(name='EXAMINER').exists()
+
 def is_student(user):
     return user.groups.filter(name='STUDENT').exists()
 
@@ -102,15 +103,14 @@ def is_mentor(user):
 def afterlogin_view(request):
     if is_student(request.user):      
         roll=request.user.student.roll
-        return redirect(f'student/student_profile/{roll}')
-                
+        return redirect(f'student/student_profile/{roll}')   
     elif is_teacher(request.user):
         accountapproval=TMODEL.Teacher.objects.all().filter(user_id=request.user.id,status=True)
         if accountapproval:
             return redirect('teacher/teacher-dashboard')
         else:
             return render(request,'teacher/teacher_wait_for_approval.html')
-    elif is_mentor(request.user):
+    elif request.user.groups.filter(name='MENTOR').exists():
         accountapproval=MMODEL.mentor.objects.all().filter(user_id=request.user.id,status=True)
         if accountapproval:
             return redirect('mentor/mentor-dashboard')
@@ -614,7 +614,7 @@ def admin_edit_skill(request,skill_name):
         level = request.POST.get('level')
         parameters = request.POST.get('parameters')
 
-        models.Skill.objects.filter(skill_name=skill_name).update(skill_name = new_skill_name,sector = sector,domain = domain,level = level)
+        Skill.objects.filter(skill_name=skill_name).update(skill_name = new_skill_name,sector = sector,domain = domain,level = level)
     return redirect(admin_skill_view)
 
 @login_required(login_url='adminlogin')

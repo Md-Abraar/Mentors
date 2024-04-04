@@ -30,7 +30,7 @@ def is_approved(user):
 
 def mentorclick_view(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('afterlogin')
+        return HttpResponseRedirect('mentor-dashboard')
     return redirect('mentorlogin')
 
 def mentor_signup_view(request):
@@ -173,8 +173,8 @@ def mentor_login_view(request):
 # @login_required(login_url='examinerlogin')
 def students_list(request):                            
     user_instance = User.objects.get(username=request.user)
-    examiner_instance = mentor.objects.get(user=user_instance)
-    students_data = Student.objects.filter(TD=examiner_instance).prefetch_related('user')
+    mentor_instance = mentor.objects.get(user=user_instance)
+    students_data = Student.objects.filter(mentor=mentor_instance).prefetch_related('user')
     return render(request, 'mentor/students_list.html', {'details': students_data})
 
 
@@ -194,7 +194,7 @@ def students_skill_applications(request):
     if request.method=='POST':
         pass
     mentor_instance = get_object_or_404(mentor, user=request.user)
-    students_data = Student.objects.filter(TD=mentor_instance)
+    students_data = Student.objects.filter(mentor=mentor_instance)
     student_applications = students_skills.objects.filter(student__in=students_data)
     examiner=examiner_skills.objects.filter(skill_status=True)
     return render(request, 'mentor/students_skill_applications.html', {'student_applications': student_applications,'examiners':examiner})
@@ -228,7 +228,7 @@ def student_application_approve_view(request,pk):
 
 def students_scores_view(request):
     mentor_instance = get_object_or_404(mentor, user=request.user)
-    students_data = Student.objects.filter(TD=mentor_instance)
+    students_data = Student.objects.filter(mentor=mentor_instance)
 
 
     # Assuming students_data is a list of student IDs or some other filter criteria
@@ -243,7 +243,7 @@ def students_scores_view(request):
 def update_student_skill_view(request,id):
     student_skill = students_skills.objects.get(id=id)
     # new_project_score = request.POST.get(f'{id}_pm')
-    registered_skill = Registered_skills.objects.get(skill_name=student_skill)
+    registered_skill = Skill.objects.get(skill_name=student_skill)
     print(registered_skill.skill_name)
     print(registered_skill.level)
     if registered_skill.level == 'Basic':
@@ -295,7 +295,7 @@ from django.db.models import F
 
 @login_required(login_url='mentorlogin')
 def student_profile(request,roll):
-    if request.user.groups.filter(name='mentor').exists():
+    if request.user.groups.filter(name='MENTOR').exists():
         user1=roll
         s_rec=Student.objects.get(roll=roll)
         per_det=Personal_details.objects.filter(student_id=user1)

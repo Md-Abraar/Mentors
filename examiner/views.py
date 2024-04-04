@@ -119,7 +119,7 @@ def examiner_add_exam_view(request):
         request.session['total_questions'] = total_questions
         return HttpResponseRedirect('/examiner/examiner-add-question')
     
-    reg_skills = Registered_skills.objects.filter(status='registered').values('skill_name')
+    reg_skills = Skill.objects.filter(status=True).values('skill_name')
     return render(request, 'examiner/examiner_add_exam.html',{'reg_skills':reg_skills})
 
 

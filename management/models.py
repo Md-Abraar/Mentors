@@ -5,21 +5,21 @@ from student.models import *
 from examiner.models import *
 
 
-class Skills_criteria(models.Model):
-    skill_name = models.CharField(max_length=50, primary_key=True)
-    sector = models.CharField(max_length=30)
-    domain = models.CharField(max_length=50)
-    level = models.CharField(max_length=15)
-    parameters = models.TextField(null=True,blank=True)
+# class Skills_criteria(models.Model):
+#     skill_name = models.CharField(max_length=50, primary_key=True)
+#     sector = models.CharField(max_length=30)
+#     domain = models.CharField(max_length=50)
+#     level = models.CharField(max_length=15)
+#     parameters = models.TextField(null=True,blank=True)
 
-class Registered_skills(models.Model):
-    skill_name = models.CharField(max_length=50, primary_key=True)
-    sector = models.CharField(max_length=30)
-    domain = models.CharField(max_length=50)
-    level = models.CharField(max_length=15,blank=True,null=True)
-    status = models.CharField(max_length=15,blank=True,null=True)
-    def __str__(self) -> str:
-        return self.skill_name
+# class Registered_skills(models.Model):
+#     skill_name = models.CharField(max_length=50, primary_key=True)
+#     sector = models.CharField(max_length=30)
+#     domain = models.CharField(max_length=50)
+#     level = models.CharField(max_length=15,blank=True,null=True)
+#     status = models.CharField(max_length=15,blank=True,null=True)
+#     def __str__(self) -> str:
+#         return self.skill_name
 
 class Course(models.Model):
     # skill_belongs=models.ForeignKey(Skills_criteria,on_delete=models.CASCADE,default=None)

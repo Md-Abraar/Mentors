@@ -299,11 +299,11 @@ def skill_application(request):
         obj1.save()
 
     student_applications = students_skills.objects.filter(student=student_instance)
-    reg_skills = Registered_skills.objects.filter(status='registered').values('skill_name')
+    reg_skills = Skill.objects.filter(status=True).values('skill_name')
 
     
-    sectors = Registered_skills.objects.filter(status="registered").values('sector').distinct()
-    domains = Registered_skills.objects.filter(status="registered").values('domain').distinct()
+    sectors = Skill.objects.filter(status=True).values('sector').distinct()
+    domains = Skill.objects.filter(status=True).values('domain').distinct()
 
     try:
         check=request.session['request_sent']
@@ -396,7 +396,7 @@ def student_profile_edit(request):
         weight=request.POST['weight']
         weight = int(weight) if weight else None
         illness=request.POST['illness']
-        
+
         #PARENTS_TABLE
         father_name = request.POST.get('father_name')
         father_occupation = request.POST.get('father_occupation')
@@ -823,8 +823,6 @@ def student_profile(request,roll):
 
 def CE_view(request):
     if request.method == 'POST':
-
-        
         # Assuming you have a form with CSRF token and fields sid, achieve_name, and achieve_score
         sid = request.POST['sid']
         test_name = request.POST.getlist('test_name')
@@ -1119,7 +1117,7 @@ def request_to_add_new_skill(request):
         sector=request.POST.get('sector_r')
         domain=request.POST.get('domain_r')
 
-        new_obj = Registered_skills(skill_name=skill_name,sector=sector,domain=domain,status='pending')
+        new_obj = Skill(skill_name=skill_name,sector=sector,domain=domain)
         new_obj.save()
         request.session['request_sent']=True
         return HttpResponseRedirect('/student/skill_application/')
@@ -1148,9 +1146,9 @@ def get_skills(request):
     domain=request.POST.get('domain','')
     print(domain)
     if sector:
-        skills=Registered_skills.objects.filter(sector=sector)
+        skills=Skill.objects.filter(sector=sector)
     else:
-        skills = Registered_skills.objects.all()
+        skills = Skill.objects.all()
     if domain:
         skills=skills.filter(domain=domain)
     skills=skills.values_list('skill_name',flat=True).distinct()
@@ -1160,7 +1158,7 @@ def get_skills(request):
 def get_domains(request):
     sector = request.POST.get('sector','')
     if sector:
-        domains = Registered_skills.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
+        domains = Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
     else:
-        domains = Registered_skills.objects.values_list('domain',flat=True).distinct()
+        domains = Skill.objects.values_list('domain',flat=True).distinct()
     return JsonResponse(list(domains), safe=False)

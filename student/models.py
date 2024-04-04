@@ -63,7 +63,7 @@ class Student(models.Model):
 
 
 class Personal_details(models.Model): #student
-    student_id=models.CharField(max_length=15,null=True)
+    student_id=models.CharField(max_length=15,null=True,blank=True)
     student_fullname=models.CharField(max_length=50)
     branch=models.CharField(max_length=6,default='',null=True,blank=True)
     section=models.CharField(max_length=1,blank=True,null=True)
