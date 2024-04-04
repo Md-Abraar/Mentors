@@ -21,7 +21,7 @@ urlpatterns = [
     path('aboutus/', views.aboutus_view),
     path('contactus', views.contactus_view),
     path('afterlogin', views.afterlogin_view,name='afterlogin'),
-    # path('get_skills', views.get_skills,name='get_skills'),
+    path('get_skills', views.get_skills,name='get_skills'),
     
     path('adminclick', views.adminclick_view, name='adminclick'),
     path('examinerclick', examinerclick_view, name='examinerclick'),
