@@ -18,67 +18,67 @@ from django.contrib import messages
 def examinerclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
-    return render(request,'examiner/examinerclick.html')
-
-
-
-
-
-def examinerlogin_view(request):
-    if request.method=='POST':
-        username=request.POST['username']
-        password=request.POST['password']
-        user=auth.authenticate(username=username,password=password)
-
-        if user is not None:
-            auth.login(request,user)
-            return HttpResponseRedirect('/examiner/examiner-dashboard')
-        else:
-            messages.info(request,"user name or password does not match !")
-            return redirect("examinerlogin")
-    return render(request,'examiner/examinerlogin.html')
-
-
-
+    return redirect('examinerlogin')
 
 def examiner_signup_view(request):
     if request.method=='POST':
         username=request.POST['username']
-        EmployeeID=request.POST['EmployeeID']
+        EmployeeID=request.POST['username']
         full_name=request.POST['full_name']
         department=request.POST['department']
         mobile=request.POST['mobile']
         email=request.POST['email']
-        f_skill=request.POST['f_skill']
         password=request.POST['password']
-
-        if(User.objects.filter(email=email).exists()):
-            messages.info(request,"email already exists !")
-            return redirect("examinersignup")
-        elif(User.objects.filter(username=username).exists()):
-            messages.info(request,"user already exists !")
+        examiner_image = request.FILES.get('examiner_image')
+        
+        userExists = User.objects.filter(username=username).exists()
+        emailExists = User.objects.filter(email=email).exists()
+        if(userExists or emailExists):
+            if userExists:
+                messages.info(request,"Employee_id already exists !")
+            if emailExists:
+                messages.info(request,"Email already exists !")
             return redirect("examinersignup")
         else:
-            user = User.objects.create_user(username=username, email=email, password=password)
-            user.mobile = mobile
-            user.EmployeeID = EmployeeID
-            user.name = full_name
-            user.department = department
-            user.status=False          
+            user = User.objects.create_user(username=username, email=email, password=password)       
             user.save()
-            examiner=Examiner(user=user,emp_id=EmployeeID,name=full_name,status=False,department=department,mobile=mobile,email=email,skill=f_skill)
-            examiner.save()
-            # examiner_skills=QMODEL.examiner_skills(examiner=examiner,skill_name=f_skill)
-            # examiner_skills.save()
-            mentor_group = Group.objects.get(name='examiner')
-            mentor_group.user_set.add(user)
-            return redirect('examinersignup')
+            examiner1=Examiner(user=user,emp_id=EmployeeID,name=full_name,status=False,department=department,mobile=mobile,email=email, examiner_image=examiner_image)
+            examiner1.save()
+            examiner_group = Group.objects.get(name='EXAMINER')
+            examiner_group.user_set.add(user)
+            return redirect('examinerlogin')
     return render(request,'examiner/examinersignup.html')
 
+def examiner_forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        newpassword = request.POST.get('newpassword')
+        if newpassword:
+            user = User.objects.get(email=email)
+            user.set_password(newpassword)
+            user.save()
+        return redirect('examinerlogin')
+    return render(request, 'management/forgot_password.html')
+
+
+
+# def examinerlogin_view(request):
+#     if request.method=='POST':
+#         username=request.POST['username']
+#         password=request.POST['password']
+#         user=auth.authenticate(username=username,password=password)
+
+#         if user is not None:
+#             auth.login(request,user)
+#             return HttpResponseRedirect('/examiner/examiner-dashboard')
+#         else:
+#             messages.info(request,"user name or password does not match !")
+#             return redirect("examinerlogin")
+#     return render(request,'examiner/examinerlogin.html')
 
 
 def is_examiner(user):
-    return user.groups.filter(name='examiner').exists()
+    return user.groups.filter(name='EXAMINER').exists()
 
 @login_required(login_url='examinerlogin')
 @user_passes_test(is_examiner)

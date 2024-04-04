@@ -119,21 +119,21 @@ from student.models import *
 
 
 
-def mentor_login_view(request):
-    if request.method=='POST':
-        username=request.POST['username']
-        password=request.POST['password']
+# def mentor_login_view(request):
+#     if request.method=='POST':
+#         username=request.POST['username']
+#         password=request.POST['password']
 
-        user=auth.authenticate(username=username,password=password)
+#         user=auth.authenticate(username=username,password=password)
 
-        if user is not None:
-            auth.login(request,user)
+#         if user is not None:
+#             auth.login(request,user)
 
-            return HttpResponseRedirect('/')
-        else:
-            messages.info(request,"user name or password does not match !")
-            return redirect("mentorlogin")
-    return render(request,'mentor/mentorlogin.html')
+#             return HttpResponseRedirect('/')
+#         else:
+#             messages.info(request,"user name or password does not match !")
+#             return redirect("mentorlogin")
+#     return render(request,'mentor/mentorlogin.html')
 
 
 

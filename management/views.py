@@ -10,6 +10,7 @@ from django.core.mail import send_mail
 from examiner import models as TMODEL
 from student import models as SMODEL
 from mentor import models as MMODEL
+from examiner import models as EMODEL
 from examiner import forms as TFORM
 from student import forms as SFORM
 from .models import *
@@ -104,18 +105,18 @@ def afterlogin_view(request):
     if is_student(request.user):      
         roll=request.user.student.roll
         return redirect(f'student/student_profile/{roll}')   
-    elif is_teacher(request.user):
-        accountapproval=TMODEL.Teacher.objects.all().filter(user_id=request.user.id,status=True)
-        if accountapproval:
-            return redirect('teacher/teacher-dashboard')
-        else:
-            return render(request,'teacher/teacher_wait_for_approval.html')
-    elif request.user.groups.filter(name='MENTOR').exists():
+    elif is_mentor(request.user):
         accountapproval=MMODEL.mentor.objects.all().filter(user_id=request.user.id,status=True)
         if accountapproval:
             return redirect('mentor/mentor-dashboard')
         else:
             return render(request,'mentor/mentor_wait_for_approval.html')
+    elif is_examiner(request.user):
+        accountapproval=EMODEL.Examiner.objects.all().filter(user_id=request.user.id,status=True)
+        if accountapproval:
+            return redirect('examiner/examiner-dashboard')
+        else:
+            return render(request,'examiner/examiner_wait_for_approval.html')
     else:
         return redirect('admin-dashboard')
 
@@ -882,34 +883,6 @@ from .models import *
 #         return HttpResponseRedirect('afterlogin')  
 #     return render(request,'home_page.html')
 
-
-def is_examiner(user):
-    return user.groups.filter(name='examiner').exists()
-
-def is_student(user):
-    return user.groups.filter(name='STUDENT').exists()
-
-def is_mentor(user):
-    return user.groups.filter(name='mentor').exists()
-
-# def afterlogin_view(request):
-#     if is_student(request.user):   
-#         roll=request.user.student.roll   
-#         return redirect(f'student/student_profile/{roll}')
-#     elif is_examiner(request.user):
-#         accountapproval=TMODEL.Examiner.objects.all().filter(user_id=request.user.id,status=True)
-#         if accountapproval:
-#             return redirect('examiner/examiner-dashboard')
-#         else:
-#             return render(request,'examiner/examiner_wait_for_approval.html')
-#     elif is_mentor(request.user):
-#         accountapproval=MMODEL.mentor.objects.all().filter(user_id=request.user.id,status=True)
-#         if accountapproval:
-#             return redirect('mentor/mentor-dashboard')
-#         else:
-#             return render(request,'mentor/mentor_wait_for_approval.html')
-#     else:
-#         return redirect('admin-dashboard')
 
 
 
