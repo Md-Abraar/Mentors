@@ -218,7 +218,7 @@ def student_application_approve_view(request,pk):
     sapp=students_skills.objects.get(id=application_id)
     eapp=Examiner.objects.get(id=examiner)
     examiner=Examiner.objects.get(id=eapp.id) 
-    new_app=student_skill_exam_applications(student=sapp.student,branch=sapp.student.branch,section=sapp.student.section,mentor_identity_number=sapp.student.TD.id,requested_date=today,application_status="pending",skill_name=sapp.skill_name,assessed_by=eapp.user.id,sem=sapp.student.sem)
+    new_app=student_skill_exam_applications(student=sapp.student,branch=sapp.student.branch,section=sapp.student.section,mentor_identity_number=sapp.student.mentor.id,requested_date=today,application_status="pending",skill_name=sapp.skill_name,assessed_by=eapp.user.id,sem=sapp.student.semester)
     new_app.save()
     sapp.skill_status="under evaluation"
     sapp.save()

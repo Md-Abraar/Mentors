@@ -24,7 +24,7 @@ urlpatterns = [
     # path('get_skills', views.get_skills,name='get_skills'),
     
     path('adminclick', views.adminclick_view, name='adminclick'),
-    path('examinerclick', examinerclick_view, name='examinerclick'),
+    path('examinerclick', views.examinerclick_view, name='examinerclick'),
     path('studentclick', s_views.studentclick_view, name='studentclick'),
 
     path('adminclick', views.adminclick_view, name='adminclick'),

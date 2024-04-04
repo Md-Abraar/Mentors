@@ -18,7 +18,7 @@ from django.contrib import messages
 def examinerclick_view(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect('afterlogin')
-    return render(request,'examiner/examinerclick.html')
+    return HttpResponseRedirect('examiner/examinerlogin')
 
 
 
@@ -78,7 +78,7 @@ def examiner_signup_view(request):
 
 
 def is_examiner(user):
-    return user.groups.filter(name='examiner').exists()
+    return user.groups.filter(name='EXAMINER').exists()
 
 @login_required(login_url='examinerlogin')
 @user_passes_test(is_examiner)
@@ -91,13 +91,16 @@ def examiner_dashboard_view(request):
     }
     return render(request,'examiner/examiner_dashboard.html',context=dict)
 
+
+
 @login_required(login_url='examinerlogin')
 @user_passes_test(is_examiner)
 def examiner_exam_view(request):
     return render(request,'examiner/examiner_exam.html')
 
 
-@login_required(login_url='examinerlogin')
+
+@login_required()
 @user_passes_test(is_examiner)
 def examiner_add_exam_view(request):
     if request.method == 'POST':

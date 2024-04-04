@@ -23,7 +23,7 @@ path('students_list/',students_list,name='students_list'),
 path('select_students/<str:cid>',select_students,name='select_students'),
 
 path('delete-student-application/<int:id>',delete_student_application_view,name='delete-student-application'),
-path('examinerlogin', examinerlogin_view,name='examinerlogin'),
+path("examinerlogin",LoginView.as_view(template_name='examiner/examinerlogin.html'), name="examinerlogin"),
 path('update_passcode/<str:id>', update_passcode,name='update_passcode'),
 path('deactivate_passcode/<str:id>', deactivate_passcode,name='deactivate_passcode'),
 path('request_to_add_new_questions/<str:cid>', request_to_add_new_questions,name='request_to_add_new_questions'),

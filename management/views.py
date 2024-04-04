@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,reverse
 from . import forms
 from django.views.static import serve
 from django.db.models import Count,Q,Sum
-from django.contrib.auth.models import Group,User
+from django.contrib.auth.models import Group,User,auth
 from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
@@ -16,6 +16,7 @@ from .models import *
 import pandas as pd
 from django.contrib.auth.decorators import permission_required
 from .models import * 
+
 import math
 # from student.models import *
 # from teacher.models import *
@@ -100,16 +101,25 @@ def is_student(user):
 def is_mentor(user):
     return user.groups.filter(name='MENTOR').exists()
 
+
+
+def examinerclick_view(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('afterlogin')
+    return HttpResponseRedirect('examiner/examinerlogin')
+
+
 def afterlogin_view(request):
     if is_student(request.user):      
         roll=request.user.student.roll
+        request.session['student_details_edit'] = roll
         return redirect(f'student/student_profile/{roll}')   
-    elif is_teacher(request.user):
-        accountapproval=TMODEL.Teacher.objects.all().filter(user_id=request.user.id,status=True)
+    elif request.user.groups.filter(name='EXAMINER').exists():
+        accountapproval=TMODEL.Examiner.objects.all().filter(user_id=request.user.id,status=True)
         if accountapproval:
-            return redirect('teacher/teacher-dashboard')
+            return redirect('examiner/examiner-dashboard')
         else:
-            return render(request,'teacher/teacher_wait_for_approval.html')
+            return render(request,'teacher/examiner_wait_for_approval.html')
     elif request.user.groups.filter(name='MENTOR').exists():
         accountapproval=MMODEL.mentor.objects.all().filter(user_id=request.user.id,status=True)
         if accountapproval:
