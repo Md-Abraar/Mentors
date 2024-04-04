@@ -324,7 +324,7 @@
             // Check if the response for this sector is already cached
                 $.ajax({
                     url: '/get_domains',
-                    method:'POST',
+                    method:'GET',
                     data: {
                         'sector': sector
                     },
@@ -335,7 +335,7 @@
                 });
                 $.ajax({
                     url: '/get_skills',
-                    method:'POST',
+                    method:'GET',
                     data: {
                         'sector': sector,
                         'domain':domain
@@ -352,7 +352,7 @@
             var sector=$('#sector').val();
             $.ajax({
                 url: '/get_skills',
-                method:'POST',
+                method:'GET',
                 data: {
                     'sector': sector,
                     'domain':domain
@@ -365,7 +365,7 @@
             }); 
         });
         function setSkills(data){
-            var d = $('#skill')
+            let d = $('#skill')
             d.empty();
             d.append('<option value="">All</option>');
             $.each(data, function(index, skill){
@@ -374,7 +374,7 @@
 
         }
         function setDomains(data){
-            var d = $('#domain')
+            let d = $('#domain')
             d.empty();
             d.append('<option value="">All</option>');
             $.each(data, function(index, domain){
@@ -515,7 +515,7 @@
         }, duration);
     }
     // Validation to ensure only options from the provided list are accepted
-    document.getElementById("autocomplete").addEventListener("change", function() {
+    {% comment %} document.getElementById("autocomplete").addEventListener("change", function() {
         var enteredValue = this.value.trim();
         if (enteredValue === "Other") {
             document.getElementById("otherInputContainer").style.display = "block";
@@ -526,7 +526,7 @@
                 showAlert(3000);
             }
         }
-    });
+    }); {% endcomment %}
    
 
 </script>

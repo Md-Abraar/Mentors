@@ -556,14 +556,26 @@ def admin_course_view(request):
     return render(request,'management/admin_course.html')
 
 @login_required(login_url='adminlogin')
-@admin_superuser_required
 def get_domains(request):
     sector = request.GET.get('sector','')
     if sector:
-        domains = models.Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
+        domains = Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
     else:
-        domains = models.Skill.objects.values_list('domain',flat=True).distinct()
+        domains = Skill.objects.values_list('domain',flat=True).distinct()
     return JsonResponse(list(domains), safe=False)
+
+@login_required(login_url='adminlogin')
+def get_skills(request):
+    sector = request.GET.get('sector','')
+    domain = request.GET.get('domain','')
+
+    skills = Skill.objects.all()
+    if sector:
+        skills = skills.filter(sector=sector)
+    if domain:
+        skills = skills.filter(domain=domain)
+    skills_list = skills.values_list('skill_name',flat=True).distinct()
+    return JsonResponse(list(skills_list), safe=False)
 
 @login_required(login_url='adminlogin')
 @admin_superuser_required
@@ -611,7 +623,7 @@ def admin_add_skill(request):
         level = request.POST.get('level')
         parameters = request.POST.get('parameters')
 
-        skill = models.Skill(skill_name=skill_name,sector=sector,domain=domain,level=level,parameters=parameters)
+        skill = Skill(skill_name=skill_name,sector=sector,domain=domain,level=level)
         skill.save()
 
     return redirect(admin_skill_view)
