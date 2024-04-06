@@ -392,7 +392,15 @@ def student_profile(request,roll):
         per_det=Personal_details.objects.filter(student_id=user1)
         prof_det=Profile.objects.filter(student_id=user1)
 
-        ski_det = students_skills.objects.filter(student=s_rec,skill_status='evaluated').order_by(F('overall_score').desc())
+        ski_det1 = students_skills.objects.filter(student=s_rec,skill_status='evaluated').order_by(F('overall_score').desc())
+        ski_det=list()
+        for i in ski_det1:
+            temp=dict()
+            temp["skill_name"]=i.skill_name
+            temp['overall_score']=i.test_score + i.project_score
+            ski_det.append(temp)
+            
+        print(ski_det)
         ach_det=Achievements.objects.filter(student_id=user1)
         int_det=Internships.objects.filter(student_id=user1)
         cer_det=Certifications.objects.filter(student_id=user1)

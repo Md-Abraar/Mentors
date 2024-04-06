@@ -146,6 +146,6 @@ urlpatterns = [
 
     path('student_profile/<str:roll>/', views.student_profile, name='student_profile'),
     # path('idgen/', include('idgen.urls')),
-    path('get_domains',s_views.get_domains,name="get_domains"),
-    path('get_skills',s_views.get_skills,name="get_skills"),
+    # path('get_domains',s_views.get_domains,name="get_domains"),
+    # path('get_skills',s_views.get_skills,name="get_skills"),
 ]
