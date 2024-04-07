@@ -1222,3 +1222,40 @@ def student_profile(request,roll):
 
 def custom_404_view(request, exception):
     return render(request, '404.html', status=404)
+
+def get_skills(request):
+    sector = request.GET.get('sector','')
+    domain = request.GET.get('domain','')
+
+    skills = Skill.objects.all()
+    if sector:
+        skills = skills.filter(sector=sector)
+    if domain:
+        skills = skills.filter(domain=domain)
+    skills_list = skills.values_list('skill_name',flat=True).distinct()
+    return JsonResponse(list(skills_list), safe=False)
+
+def getSkillsforExaminer(request):
+    sector = request.GET.get('sector','')
+    domain = request.GET.get('domain','')
+    level=request.GET.get('level','')
+    skills = Skill.objects.filter(status=True)
+    if sector:
+        skills = skills.filter(sector=sector)
+    if domain:
+        skills = skills.filter(domain=domain)
+    if level:
+        skills=skills.filter(level=level)
+    skills_list = skills.values_list('skill_name',flat=True).distinct()
+    return JsonResponse(list(skills_list), safe=False)
+
+
+from management.models import *
+from examiner.models import *
+def assign_skills(request, pk):
+    selected_skills = request.POST.getlist('skills[]')
+    for i in selected_skills:
+        s_obj=Examiner.objects.get(emp_id=pk)
+        skill=examiner_skills(examiner=s_obj,skill_name=i,skill_status=True)
+        skill.save()
+    return HttpResponseRedirect(f'/examiner-details/{pk}')

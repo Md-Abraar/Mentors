@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth.views import LoginView
 from .views import *
+from management import views as m_views
 urlpatterns = [
 path('examinerclick', views.examinerclick_view),
 path('examinersignup', views.examiner_signup_view,name='examinersignup'),

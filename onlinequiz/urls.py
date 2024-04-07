@@ -5,7 +5,6 @@ from django.contrib.auth.views import LogoutView,LoginView
 import student.views as s_views
 
 from examiner.views import *
-from management import views
 
 urlpatterns = [
    
@@ -26,9 +25,9 @@ urlpatterns = [
     path('adminclick', views.adminclick_view, name='adminclick'),
     path('examinerclick', views.examinerclick_view, name='examinerclick'),
     path('studentclick', s_views.studentclick_view, name='studentclick'),
-
+    path('getSkillsforExaminer',views.getSkillsforExaminer, name="getSkillsforExaminer"),
     path('adminclick', views.adminclick_view, name='adminclick'),
-
+    path('assign-skills/<int:pk>', views.assign_skills,name='assign-skills'),
     path('adminlogin', LoginView.as_view(template_name='management/adminlogin.html'),name='adminlogin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
