@@ -11,7 +11,6 @@ class Examiner(models.Model):
     department=models.CharField(max_length=40,null=True)
     mobile=models.CharField(max_length=13,null=True)
     email=models.CharField(max_length=40,null=True)
-    skill=models.CharField(max_length=40,null=True)
     examiner_image = models.ImageField(upload_to='Faculty/')
     is_active = models.BooleanField(default=True)
 

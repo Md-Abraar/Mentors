@@ -45,6 +45,8 @@
         <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{details.department}}</p>
         <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{details.email}}</p>
         <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{details.mobile}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Skills: </span>{{details.skills|join:","}}</p>
+
         {% comment %} {% block mentee_count %}{% endblock mentee_count %} {% endcomment %}
           {% if details.is_active %}
           {% comment %} <a href=" {% url 'update-is-active' details.emp_id %} "><button type="submit" class="btn btn-danger" id="alert_message" onclick="alert_message()">deactivate</button></a>

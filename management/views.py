@@ -166,7 +166,7 @@ def examiner(request):
     #mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
     #mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image').annotate(mentee_count=Count('student')).order_by('mentee_count','name')
     examiners=TMODEL.Examiner.objects.all()
-    examiner_pending = TMODEL.Examiner.objects.filter(status=False).values('emp_id','name', 'department', 'examiner_image')
+    examiner_pending = TMODEL.Examiner.objects.filter(status=False).values('emp_id','name', 'department', 'examiner_image','mobile','email')
     examiner_approve = TMODEL.Examiner.objects.filter(status=True).values('emp_id','name', 'department', 'examiner_image')
     return render(request,'management/examiner.html',{'examiner_pending':examiner_pending,'examiner_approve':examiner_approve})
 
@@ -187,6 +187,7 @@ def examiner(request):
 @admin_superuser_required
 def examiner_details(request,empid):
     examiner = TMODEL.Examiner.objects.get(emp_id=empid)
+    skills = list(examiner_skills.objects.filter(examiner=Examiner.objects.get(emp_id=empid)).values_list('skill_name__skill_name', flat=True))
     details = {
         'emp_id':examiner.emp_id,
         'name':examiner.name,
@@ -194,7 +195,8 @@ def examiner_details(request,empid):
         'mobile':examiner.mobile,
         'email':examiner.email,
         'examiner_image':examiner.examiner_image,
-        'is_active' : examiner.status
+        'is_active' : examiner.status,
+        'skills':skills
     }
     return render(request,'management/examiner_details.html',{'details':details})
 
@@ -367,6 +369,8 @@ def approve_examiner(request,pk):
     examiner=TMODEL.Examiner.objects.get(emp_id=pk)
     examiner.status=True
     examiner.save()
+    eskills=examiner_skills(examiner=examiner)
+    eskills.save()
     return HttpResponseRedirect('/examiner')
 
 @login_required(login_url='adminlogin')
@@ -970,24 +974,6 @@ def admin_view_pending_mentor_view(request):
     mentors= MMODEL.mentor.objects.all().filter(status=False)
     return render(request,'quiz/admin_view_pending_mentor.html',{'mentors':mentors})
 
-
-@login_required(login_url='adminlogin')
-def approve_examiner_view(request,pk):
-    examiner=TMODEL.Examiner.objects.get(id=pk)
-    examiner.status=True
-    examiner.save()
-    examiner_skills=models.examiner_skills(examiner=examiner,skill_name=examiner.skill,skill_status=True)
-    examiner_skills.save()
-    return HttpResponseRedirect('/admin-view-pending-examiner')
-
-@login_required(login_url='adminlogin')
-def reject_examiner_view(request,pk):
-    examiner=TMODEL.Examiner.objects.get(id=pk)
-    user=User.objects.get(id=examiner.user_id)
-    user.delete()
-    examiner.delete()
-    return HttpResponseRedirect('/admin-view-pending-examiner')
-
 # @login_required(login_url='adminlogin')
 # def approve_mentor_view(request,pk):
 #     mentor=MMODEL.mentor.objects.get(id=pk)
@@ -1148,8 +1134,6 @@ def admin_check_marks_view(request,pk):
     
 
 
-
-
 def aboutus_view(request):
     return render(request,'quiz/aboutus.html')
 
@@ -1222,13 +1206,13 @@ def getSkillsforExaminer(request):
     skills_list = skills.values_list('skill_name',flat=True).distinct()
     return JsonResponse(list(skills_list), safe=False)
 
-
-from management.models import *
-from examiner.models import *
 def assign_skills(request, pk):
     selected_skills = request.POST.getlist('skills[]')
+    examiner = EMODEL.Examiner.objects.get(emp_id=pk)
+    eskill = examiner_skills.objects.get(examiner=examiner)
+
     for i in selected_skills:
-        s_obj=Examiner.objects.get(emp_id=pk)
-        skill=examiner_skills(examiner=s_obj,skill_name=i,skill_status=True)
-        skill.save()
+        skill = Skill.objects.get(skill_name = i)
+        eskill.skill_name.add(skill)
+    
     return HttpResponseRedirect(f'/examiner-details/{pk}')
