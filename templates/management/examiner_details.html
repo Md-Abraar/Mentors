@@ -1,0 +1,247 @@
+{% extends "management/adminbase.html" %}
+{% load static %}
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<style>
+    *{
+        margin:0; padding:0;
+    }
+    .ellipsis{
+      text-overflow:ellipsis;
+    }
+      .table-container{
+        height: 400px;
+        border:1px solid;
+        overflow-y:scroll;
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none; 
+      }
+      
+      table td{
+        padding:5px 10px;
+      }
+
+      .drag-select-area {
+        background-color: hsl(210deg 80% 50% / 50%);
+        border: 1px solid hsl(210deg 80% 50% / 75%);
+        box-sizing: border-box;
+      } 
+</style>
+<div class="container">
+<div class="row">
+  <div class="col ms-2" id="lorem">
+    <h4 class="text-center mb-5">Examiner details</h4>
+    <div class="row">
+      <div class="col-md-4">
+        <img src="{% static details.examiner_image.url %}" alt="" style="height:150px; width:120px" class="mx-auto d-block"><br>
+      </div>
+      <div class="col">
+        <p style="font-size:18px"><span class="fw-semibold">Emp id: </span>{{details.emp_id}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{details.name}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{details.department}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{details.email}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{details.mobile}}</p>
+        {% comment %} {% block mentee_count %}{% endblock mentee_count %} {% endcomment %}
+          {% if details.is_active %}
+          {% comment %} <a href=" {% url 'update-is-active' details.emp_id %} "><button type="submit" class="btn btn-danger" id="alert_message" onclick="alert_message()">deactivate</button></a>
+          <p>Clicking this button deactivates the account.</p> {% endcomment %}
+          <!-- Button to trigger the modal -->
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#alertmessage">Deactivate</button>
+        <div class="modal" id="alertmessage" tabindex="-1" aria-labelledby="alertmessageLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="alertmessageLabel">Are you sure to deactivate the account?</h5>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href=" {% url 'update-status' details.emp_id %} "><button type="button" class="btn btn-primary" id="okButton">OK</button></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" style="margin-left:50px;"class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AssignSkills">Assign Skills</button>
+        <div class="modal" id="AssignSkills" tabindex="-1" aria-labelledby="AssignSkillsLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-footer">
+                <div class="card">
+                  <div class="card-body">
+                      <div class="row align-items-center">
+                        <div class="col-md-3 align-self-end">
+                          <label for="sector" class="form-lable">Sector</label>
+                          <select name="sector" id="sector" class="form-select">
+                            <option value="">All</option>
+                              <option value="IT"{% if sector == "IT" %} selected{% endif %}>IT</option>
+                              <option value="Electronics" {% if sector == "Electronics" %}selected{% endif %}>Electronics</option>
+                              <option value="Electrical" {% if sector == "Electrical" %}selected{% endif %}>Electrical</option>
+                              <option value="Mechanical" {% if sector == "Mechanical" %}selected{% endif %}>Mechanical</option>
+                              <option value="Civil" {% if sector == "Civil" %}selected{% endif %}>Civil</option>
+                          </select>                    
+                      </div>
+                    <div class="col-md-3 align-self-end">
+                      <label for="domain" class="form-label">Domain</label>
+                          <select name="domain" id="domain" class="form-select">
+                          </select>
+                    </div> 
+                    <div class="col-md-3 align-self-end">
+                      <label for="level" class="form-label" >Level</label>
+                      <select name="level" id="level" class="form-select">
+                        <option value="" >All</option>
+                        <option value="Basic" {% if level == "Basic" %}selected{% endif %}>Basic</option>
+                        <option value="Intermediate" {% if level == "Intermediate" %}selected{% endif %}>Intermediate</option>
+                        <option value="Advanced" {% if level == "Advanced" %}selected{% endif %}>Advanced</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3 align-self-end">
+                      <a href=""></a><button class="btn btn-primary mt-4" id="search">Search</button>
+                    </div>
+                      </div>
+                    <form action="{% url "assign-skills" details.emp_id %}" method="POST">
+                      <div class="row align-items-end">
+                        <div class="mt-4"> 
+                          <label for="skill" id="skill">Skill</label>
+                          <select id="choices" multiple name="skills[]">
+                          </select>
+                        </div>
+                        <div class="col-md-3 mt-4">
+                          <button class="btn btn-primary submit">Assign</button>
+                        </div>
+                      </div>
+                    </form>          
+                  </div>
+                </div>                
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        </div>    
+      </div>
+    </div> 
+                             
+  </div>
+<script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+  $(document).ready(function(){
+    $('#sector').change(function(){
+      var sector = $(this).val(); 
+      // Check if the response for this sector is already cached
+          $.ajax({
+              url: '/get_domains',
+              data: {
+                  'sector': sector
+              },
+              dataType: 'json',
+              success: function (data){
+                  setDomains(data)
+              }
+          });
+  });
+  function setDomains(data){
+    var d = $('#domain')
+    d.empty();
+    d.append('<option value="">All</option>');
+    $.each(data, function(index, domain){
+        d.append('<option value="' + domain + '">' + domain + '</option>');
+    });   
+    d.find("option[value='{{domain|safe}}']").attr("selected","selected");         
+  }
+  });
+  $(document).ready(function() {
+    const choices = new Choices('#choices', {
+      searchEnabled: true,     
+      removeItemButton: true,
+      renderChoiceLimit: -1,  
+      maxItemCount: -1, 
+      items: [],
+      allowHTML: true,
+    });
+    // Bind AJAX call to the click event of the search button
+    $('#search').on('click', function(e) {
+        e.preventDefault(); // Prevent the default action of the button  
+        // Get selected values
+        var sector = $('#sector').val();
+        var domain = $('#domain').val();
+        var level = $('#level').val();
+        // AJAX request
+        $.ajax({
+            type: 'GET',
+            url: '/getSkillsforExaminer',  
+            data: {
+                sector: sector,
+                domain: domain,
+                level: level
+            },
+            success: function(data) {  
+              choices.setChoices(
+              data.map(skill => ({ value: skill, label: skill })),
+              'value',
+              'label',
+              true,
+            );
+          },          
+        });
+    });
+    $('#sector').trigger("change");
+    $('#search').on('click', function(e) {
+      e.preventDefault(); // Prevent the default action of the button  
+      // Get selected values
+      var sector = $('#sector').val();
+      var domain = $('#domain').val();
+      var level = $('#level').val();
+      // AJAX request
+      $.ajax({
+          type: 'GET',
+          url: '/getSkillsforExaminer',  
+          data: {
+              sector: sector,
+              domain: domain,
+              level: level
+          },
+          success: function(data) {  
+            choices.setChoices(
+            data.map(skill => ({ value: skill, label: skill })),
+            'value',
+            'label',
+            true,
+          );
+        },          
+      });
+  });
+    $('#AssignSkills').on('shown.bs.modal', function () {
+      $('#search').on('click', function(e) {
+        e.preventDefault(); // Prevent the default action of the button  
+        // Get selected values
+        var sector = $('#sector').val();
+        var domain = $('#domain').val();
+        var level = $('#level').val();
+        // AJAX request
+        $.ajax({
+            type: 'GET',
+            url: '/getSkillsforExaminer',  
+            data: {
+                sector: sector,
+                domain: domain,
+                level: level
+            },
+            success: function(data) {  
+              choices.setChoices(
+              data.map(skill => ({ value: skill, label: skill })),
+              'value',
+              'label',
+              true,
+            );
+          },          
+        });
+    });
+    });
+});
+
+</script>
+{% endblock content %}

@@ -1,0 +1,49 @@
+{% extends 'examiner/examinerbase.html' %}
+{% block content %}
+{% load static %}
+
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+ 
+</head>
+
+<div class="container">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h6 class="card-title text-center">Select Course To View Questions</h6>
+    </div>
+    <div class="card-body">
+      <table class="table table-hover" id="dev-table">
+        <thead>
+          <tr class="text-center">
+            <th>Skill</th>
+            <th>Test Name</th>
+            <th>Total Question</th>
+            <th>Total Marks</th>
+            <th>View Question</th>
+            <th>Students Score</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in courses %}
+          <tr class="text-center">
+            <td>{{ c.skill_name }}</td>
+            <td>{{ c.course_name }}</td>
+            <td>{{ c.question_number }}</td>
+            <td>{{ c.total_marks }}</td>
+            <td><a class="btn btn-primary btn-sm" href="{% url 'see-question' c.id  %}"><i style="font-size:10px" class="fa">&#xf002;</i></a></td>
+            <td><a class="btn btn-primary btn-sm" href="{% url 'see-student' c.id  %}"><i style="font-size:10px" class="fa">&#xf002;</i></i></a></td>
+            <td><a class="btn btn-danger btn-sm" href="{% url 'delete-exam' c.id  %}"><i style='font-size:10px' class='fas'>&#xf2ed;</i></a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

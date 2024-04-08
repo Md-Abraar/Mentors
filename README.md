@@ -1,4 +1,4 @@
-# Online Quiz
+<!-- # Online Quiz
 ![developer](https://img.shields.io/badge/Developed%20By%20%3A-Sumit%20Kumar-red)
 ---
 ## screenshots
@@ -76,4 +76,4 @@ EMAIL_RECEIVING_USER = 'youremail@gmail.com'
 ## Feedback
 Any suggestion and feedback is welcome. You can message me on facebook
 - [Contact on Facebook](https://fb.com/sumit.luv)
-- [Subscribe my Channel LazyCoder On Youtube](https://youtube.com/lazycoders)
+- [Subscribe my Channel LazyCoder On Youtube](https://youtube.com/lazycoders) -->

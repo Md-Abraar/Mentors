@@ -1,33 +1,216 @@
-<!DOCTYPE html>
+{% extends "management/navbar.html" %}
 {% load static %}
-<html lang="en" dir="ltr">
+{% block head %}
+  <title>Home</title>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,900&family=Asap+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+        td{
+          font-family: 'Poppins', sans-serif;
+          font-weight: 300;
+          font-size: 16px;
+        }
+        th{
+          font-family: 'Poppins', sans-serif;
+          font-weight: 600;
+          font-size: 16px;
+        }
+        tr{
+            user-select: none;
+        }
+        h3{
+            color: white !important;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: 700 !important;
+            font-size: 25px!important; 
+            /* text-shadow: 1px 0px 1px rgba(0, 0, 0, 0.5); */
+        }
+        tbody tr:first-child td{
+            font-weight: 400;
+            color: #a3862c;
+        }
+        tbody tr:first-child td span{
+            color: white!important;
+            background-color: #a3862c!important;
+        }
+        tbody tr:nth-child(2) td{
+            font-weight: 400;
+            color: #868E96;
+        }
+        tbody tr:nth-child(2) td span{
+            color: white!important;
+            background-color: #868E96!important;
+        }
+        tbody tr:nth-child(3) td{
+            font-weight: 400;
+            color:#80582c;
+        }
+        tbody tr:nth-child(3) td span{
+            color: white!important;
+            background-color: #80582c!important;
+        }
+        .card-header{
+            background-color: orange!important;
+            border-bottom: 0!important;
+        }
+        select{
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif !important;
+            font-weight: 500;
+            font-size: 14px !important;
+            background-color: orange;
+            border-color: white;
+            border-width: 1.4   px;
+            color: white;
+        }
+        select:focus{
+            color: black;
+            background-color: white;
+        }
 
-<style>
-  .jumbotron{
-    margin-bottom: 0px;
+        #features p{
+            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            transition: font-size 0.3s ease;
+        }
+        #features p:hover{
+            font-size: 20px;
+        }
+  </style>
+{% endblock head %}
+{% block body %}
+<div class="container">
+  <div class="row jusify-space-around" style="min-height: 100vh;">
+      <div class="col-md-1"></div>
+      <div class="col-md-5 mb-0 align-self-center" id="enhanceimg">
+          <img src="{% static "image/4563775.jpg" %}" alt="image" height="400" width="400">
+      </div>
+      <div class="col-md-5 align-self-center" id="Home">
+          <div class="d-flex justify-content-center mt-5" style="color: orange;font-family: 'Poppins',sans-serif;">
+              <div class="d-flex ms-5 flex-wrap">
+                  <div data-aos="fade-left" data-aos-duration="1000" data-aos-delay="0">
+                      <h1>Dream,&nbsp;</h1>
+                  </div>
+                  <div data-aos="fade-left" data-aos-duration="1000" data-aos-delay="700">
+                      <h1>Dare,&nbsp;</h1>
+                  </div>
+                  <div data-aos="fade-left" data-aos-duration="1000" data-aos-delay="1400">
+                      <h1>Do,&nbsp;</h1>
+                  </div>
+                  <div data-aos="fade-left" data-aos-duration="1000" data-aos-delay="2100">
+                      <h1><span style="font-size: 75%;">with&nbsp;</span></h1>
+                  </div>
+                  <div data-aos="fade-left" data-aos-duration="1000" data-aos-delay="2100">
+                      <h1>GPREC</h1>
+                  </div>
+              </div>
+          </div>
+          <img class="ms-5 mt-4" src="{% static "image/1.png" %}" alt="1" height="100" width="100" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="0">
+          <img src="{% static "image/3.png" %}" alt="2" height="100" width="100" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="700">
+          <img src="{% static "image/2.png" %}" alt="3" height="100" width="100" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="1400">
+          <hr>
+      </div>
+      <!-- <div class="col-md-1"></div> -->
+  </div>
+  
+</div>
+<div class="container-fluid">
+  <div class="row p-0" style="min-height: 100vh;">
+    <div id="features" class="col-md-6 mb-5 align-self-center text-center" style="font-size: 18px !important; font-family: 'Poppins', sans-serif;">
+        <h4 style="color: orange; font-family: monospace; font-weight: bold;">Student Portifolio Management</h4><br>
+        <p >Seamless upskilling Opportunities</p>
+        <p >Comprehensive portfolio management</p>
+        <p >Personalized mentorship programs</p>
+        <p >Industry-relevant skills for Holistic development</p>
+        <p >Showcase their achievements and projects effectively</p>
+    </div>
+    <div class="col-md-6 pb-3 pe-5 align-self-center" id="leaderboard">
+      <div class="card shadow p-2">
+        <div class="card-header">
+          <div class="row justify-content-between">
+            <div class="col-md-6 pt-3">
+                <h3>Leaderboard</h3>
+            </div>
+            <div class="col-md-6">
+              <form method="GET" id="filter">
+                <div style="text-align:right;">
+                  <select name="year" id="year">
+                    <option value="">All Years</option>
+                    <option value="1" {% if year_filter == '1' %}selected{% endif %}>I</option>
+                    <option value="2" {% if year_filter == '2' %}selected{% endif %}>II</option>
+                    <option value="3" {% if year_filter == '3' %}selected{% endif %}>III</option>
+                    <option value="4" {% if year_filter == '4' %}selected{% endif %}>IV</option>
+                  </select>
+                  <select name="department" id="department">
+                    <option value="">All Dept</option>
+                    <option value="CSE" {% if dept_filter == 'CSE' %}selected{% endif %}>CSE</option>
+                    <option value="ECE" {% if dept_filter == 'ECE' %}selected{% endif %}>ECE</option>
+                    <option value="EEE" {% if dept_filter == 'EEE' %}selected{% endif %}>EEE</option>
+                    <option value="MEC" {% if dept_filter == 'MEC' %}selected{% endif %}>MEC</option>
+                    <option value="CIV" {% if dept_filter == 'CIV' %}selected{% endif %}>CIV</option>
+                    <option value="ECS" {% if dept_filter == 'ECS' %}selected{% endif %}>ECS</option>
+                  </select>
+                  <select name="domain" id="domain">
+                    <option value="">All Domains</option>
+                    {% for domain in domains %}
+                      <option value="{{domain}}" {% if domain_filter == domain %}selected{% endif %}>{{domain}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </form>                        
+            </div>
+          </div> 
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+              <table class="table table-sm table-hover">
+                  <thead>
+                    <tr>
+                      <th scope="col">#&nbsp;&nbsp;</th>
+                      <th scope="col">Name</th>
+                      <th scope="col">Class</th>
+                      <th scope="col">Points</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for student in top %}
+                      <tr onclick="window.location.href='{% url "home" %}'">
+                        <td>{{student.rank}}</td>
+                        <td>{{student.name}}</td>
+                        <td>{{student.yb}}</td>
+                        <td class="text-center"><span class="badge rounded-pill text-bg-light fw-semibold">{{student.score}}</span></td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  AOS.init();
+
+  function openNavbar() {
+      document.getElementById("sideNavigationBar")
+          .style.width = "50%";
   }
-</style>
-<body>
-  {% include "management/navbar.html" %}
-<br>
-<section id="section-jumbotron" class="jumbotron jumbotron-fluid d-flex justify-content-center align-items-center">
-  <div class="container text-center">
-    <h1 class="display-1 text-info">Let's Quiz</h1>
-    <p class="display-4 d-none d-sm-block">Test your skills and become a master.</p>
-    <p class="lead">We organize quizzes on various topics.</p>
 
-    
+  function closeNavbar() {
+      document.getElementById("sideNavigationBar")
+          .style.width = "0%";
+  }
 
-    <p class="lead">Sign up if you haven't already and get access to millions of quizzes on the topic of your interest.</p>
-    <p><strong> Start Your Journey Here:</strong></p>
-    <a href="/student/studentsignup" class="btn btn-lg btn-info" style="padding-right: 35px;"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</a>
-    
-    <br><br><br>
-  </div>  
-</section>
-  {% include "management/footer.html" %}
+  $('#year,#department,#domain').change(function(){
+    $('#filter').submit();
+  });
+  $('#filter').submit(function(){
+    window.location.hash = '#leaderboard';
+  });
+</script>
+{% endblock body %}
 
-
-</body>
-
-</html>

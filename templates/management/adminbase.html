@@ -133,7 +133,7 @@
 
     .content {
       margin-left: 250px;
-      background: url(background.png) no-repeat;
+      {% comment %} background: url(background.png) no-repeat; {% endcomment %}
       background-position: center;
       background-size: cover;
       height: 100vh;
@@ -151,7 +151,6 @@
 
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
-
 
 </head>
 
@@ -181,10 +180,11 @@
     </center>
 
     <a href="/admin-dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
-    <a href="/admin-teacher"><i class="fas fa-chalkboard-teacher"></i><span>Teacher</span></a>
+    <a href="/admin-teacher"><i class="fas fa-chalkboard-teacher"></i><span>Mentor</span></a>
+    <a href="/examiner"><i class="fas fa-chalkboard-teacher"></i><span>Examiner</span></a>
+
     <a href="/admin-student"><i class="fas fa-user-graduate"></i><span>Student</span></a>
     <a href="/admin-skill"><i class="fas fa-book"></i><span>Skills</span></a>
-    <a href="/admin-question"><i class="fas fa-question-circle"></i><span>Questions</span></a>
     
 
 
@@ -199,15 +199,13 @@
     {% block content %}
 
     {% endblock content %}
-
-
     <br><br><br>
     {% include "management/footer.html" %}
   </div>
   <!--content end-->
   <script>
     $(document).ready(function () {
-      $("label").addClass("fw-semibold");
+      $("label").not(".exclude").addClass("fw-semibold");
     });
   </script>
 </body>

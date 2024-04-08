@@ -1,0 +1,229 @@
+{% extends 'management/adminbase.html' %}
+{%load static%}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 800px; /* Adjust this value as needed */
+  margin: 0 auto; /* Center the container horizontally */
+}
+
+h4 {
+  display: block;
+  margin-block-start: 1.33em;
+  margin-block-end: 0.3em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+  text-align: center;
+  font-family: arial;
+  font-size: 18px;
+
+}
+
+.mycard {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);  
+  width: 200px; /* Adjust this value to reduce the length */
+  margin: 20px;
+  height: 400px;
+  text-align: center;
+  font-family: arial;
+  /*padding:4px;*/
+}
+
+.mytitle {
+  color: grey;
+  
+  /*font-size: 18px;*/
+  font-size: 14px; /* Adjust font size */
+  text-align:center;
+}
+
+
+.mybutton {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  /*padding: 8px;*/
+  padding: 6px; /* Adjust padding */
+  margin-top:1%;
+  margin-bottom:2%;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  /*font-size: 18px;*/
+  font-size: 14px; /* Adjust font size */
+}
+
+a {
+  text-decoration: none;
+  font-size: 22px;
+  color: black;
+}
+
+button:hover, a:hover {
+  opacity: 0.7;
+}
+.search
+{
+    display: flex;
+    justify-content: space-between;
+    max-width: 800px;
+    margin:0 auto;
+}
+.addProfile
+{
+    padding: 5px;
+    background: #19B3D3;
+    text-decoration: none;
+    border-radius: 2px;
+    margin-left: 460px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    transition: 0.5s;
+}
+</style>
+</head>
+<body>
+<div class="search">
+    <h2 style="margin: 20px;">Examiner Profiles</h2>
+    <input type="text" id="searchInput" name="search" onkeyup="searchProfile()" placeholder="Search by names.." style="margin: 20px;">   
+    
+ </div> 
+
+{% if examiner_pending %}
+<br><br>
+<p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approval Pending Accounts</i></b></p>
+{% endif %}
+<div class="container" id="pendingContent" >
+  
+    {% for examiner in examiner_pending%}
+      <div class="mycard">
+        <img src= "{% static examiner.examiner_image %}" alt="John" style="width:100%; height:60%">
+        <h4>{{examiner.name}}</h4>
+        <p class="mytitle">{{examiner.department}}</p>
+
+        <p><button data-bs-toggle="modal" data-bs-target="#a{{examiner.emp_id}}" class="mybutton" style="background-color: #ffc107; color: #000;">Action Required 
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-arrow-right-circle " viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z"/>
+          </svg>
+        </button></p>
+      </div>
+      <div class="modal fade" id="a{{examiner.emp_id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Emp id: {{examiner.emp_id}}</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p style="font-size:18px"><span class="fw-semibold">Name: </span>{{examiner.name}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{examiner.department}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{examiner.email}}</p>
+              <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{examiner.mobile}}</p>
+              <div class="row">
+                <div class="col-md-6">
+                  <a href=" {% url 'approve-examiner' examiner.emp_id %} "><button type="button" class="btn btn-success">Accept</button></a>
+                </div>
+                <div class="col-md-6">
+                  <a href=" {% url 'reject-examiner' examiner.emp_id %} "><button type="button" class="btn btn-danger">Reject</button></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+   
+</div>
+
+<br><br>
+<p style="text-align: center; font-size: large; margin-left: 5px;">  <b> <i>Approved Accounts</i></b></p>
+<div class="container" id="approvedContent" >
+  
+  {% for examiner in  examiner_approve%}
+    <div class="mycard position-relative">
+      {% comment %} <span style="top:5%; left:85%; font-size:14px" class="badge rounded-pill text-bg-dark position-absolute translate-middle" data-bs-toggle="tooltip" data-bs-title="Mentees">{{mentor.mentee_count}}</span> {% endcomment %}
+      <img src= "{% static examiner.examiner_image %}" alt="John" style="width:100%; height:60%">
+      <h4>{{examiner.name}}</h4>
+      <p class="mytitle">{{examiner.department}}</p>
+      <p><a href="{% url "examiner-details" examiner.emp_id %}" class="mybutton">More Details</a></p>
+    </div>
+  {% endfor %}  
+</div>
+
+{% comment %} <script>
+    function searchProfile() {
+      // Declare variables
+      var input, filter, container, mycard, mytitle, i, txtValue;
+      input = document.getElementById('searchInput');
+      filter = input.value.toUpperCase();
+      container = document.getElementsByClassName('container')[0];
+      mycard = container.getElementsByClassName('mycard');
+    
+      // Loop through all mycards, and hide those who don't match the search query
+      for (i = 0; i < mycard.length; i++) {
+        mytitle = mycard[i].getElementsByTagName("h4")[0];
+        txtValue = mytitle.textContent || mytitle.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          mycard[i].style.display = "";
+        } else {
+          mycard[i].style.display = "none";
+        }
+      }
+    }
+</script> {% endcomment %}
+<script>
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    function searchProfile() {
+        // Declare variables
+        var input, filter, container, cards, card, title, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        
+        // Search in pending mentor cards
+        container = document.getElementById("pendingContent");
+        cards = container.getElementsByClassName("mycard");
+        var con = document.getElementById('con');
+        for (i = 0; i < cards.length; i++) {
+            card = cards[i];
+            title = card.getElementsByTagName("h4")[0];
+            txtValue = title.textContent || title.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+
+            }
+        }
+        
+        // Search in approved mentor cards
+        container = document.getElementById("approvedContent");
+        cards = container.getElementsByClassName("mycard");
+        
+        for (i = 0; i < cards.length; i++) {
+            card = cards[i];
+            title = card.getElementsByTagName("h4")[0];
+            txtValue = title.textContent || title.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+        }
+    }
+    </script>
+    
+  
+
+
+{% endblock content %}

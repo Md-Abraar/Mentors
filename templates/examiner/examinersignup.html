@@ -1,0 +1,569 @@
+{% include "management/navbar.html" %}
+
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+         @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+        *{
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: 'Poppins', sans-serif;
+        }
+        html,body {
+            display: grid;
+            height: 100%;
+            width: 100%;
+            place-items: center;
+            background-color: white;/* Set background color to orange */
+        }
+
+        ::selection{
+          background: orange;
+          color: #fff;
+        }
+        .wrapper {
+            /* overflow: hidden;
+            max-width: 600px; 
+            background: #fff;
+            padding: 30px; */
+            border-radius: 15px;
+            box-shadow: 0px 15px 20px rgba(0,0,0,0.1);
+        }
+
+        {% comment %} .wrapper .title-text{
+          display: flex;
+          width: 200%;
+        } {% endcomment %}
+        .wrapper .title{
+          font-size: 35px;
+          font-weight: 600;
+          transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+        }
+        .wrapper .slide-controls{
+          position: relative;
+          display: flex;
+          height: 40px;
+          width: 80%;
+          overflow: hidden;
+          margin: 30px 75px 10px 30px;
+          justify-content: space-between;
+          border: 1px solid lightgrey;
+          border-radius: 15px;
+        }
+        .slide-controls .slide{
+          height: 50%;
+          width: 50%;
+          color: #fff;
+          font-size: 16px;
+          font-weight: 500;
+          text-align: center;
+          line-height: 48px;
+          cursor: pointer;
+          z-index: 1;
+          transition: all 0.6s ease;
+        }
+        .slide-controls label.signup{
+          color: #000;
+        }
+        .slide-controls .slider-tab {
+            position: absolute;
+            height: 100%;
+            width: 50%;
+            left: 0;
+            z-index: 0;
+            border-radius: 15px;
+            background: linear-gradient(to right, orange, #FFA500); /* Orange gradient */
+            transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+        }
+
+        #signup:checked ~ .slider-tab{
+          left: 50%;
+        }
+        #signup:checked ~ label.signup{
+          color: #fff;
+          cursor: default;
+          user-select: none;
+        }
+        #signup:checked ~ label.login{
+          color: #000;
+        }
+        #login:checked ~ label.signup{
+          color: #000;
+        }
+        #login:checked ~ label.login{
+          cursor: default;
+          user-select: none;
+        }
+        .wrapper .form-container{
+          width: 100%;
+          overflow: hidden;
+        }
+        .form-container .form-inner{
+          display: flex;
+          width: 200%;
+        }
+        .form-container .form-inner form{
+          width: 50%;
+          transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+        }
+        .form-inner form .field{
+          height: 50px;
+          width: 100%;
+          margin-top: 20px;
+        }
+        .form-inner form .field input {
+            height: 40px; /* Decrease the height of the input field */
+            width: calc(100%); /* Decrease the width and adjust for padding */
+            outline: none;
+            padding: 10px; /* Adjust padding for better spacing */
+            border-radius: 10px; /* Decrease the border radius */
+            border: 1px solid lightgrey;
+            border-bottom-width: 2px;
+            font-size: 14px; /* Decrease the font size */
+            transition: all 0.3s ease;
+        }
+
+        .form-inner form .field input:focus{
+          border-color: #1a75ff;
+        }
+        .form-inner form .field input::placeholder{
+          color: #999;
+          transition: all 0.3s ease;
+        }
+        form .field input:focus::placeholder{
+          color: #1a75ff;
+        }
+        .form-inner form .pass-link{
+          margin-top: 5px;
+        }
+        .form-inner form .signup-link{
+          text-align: center;
+          margin-top: 30px;
+        }
+        .form-inner form .pass-link a,
+        .form-inner form .signup-link a{
+          color:orange;
+          text-decoration: none;
+        }
+        .form-inner form .pass-link a:hover,
+        .form-inner form .signup-link a:hover{
+          text-decoration: underline;
+        }
+        form .butn{
+          height: 50px;
+          width: 0%;
+          border-radius: 15px;
+          position: relative;
+          overflow: hidden;
+        }
+        form .butn .butn-layer {
+            height: 100%;
+            width: 300%;
+            position: absolute;
+            left: -100%;
+            background: linear-gradient(to right, orange, #FFA500); /* Orange gradient */
+            border-radius: 15px;
+            transition: all 0.4s ease;
+        }
+
+        form .butn:hover .butn-layer{
+          left: 0;
+        }
+        form .butn input[type="submit"]{
+          height: 100%;
+          width: 100%;
+          z-index: 1;
+          position: relative;
+          background: none;
+          border: none;
+          color: #fff;
+          padding-left: 0;
+          border-radius: 15px;
+          font-size: 20px;
+          font-weight: 500;
+          cursor: pointer;
+        }
+        .avatar {
+            width: 130px; /* Adjust size as needed */
+            height: 130px; /* Adjust size as needed */
+            border-radius: 50%; /* Makes the avatar round */
+            margin: 0 auto 20px; /* Centers the avatar horizontally and adds some space between avatar and form */
+            display: block; /* Ensures the image behaves as a block element */
+        }
+        .form-inner form .field select {
+            height: 40px; /* Decrease the height of the input field */
+            width: calc(100%); /* Decrease the width and adjust for padding */
+            outline: none;
+            padding: 10px; /* Adjust padding for better spacing */
+            border-radius: 10px; /* Decrease the border radius */
+            border: 1px solid lightgrey;
+            border-bottom-width: 2px;
+            font-size: 14px; /* Decrease the font size */
+            transition: all 0.3s ease;
+        }
+
+        .form-inner form .field select:focus{
+          border-color: #1a75ff;
+        }
+
+        .helptext{
+          font-size: 12px;
+          margin-left: 10px;
+          color: #999;
+        }
+
+        .form-inner form .field .error{
+          /* border-color: #1a75ff; */
+          border-color: rgb(243, 55, 55);
+          box-shadow: 0 0 3px rgb(243, 55, 55);
+        }
+
+        .spinner-border{
+          animation-duration:1.2s !important;
+        }
+
+        .otpbtn{
+          height: 40px;
+          margin-top: 20px;
+          font-size: 14px;
+          padding: 10px;
+          border-radius:10px;
+          border: 1px solid white;
+          border-bottom-width: 2px;
+          background-color:#FFA500;
+          color: #fff;
+        }
+        .otpbtn:hover{
+          border-color: #FFA500;
+        }
+        .otpcnfrm{
+          height: 40px;
+          margin-top: 20px;
+          font-size: 14px;
+          padding: 10px;
+          border-radius:10px;
+          border: 1px solid white;
+          border-bottom-width: 2px;
+        }
+        .otpok{
+          height: 40px;
+          margin-top: 0px;
+          font-size: 14px;
+          padding: 10px;
+          border-radius:10px;
+          border: 1px solid white;
+          border-bottom-width: 2px;
+          background-color:green;
+          color: #fff;
+        }
+        .otpok:hover{
+          border-color: green;
+        }
+        .otpcancel{
+          height: 40px;
+          margin-top: 0px;
+          font-size: 20px;
+          padding: 10px;
+          border-radius:10px;
+          border: 1px solid white;
+          border-bottom-width: 2px;
+          background-color:red;
+          color: #fff;
+        }
+        .otpcancel:hover{
+          border-color: red;
+        }
+        .spinner-border{
+          animation-duration:1.2s !important;
+        }
+    </style>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+  <br><br><br>
+    <div class="container col-md-4 wrapper ">
+        <img src="{% static "image/mentor_login_img.png" %}" alt="Avatar" class="avatar">
+        <div class="title text-center">Signup Form</div>
+        {% for i in messages %}
+          <div class="alert alert-danger alert-dismissible d-flex align-items-center py-1 mt-2" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+              <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+            </svg>
+            <div class="ms-2 small">
+              {{i}}
+            </div>
+            <button type="button" class="btn-close py-2 small" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+        <div class="form-container" >
+          <div class="form-inner">
+            <form method="POST" autocomplete="off" enctype="multipart/form-data" id="signform">
+              {% csrf_token %}
+                <div class="">
+                    <div class="row">
+                        <div class="col-md-6"> 
+                            <div class="field">
+                              <input type="text" name="username" id="username" placeholder="Employee id" required onblur="validateUsername()">
+                            </div>
+                        </div>
+                        <div class="col-md-6"> 
+                            <div class="field">
+                              <input type="password" name="password" id="inputPassword4" placeholder="Password" required onblur="validatePassword()">
+                            </div>
+                            <div class="helptext" id="passwordMessage"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6"> 
+                            <div class="field">
+                              <input type="text" name="full_name" id="full_name" placeholder="Full Name" required onblur="validateName()">
+                            </div>
+                            <div class="helptext" id="nameMessage"></div>
+                        </div>
+                        <div class="col-md-6"> 
+                            <div class="field">
+                              <select name="department" id="department">
+                                <option value="CSE">CSE</option>
+                                <option value="ECE">ECE</option>
+                                <option value="EEE">EEE</option>
+                                <option value="CIV">CIV</option>
+                                <option value="MEC">MEC</option>
+                                <option value="ECS">ECS</option>
+                                <option value="Other">Other</option>
+                              </select>                            
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6"> 
+                            <div class="field">
+                              <input type="text" name="mobile" id="mobile" placeholder="Mobile" required onblur="validateMobile()">
+                            </div>
+                            <div class="helptext" id="mobileMessage"></div>
+                        </div>
+                        <div class="col-md-6"> 
+                            <div class="d-flex">
+                              <div class="field">
+                                <input type="email" name="email" id="email" placeholder="Email address" required style="width: 95%;">
+                              </div>
+                              <button class="otpbtn" type="button" id="sendotp" onclick="validateMail()">Go</button>     
+                            </div>
+                            <div class="text-center">
+                              <div class="spinner-border spinner-border-sm text-secondary"></div>
+                            </div>
+                            <div class="helptext" id="mailMessage"></div>
+                            <div id="mailVerification" class="d-flex"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="field">
+                          <input type="file" name="examiner_image" id="examiner_image" placeholder="examiner_image" required onblur="validateImage()" class="form-control m-0 form-control-sm">
+                        </div>
+                        <div class="helptext">Upload profile pic (passport size)</div>
+                      </div>
+                    </div>
+                </div>
+              <div class="field butn">
+                <div class="butn-layer"></div>
+                <input type="submit" value="Signup">
+              </div>
+              <p class="helptext mt-3">Already have an account ? <a href="examinerlogin" class="text-primary">login</a></p>
+            </form>
+          </div>
+        </div>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+      <script>
+        /*const loginText = document.querySelector(".title-text .login");
+         const loginForm = document.querySelector("form.login");
+         const loginBtn = document.querySelector("label.login");
+         const signupBtn = document.querySelector("label.signup");
+         const signupLink = document.querySelector("form .signup-link a");
+         signupBtn.onclick = (()=>{
+           loginForm.style.marginLeft = "-50%";
+           loginText.style.marginLeft = "-50%";
+         });
+         loginBtn.onclick = (()=>{
+           loginForm.style.marginLeft = "0%";
+           loginText.style.marginLeft = "0%";
+         });
+         signupLink.onclick = (()=>{
+           signupBtn.click();
+           return false;
+         });*/
+   
+         $('.spinner-border').hide();
+         document.getElementById("email").addEventListener("keydown", function(event) {
+          if (event.keyCode === 13) {
+            validateMail();
+          }
+        });
+       function validateImage() {
+         var fileInput = document.getElementById('examiner_image');
+         var filePath = fileInput.value;
+         if (filePath) {
+             var extension = filePath.split('.').pop().toLowerCase();
+             if (extension === 'png' || extension === 'jpg' || extension === 'jpeg') {
+               //console.log('File is valid');
+               return true;
+               // You can submit the form or perform further actions here
+           } else {
+               // File is invalid
+               alert('Only PNG and JPEG images are allowed.');
+               // Clear the file input
+               fileInput.value = '';
+               return false;
+           } 
+         } 
+       }
+   
+       function validate(inputField, regex, errorHtml,errorDiv){
+         let input = document.getElementById(inputField);
+         if(!regex.test(input.value)){
+           document.getElementById(errorDiv).innerHTML = errorHtml;
+           input.classList.add("error");
+           return false;
+         }
+         else{
+           document.getElementById(errorDiv).innerHTML = "";
+           input.classList.remove("error");
+           return true;
+         }
+       }
+   
+     
+       function validatePassword() {
+         return validate("inputPassword4",
+         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/,
+         `Password must atleast<br>
+           <ul>
+             <li>be 8 characters long</li>
+             <li> have one uppercase letter</li>
+             <li>have one lowercase letter</li>
+             <li>have one special character</li>
+             <li> one number</li>
+           </ul>`,
+           "passwordMessage")
+       }
+   
+       function validateName(){
+         return validate("full_name",/^[a-zA-Z ]+$/,"Name can only have letters and spaces","nameMessage")
+       }
+   
+       function validateMail(){
+         let validated =  validate("email",/^[^\.]+\.[a-zA-Z]{3}@gprec\.ac\.in$/,"Mail should end with .&lt;dept&gt;@gprec.ac.in","mailMessage")
+         if(validated){
+           document.getElementById("email").readOnly = true;
+           document.getElementById("sendotp").style.display="none";
+           $('.spinner-border').show();
+           $.ajax({
+             url: '/email-verification', // URL to your Django view
+             type: 'POST',
+             data:{'email':$('#email').val()},
+             success: function(data) {
+               $('.spinner-border').hide();
+               if(data.status === 'sent'){
+                 document.getElementById("mailVerification").innerHTML = 
+                 `<div class="col-md-6">
+                  <div class="field" style="margin-top: 0px;">
+                    <input type="text" placeholder="Enter otp" id="otp" name="otp">
+                  </div>
+                </div>
+                <div>
+                  <button class="otpok ms-2" type="button" onclick="verifyMail()">OK</button>
+                </div>
+                <div>
+                  <button class="otpcancel ms-1 px-2 pt-1" type="button" onclick="changeMail()">×</button>
+                </div>`
+               }
+               else{
+                 $('.spinner-border').hide();
+                 document.getElementById("sendotp").style.display="block";
+                 document.getElementById("email").readOnly = false;
+               }
+             },
+             error: function(xhr, status, error) {
+               $('.spinner-border').hide();
+               document.getElementById("sendotp").style.display="block";
+               document.getElementById("email").readOnly = false;
+               console.error(error);
+             }
+           });
+         }
+       }
+   
+       var emailVerified = false;
+       function verifyMail(){
+         $.ajax({
+           url: '/verify-otp', // URL to your Django view
+           type: 'POST',
+           data:{'otp':$('#otp').val()},
+           success: function(data) {
+             if(data.verified === true){
+                document.getElementById("otp").classList.remove("error");
+                sendbtn = document.getElementById("sendotp");
+                sendbtn.innerHTML = 
+                `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="green" class="bi bi-check2" viewBox="0 0 16 16">
+                  <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                  </svg>`
+                sendbtn.classList.remove("otpbtn");
+                sendbtn.classList.add("otpcnfrm");
+                sendbtn.style.display="block";
+                sendbtn.disabled=true;
+                document.getElementById("mailVerification").innerHTML="";
+                
+                emailVerified=true;
+             }
+             else{
+               document.getElementById("otp").classList.add("error");
+               emailVerified = false;
+             }
+           },
+           error: function(xhr, status, error) {
+             console.error(error);
+             emailVerified =  false;
+           }
+         });
+       }
+   
+       function changeMail(){
+         document.getElementById("email").readOnly = false;
+         document.getElementById("email").value = '';
+         document.getElementById("sendotp").style.display="block";
+         document.getElementById("sendotp").innerHTML="Go";
+         document.getElementById("mailVerification").innerHTML = '';
+       }
+   
+       function validateMobile(){
+         return validate("mobile",/^\d{10}$/,"Invalid mobile number","mobileMessage")
+       }
+   
+       function validateUsername(){
+         let username = document.getElementById("username")
+         if(username.value === ''){
+           username.classList.add("error");
+           return false;
+         }
+         else{
+           username.classList.remove("error");
+           return true;
+         }
+       }
+       
+       document.getElementById("signform").addEventListener('submit',function(event){
+         event.preventDefault();
+         let isvalidated = validateName() && emailVerified && validatePassword() && validateMobile() && validateImage() && validateUsername();
+         if(isvalidated){
+           this.submit();
+         }
+       })
+   
+   </script>
+</body>
+</html>
