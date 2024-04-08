@@ -25,12 +25,21 @@
       z-index: 1;
     }
 
-    .left_area h3 {
+    .left_area{
+      display:flex;
+    }
+
+    .right_area{
+      float:right;
+      width:100%;
+    }
+
+    .left_area p {
       color: #fff;
-      margin: 0px;
+      margin-bottom: 0px !important;
       text-transform: uppercase;
       font-size: 22px;
-      font-weight: 900;
+      font-weight: 700;
     }
 
     .left_area span {
@@ -42,7 +51,7 @@
       background: #19B3D3;
       text-decoration: none;
       float: right;
-      margin-top: -30px;
+      {% comment %} margin-top: -30px; {% endcomment %}
       margin-right: 40px;
       border-radius: 2px;
       font-size: 15px;
@@ -159,15 +168,17 @@
   <input type="checkbox" id="check">
   <!--header area start-->
   <header>
-    <label for="check">
-      <i style="left: 200px;margin-top: 17px;"class="fas fa-bars" id="sidebar_btn"></i>
-    </label>
+    
     <div class="left_area">
-      <h3>Online Quiz</h3>
+      <p>Mentoring</p>
+      <label for="check">
+        <i style="left: 200px;margin-top: 10px;"class="fas fa-bars" id="sidebar_btn"></i>
+      </label>
+      <div class="right_area">
+        <a href="/logout" class="logout_btn">Logout</a>
+      </div>
     </div>
-    <div class="right_area">
-      <a href="/logout" class="logout_btn">Logout</a>
-    </div>
+    
   </header>
   <!--header area end-->
   <!--sidebar start-->

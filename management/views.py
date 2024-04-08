@@ -988,20 +988,20 @@ def reject_examiner_view(request,pk):
     examiner.delete()
     return HttpResponseRedirect('/admin-view-pending-examiner')
 
-@login_required(login_url='adminlogin')
-def approve_mentor_view(request,pk):
-    mentor=MMODEL.mentor.objects.get(id=pk)
-    mentor.status=True
-    mentor.save()
-    return HttpResponseRedirect('/admin-view-pending-mentor')
+# @login_required(login_url='adminlogin')
+# def approve_mentor_view(request,pk):
+#     mentor=MMODEL.mentor.objects.get(id=pk)
+#     mentor.status=True
+#     mentor.save()
+#     return HttpResponseRedirect('/admin-view-pending-mentor')
 
-@login_required(login_url='adminlogin')
-def reject_mentor_view(request,pk):
-    mentor=MMODEL.mentor.objects.get(id=pk)
-    user=User.objects.get(id=mentor.user_id)
-    user.delete()
-    mentor.delete()
-    return HttpResponseRedirect('/admin-view-pending-mentor')
+# @login_required(login_url='adminlogin')
+# def reject_mentor_view(request,pk):
+#     mentor=MMODEL.mentor.objects.get(id=pk)
+#     user=User.objects.get(id=mentor.user_id)
+#     user.delete()
+#     mentor.delete()
+#     return HttpResponseRedirect('/admin-view-pending-mentor')
 
 
 @login_required(login_url='adminlogin')
