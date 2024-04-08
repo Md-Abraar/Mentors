@@ -2,7 +2,11 @@ from django.urls import path,include
 from django.contrib import admin
 from management import views
 from django.contrib.auth.views import LogoutView,LoginView
+from management.views import *
 
+from mentor.views import *
+from student.views import *
+# from examiner.views import *
 urlpatterns = [
    
     path('admin/', admin.site.urls),
@@ -20,6 +24,10 @@ urlpatterns = [
     # path('get_skills', views.get_skills,name='get_skills'),
     
     path('adminclick', views.adminclick_view, name='adminclick'),
+    # path('examinerclick', examinerclick_view, name='examinerclick'),
+    path('studentclick', studentclick_view, name='studentclick'),
+    path('mentorclick', mentorclick_view, name='mentorclick'),
+
     path('adminlogin', LoginView.as_view(template_name='management/adminlogin.html'),name='adminlogin'),
     path('admin-dashboard', views.admin_dashboard_view,name='admin-dashboard'),
     path('admin-teacher', views.admin_teacher_view,name='admin-teacher'),
