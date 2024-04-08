@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,reverse
 from . import forms
 from django.views.static import serve
 from django.db.models import Count,Q,Sum
-from django.contrib.auth.models import Group,User
+from django.contrib.auth.models import Group,User,auth
 from django.http import HttpResponseRedirect,JsonResponse
 from django.contrib.auth.decorators import login_required,user_passes_test
 from django.conf import settings
@@ -17,6 +17,7 @@ from .models import *
 import pandas as pd
 from django.contrib.auth.decorators import permission_required
 from .models import * 
+
 import math
 # from student.models import *
 # from teacher.models import *
@@ -101,9 +102,18 @@ def is_student(user):
 def is_mentor(user):
     return user.groups.filter(name='MENTOR').exists()
 
+
+
+def examinerclick_view(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect('afterlogin')
+    return HttpResponseRedirect('examiner/examinerlogin')
+
+
 def afterlogin_view(request):
     if is_student(request.user):      
         roll=request.user.student.roll
+        request.session['student_details_edit'] = roll
         return redirect(f'student/student_profile/{roll}')   
     elif is_mentor(request.user):
         accountapproval=MMODEL.mentor.objects.all().filter(user_id=request.user.id,status=True)
@@ -1165,7 +1175,14 @@ def student_profile(request,roll):
     per_det=Personal_details.objects.filter(student_id=user1)
     prof_det=Profile.objects.filter(student_id=user1)
 
-    ski_det = students_skills.objects.filter(student=s_rec,skill_status='evaluated').order_by(F('overall_score').desc())
+    ski_det1 = students_skills.objects.filter(student=s_rec,skill_status='evaluated').order_by(F('overall_score').desc())
+    ski_det=list()
+    for i in ski_det1:
+        temp=dict()
+        temp["skill_name"]=i.skill_name
+        temp['overall_score']=i.test_score + i.project_score
+        ski_det.append(temp)  
+        
     ach_det=Achievements.objects.filter(student_id=user1)
     int_det=Internships.objects.filter(student_id=user1)
     cer_det=Certifications.objects.filter(student_id=user1)
@@ -1178,3 +1195,40 @@ def student_profile(request,roll):
 
 def custom_404_view(request, exception):
     return render(request, '404.html', status=404)
+
+def get_skills(request):
+    sector = request.GET.get('sector','')
+    domain = request.GET.get('domain','')
+
+    skills = Skill.objects.all()
+    if sector:
+        skills = skills.filter(sector=sector)
+    if domain:
+        skills = skills.filter(domain=domain)
+    skills_list = skills.values_list('skill_name',flat=True).distinct()
+    return JsonResponse(list(skills_list), safe=False)
+
+def getSkillsforExaminer(request):
+    sector = request.GET.get('sector','')
+    domain = request.GET.get('domain','')
+    level=request.GET.get('level','')
+    skills = Skill.objects.filter(status=True)
+    if sector:
+        skills = skills.filter(sector=sector)
+    if domain:
+        skills = skills.filter(domain=domain)
+    if level:
+        skills=skills.filter(level=level)
+    skills_list = skills.values_list('skill_name',flat=True).distinct()
+    return JsonResponse(list(skills_list), safe=False)
+
+
+from management.models import *
+from examiner.models import *
+def assign_skills(request, pk):
+    selected_skills = request.POST.getlist('skills[]')
+    for i in selected_skills:
+        s_obj=Examiner.objects.get(emp_id=pk)
+        skill=examiner_skills(examiner=s_obj,skill_name=i,skill_status=True)
+        skill.save()
+    return HttpResponseRedirect(f'/examiner-details/{pk}')

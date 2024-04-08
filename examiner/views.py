@@ -91,13 +91,16 @@ def examiner_dashboard_view(request):
     }
     return render(request,'examiner/examiner_dashboard.html',context=dict)
 
+
+
 @login_required(login_url='examinerlogin')
 @user_passes_test(is_examiner)
 def examiner_exam_view(request):
     return render(request,'examiner/examiner_exam.html')
 
 
-@login_required(login_url='examinerlogin')
+
+@login_required()
 @user_passes_test(is_examiner)
 def examiner_add_exam_view(request):
     if request.method == 'POST':

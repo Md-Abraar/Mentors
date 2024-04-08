@@ -218,7 +218,7 @@ def student_application_approve_view(request,pk):
     sapp=students_skills.objects.get(id=application_id)
     eapp=Examiner.objects.get(id=examiner)
     examiner=Examiner.objects.get(id=eapp.id) 
-    new_app=student_skill_exam_applications(student=sapp.student,branch=sapp.student.branch,section=sapp.student.section,mentor_identity_number=sapp.student.TD.id,requested_date=today,application_status="pending",skill_name=sapp.skill_name,assessed_by=eapp.user.id,sem=sapp.student.sem)
+    new_app=student_skill_exam_applications(student=sapp.student,branch=sapp.student.branch,section=sapp.student.section,mentor_identity_number=sapp.student.mentor.id,requested_date=today,application_status="pending",skill_name=sapp.skill_name,assessed_by=eapp.user.id,sem=sapp.student.semester)
     new_app.save()
     sapp.skill_status="under evaluation"
     sapp.save()
@@ -301,7 +301,14 @@ def student_profile(request,roll):
         per_det=Personal_details.objects.filter(student_id=user1)
         prof_det=Profile.objects.filter(student_id=user1)
 
-        ski_det = students_skills.objects.filter(student=s_rec,skill_status='evaluated').order_by(F('overall_score').desc())
+        ski_det1 = students_skills.objects.filter(student=s_rec,skill_status='evaluated').order_by(F('overall_score').desc())
+        ski_det=list()
+        for i in ski_det1:
+            temp=dict()
+            temp["skill_name"]=i.skill_name
+            temp['overall_score']=i.test_score + i.project_score
+            ski_det.append(temp)
+            
         ach_det=Achievements.objects.filter(student_id=user1)
         int_det=Internships.objects.filter(student_id=user1)
         cer_det=Certifications.objects.filter(student_id=user1)
