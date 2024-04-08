@@ -12,9 +12,7 @@ class mentor(models.Model):
     mentor_image = models.ImageField(upload_to='static/Faculty/')
     is_active = models.BooleanField(default=True)
 
-    @property
-    def get_instance(self):
-        return self
-    
     def __str__(self):
         return self.name
+
+

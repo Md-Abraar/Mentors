@@ -20,7 +20,7 @@
     header {
       position: fixed;
       background: #22242A;
-      padding: 20px;
+      padding: 10px 15px;
       width: 100%;
       z-index: 1;
     }
@@ -43,7 +43,6 @@
       text-decoration: none;
       float: right;
       margin-top: -30px;
-      margin-right: 40px;
       border-radius: 2px;
       font-size: 15px;
       font-weight: 600;
@@ -58,8 +57,8 @@
 
     .sidebar {
       background: #2f323a;
-      margin-top: 70px;
-      padding-top: 30px;
+      margin-top: 3%;
+      padding-top: 6%;
       position: fixed;
       left: 0;
       width: 250px;
@@ -164,7 +163,7 @@
       <i style="left: 200px;margin-top: 17px;"class="fas fa-bars" id="sidebar_btn"></i>
     </label>
     <div class="left_area">
-      <h3>Online Quiz</h3>
+      <h3>Student</h3>
     </div>
     <div class="right_area">
       <a href="/logout" class="logout_btn">Logout</a>
@@ -175,15 +174,23 @@
   <div class="sidebar">
     <center>
 
-      <img src="{% static "image/student.png" %}" class="profile_image" alt="">
+      <img src="{% static "image/student1.png" %}" class="profile_image" alt="">
       <h4>{{request.user.first_name}}</h4>
-      <h6 style="color: rgb(255, 255, 255);">( Student )</h6>
+      <h6 style="color: rgb(255, 255, 255);"></h6>
 
     </center>
 
-    <a href="/student/student-dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+    {% comment %} <a href="/student/student-dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a> {% endcomment %}
+    <a href="/student/student_profile/{{request.user.student.roll}}"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+      <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+    </svg> &nbsp;<span>Profile</span></a>
+    <a href="/student/student_profile_edit/"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16">
+      <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+    </svg> &nbsp;<span>Edit Details</span></a>
+    {% comment %} <a href="/student/student-marks"><i class="fas fa-sort-numeric-up"></i><span>Marks</span></a> {% endcomment %}
+    <a href="/student/skill_application"><i class="fas fa-sort-numeric-up"></i><span>apply skill</span></a>
     <a href="/student/student-exam"><i class="fas fa-book"></i><span>Exam</span></a>
-    <a href="/student/student-marks"><i class="fas fa-sort-numeric-up"></i><span>Marks</span></a>
+
   </div>
   <!--sidebar end-->
 
@@ -197,7 +204,7 @@
 
 
     <br><br><br>
-    {% include "management/footer.html" %}
+    {% include "quiz/footer.html" %}
   </div>
   <!--content end-->
 </body>

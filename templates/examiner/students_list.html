@@ -1,0 +1,97 @@
+{% extends 'examiner/examinerbase.html' %}
+{% block content %}
+{% load static %}
+
+<head>
+  <!-- Include Bootstrap CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Include DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+  <style media="screen">
+    a:link {
+      text-decoration: none;
+    }
+
+    h6 {
+      text-align: center;
+    }
+
+    .row {
+      margin: 100px;
+    }
+  </style>
+</head>
+
+<div class="container ps-5 pe-5">
+    <div class="card">
+        <div class="card-header">
+            <h6 class="card-title"><span class="fw-bold">{{sk_name}} </span> Requested Students</h5>
+        </div>
+        <div class="card-body">
+            <form id="activateForm" method="post" action="">
+                {% csrf_token %}
+                <div class="table-responsive">
+                    <table id="studentTable" class="table table-hover">
+                        <thead>
+                            <tr class="text-center">
+                                <th scope="col">Select</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Branch</th>
+                                <th scope="col">Section</th>
+                                <th scope="col">Skill Name</th>
+                                <th scope="col">Requested Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in details %}
+                            <tr class="text-center">
+                                {% if student.exam_id %}
+                                <td><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 48 48">
+                                    <path fill="#c8e6c9" d="M36,42H12c-3.314,0-6-2.686-6-6V12c0-3.314,2.686-6,6-6h24c3.314,0,6,2.686,6,6v24C42,39.314,39.314,42,36,42z"></path><path fill="#4caf50" d="M34.585 14.586L21.014 28.172 15.413 22.584 12.587 25.416 21.019 33.828 37.415 17.414z"></path>
+                                    </svg></td>
+                                {% else %}
+                                <td><input class="form-check-input" type="checkbox" name="selected_students" value="{{ student.id }}"></td>
+                                {% endif %}
+                                <td>{{ student.student }}</td>
+                                <td>{{ student.branch }}</td>
+                                <td>{{ student.section }}</td>
+                                <td>{{ student.skill_name }}</td>
+                                <td>{{ student.requested_date }}</td>
+                                {% comment %} {% if student.exam_id %}
+                                <td>  Activated</td>
+                                {% else %}
+                                <td> Not Activated</td>
+
+                                {% endif %}    {% endcomment %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Activate Selected Students</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    // JavaScript to handle checkbox selection
+    $(document).ready(function() {
+        $('#activateForm').submit(function(e) {
+            var checked = $('input[name="selected_students"]:checked').length;
+            if (checked === 0) {
+                alert('Please select at least one student.');
+                e.preventDefault();
+            }
+        });
+
+        // Initialize DataTable
+        $('#studentTable').DataTable();
+    });
+</script>
+{% endblock content %}

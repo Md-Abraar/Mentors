@@ -1,0 +1,201 @@
+{% include "quiz/navbar.html" %}
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: white;
+            color: black;
+            font-family: "Fira Sans", sans-serif;
+            background-color: white;
+        }
+
+
+        #enhanceimg {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: auto;
+            top: 80px;
+        }
+
+
+
+        .line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2% 5%;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .side1 {
+            padding-left: 50px; /* Change padding-right to padding-left */
+            order: 1; /* Add this to ensure side1 is on the left side */
+        }
+
+        .card {
+            background-color: white;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            width: 400px; /* Adjust width as needed */
+            margin: 20px; /* Adjust margin as needed */
+            z-index: 1; /* Ensure the card is on top */
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .card-container {
+            padding: 20px;/* Adjust padding as needed */
+            /* text-align: center; Center the content */
+        }
+
+        .card-container p {
+            font-family: cursive;
+            color: firebrick;
+        }
+
+        .side1 h1 {
+            font-size: 60px;
+            font-family: monospace;
+            margin-bottom: 10px;
+            color: orange;
+        }
+
+        .side1 h5 {
+            margin-bottom: 10px;
+            color: orange;
+        }
+
+        .card-container button {
+            width: 200px;
+            padding: 12px 20px;
+            border-radius: 20px;
+            border-style: none;
+            color: black;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        /* Media Query for smaller screens */
+        @media screen and (max-width: 768px) {
+
+
+            .sideMenuButton {
+                display: block;
+            }
+
+            .navbar {
+                display: none;
+            }
+
+            .line {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #enhanceimg {
+                position: relative;
+                top: 0;
+                max-width: 100%;
+                width: auto;
+            }
+
+            .card {
+                width: 90%; /* Adjust width for smaller screens */
+                margin-top: 20px; /* Adjust margin-top to create space between image and card */
+            }
+        }
+
+        /* Media Query for larger screens */
+        @media screen and (min-width: 1024px) {
+            .card {
+                position: absolute; /* Set position to absolute */
+                top: 100px; /* Adjust top position */
+                right: 50px; /* Adjust left position */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    
+    <div class="contaner" style="margin-top:10%">
+        <div class="" id="enhanceimg">
+            <img src="{% static "image/home_page_pic.png" %}" style="margin-top:5%">
+        </div>
+        <div class="line" id="Home">
+            <div class="side1" style="order: 4;">
+                <div data-aos="fade-left" data-aos-duration="1500">
+                    <h1>Dream</h1>
+                </div>
+                <div data-aos="fade-left" data-aos-duration="1500">
+                    <h1>Dare</h1>
+                </div>
+                <div data-aos="fade-left" data-aos-duration="1500">
+                    <h1>Do</h1>
+                </div>
+                <div data-aos="fade-left" data-aos-duration="1500">
+                    <h5>with</h5>
+                </div>
+                <div data-aos="fade-left" data-aos-duration="2000">
+                    <h1>GPREC</h1>
+                </div>
+
+
+            </div>
+
+            <div class="card">
+                <div class="card-container">
+                    <h2 style="font-family:cursive;text-align: center;">Student Portifolio Management</h2>
+                    <br>
+                    <p style="text-align: center;">Seamless upskilling Opportunities</p>
+                    <br>
+                    <p style="text-align: center;">Comprehensive portfolio management</p>
+                    <br>
+                    <p style="text-align: center;">Personalized mentorship programs</p>
+                    <br>
+                    <p style="text-align: center;">Industry-relevant skills for Holistic development</p>
+                    <br>
+                    <p style="text-align: center;">Showcase their achievements and projects effectively</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        AOS.init();
+
+        function openNavbar() {
+            document.getElementById("sideNavigationBar")
+                .style.width = "50%";
+        }
+
+        function closeNavbar() {
+            document.getElementById("sideNavigationBar")
+                .style.width = "0%";
+        }
+    </script>
+</body>
+
+</html>
