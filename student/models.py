@@ -167,6 +167,8 @@ class Achievements(models.Model):#mentor
     student_id=models.CharField(max_length=10)
     achieve_name=models.CharField(max_length=50,blank=True, null=True)
     achieve_score=models.IntegerField(blank=True,null=True)
+    achieve_file= models.FileField(upload_to='students_files/',blank=True,null=True)
+
     def __str__(self):
         return self.student_id
 

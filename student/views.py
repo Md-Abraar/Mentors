@@ -335,13 +335,18 @@ def delete_application_view(request,pk):
 # from .models import *
 # def student_profile_edit_c(request,roll):
 
-
-
-
-
-
+def user_auth_required(function):
+    def wrap(request, *args, **kwargs):
+        if request.user.groups.filter(name='STUDENT').exists():
+            return function(request, *args, **kwargs)
+        else:
+            messages.error(request, 'You are not authorized to access this page.')
+            return redirect('some_redirect_url')  # Redirect to an appropriate URL
+    return wrap
 
 # Create your views here.
+@login_required
+@user_auth_required
 def student_profile_edit(request):
 
     user1=request.session.get("student_details_edit")
@@ -734,3 +739,30 @@ def verify_passcode(request,id):
             return HttpResponseRedirect(f'/student/take-exam/{id}')
         else:
             return HttpResponseRedirect('/student/student-exam')
+
+
+
+
+    
+
+def get_skills(request):
+    sector=request.POST.get('sector','')
+    domain=request.POST.get('domain','')
+    print(domain)
+    if sector:
+        skills=Skill.objects.filter(sector=sector)
+    else:
+        skills = Skill.objects.all()
+    if domain:
+        skills=skills.filter(domain=domain)
+    skills=skills.values_list('skill_name',flat=True).distinct()
+    return JsonResponse(list(skills), safe=False)
+
+
+def get_domains(request):
+    sector = request.POST.get('sector','')
+    if sector:
+        domains = Skill.objects.filter(sector=sector).values_list('domain',flat=True).distinct()
+    else:
+        domains = Skill.objects.values_list('domain',flat=True).distinct()
+    return JsonResponse(list(domains), safe=False)
