@@ -245,10 +245,10 @@ def mentor_assign(request,empid):
         return render(request,'management/assign.html',{'details':details, 'students':students, 'classes':classes, 'class_filter':classname, 'gender_filter':gender, 'mentees':mentees})
     if request.method == 'POST':
         rolls = request.POST.getlist('roll')
-        #Clear previous mentees
         for mentee in mentees:
-            mentee.mentor = None
-            mentee.save()
+            if mentee.roll not in rolls:
+                mentee.mentor = None
+                mentee.save()
         for roll in rolls:
             try:
                 user = User.objects.get(username=roll)
