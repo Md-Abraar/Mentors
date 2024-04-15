@@ -196,7 +196,9 @@ def students_skill_applications(request):
     mentor_instance = get_object_or_404(mentor, user=request.user)
     students_data = Student.objects.filter(mentor=mentor_instance)
     student_applications = students_skills.objects.filter(student__in=students_data)
-    examiner=examiner_skills.objects.filter(skill_status=True)
+    examiner=examiner_skills.objects.all()
+    # skills = list(examiner_skills.objects.filter(examiner=examiner).values_list('skill_name__skill_name', flat=True))
+
     return render(request, 'mentor/students_skill_applications.html', {'student_applications': student_applications,'examiners':examiner})
 
 

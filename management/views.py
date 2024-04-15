@@ -440,7 +440,7 @@ from django.db.utils import IntegrityError
 @admin_superuser_required
 def admin_student_view(request):
     if request.method == "POST":
-        DEFAULT_PASSWORD = "GPREC123"
+        DEFAULT_PASSWORD = "Student@123"
         uploaded_file = request.FILES.get('file')
         
         if uploaded_file is not None and uploaded_file.name.endswith(('.xls', '.xlsx')):
@@ -449,12 +449,12 @@ def admin_student_view(request):
             with transaction.atomic():
                 try:
                     for index, row in excel_data.iterrows():
-                        username = row.iloc[0]
+                        username = row.iloc[0].upper()
                         name = row.iloc[1]
                         branch = row.iloc[2]
                         department = row.iloc[3]
                         semester = row.iloc[4]
-                        section = row.iloc[5]
+                        section = row.iloc[5].upper()
                         gender = row.iloc[6]
                         email = row.iloc[7]
                         
@@ -464,9 +464,10 @@ def admin_student_view(request):
                             raise ValueError(f"Validation failed due to {validation}")
                         
                         # Create User and Student objects
-                        user = User(username=username, email=email, password=DEFAULT_PASSWORD)
+                        user = User(username=username, email=email)
+                        user.set_password(DEFAULT_PASSWORD)
                         user.save()
-                        student = SMODEL.Student(user=user, name=name, branch=branch, department=department, semester=semester, section=section, gender=gender )
+                        student = SMODEL.Student(user=user, name=name, branch=branch, department=department, semester=semester, section=section, gender=gender, roll=username )
                         student.save()
                         
                         # Add user to the 'STUDENT' group
