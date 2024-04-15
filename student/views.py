@@ -31,9 +31,8 @@ from .models import *
 from django.contrib import messages
 from datetime import date, datetime
 from django.utils.dateparse import parse_date
-
-#for showing signup/login button for student
-
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 def student_signup_view(request):
     userForm=forms.StudentUserForm()
@@ -54,17 +53,6 @@ def student_signup_view(request):
         return HttpResponseRedirect('studentlogin')
     return render(request,'student/studentsignup.html',context=mydict)
 
-
-
-
-
-
-
-
-
-
-
-
 def student_forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -76,7 +64,25 @@ def student_forgot_password(request):
         return redirect('studentlogin')
     return render(request, 'management/forgot_password.html')
 
-
+@receiver(pre_save, sender=Student)
+def log_mentor_change(sender, instance, **kwargs):
+    if instance.pk:
+        try:
+            old_instance = sender.objects.get(pk=instance.pk)
+        except sender.DoesNotExist:
+            return
+        if old_instance.mentor != instance.mentor:
+            MentorChangeLog.objects.create(
+                emp_id=instance.mentor.emp_id if instance.mentor else None,
+                men_name=instance.mentor.name if instance.mentor else None,
+                department=instance.department,
+                branch=instance.branch,
+                stu_roll=instance.roll,
+                stu_name=instance.name,
+                stu_sem=instance.semester,
+                stu_sec=instance.section,
+                stu_score=instance.profile_score
+            )
 
 
 
