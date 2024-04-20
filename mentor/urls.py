@@ -12,6 +12,8 @@ path('mentorlogin', LoginView.as_view(template_name='mentor/mentorlogin.html'),n
 path('mentorsignup', views.mentor_signup_view,name='mentorsignup'),
 path('mentor-dashboard', views.mentor_dashboard_view,name='mentor-dashboard'),
 path('students_list/',students_list,name='students_list'),
+path('student_passout/<str:id>',students_passout_view,name='student_passout'),
+
 path("mentor-forgot-password", views.mentor_forgot_password, name="mentor-forgot-password"),
 
 

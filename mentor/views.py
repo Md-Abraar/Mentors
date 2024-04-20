@@ -174,7 +174,7 @@ def mentor_login_view(request):
 def students_list(request):                            
     user_instance = User.objects.get(username=request.user)
     mentor_instance = mentor.objects.get(user=user_instance)
-    students_data = Student.objects.filter(mentor=mentor_instance).prefetch_related('user')
+    students_data = Student.objects.filter(mentor=mentor_instance,user__is_active=True).prefetch_related('user')
     return render(request, 'mentor/students_list.html', {'details': students_data})
 
 
@@ -183,10 +183,11 @@ def mentor_dashboard_view(request):
     m_user=request.user
     M_obj=mentor.objects.get(user=m_user)
     dict={
-    'total_students':Student.objects.filter(mentor=M_obj).count(),
-    'total_applications' : students_skills.objects.filter(student__mentor=M_obj).count(),
-    'total_evaluated':students_skills.objects.filter(student__mentor=M_obj,skill_status="evaluated").count()
+    'total_students':Student.objects.filter(mentor=M_obj,user__is_active=True).count(),
+    'total_applications' : students_skills.objects.filter(student__mentor=M_obj,student__user__is_active=True).count(),
+    'total_evaluated':students_skills.objects.filter(student__mentor=M_obj,skill_status="evaluated",student__user__is_active=True).count()
     }
+
     return render(request,'mentor/mentor_dashboard.html',context=dict)
 
 
@@ -195,8 +196,8 @@ def students_skill_applications(request):
     if request.method=='POST':
         pass
     mentor_instance = get_object_or_404(mentor, user=request.user)
-    students_data = Student.objects.filter(mentor=mentor_instance)
-    student_applications = students_skills.objects.filter(student__in=students_data)
+    students_data = Student.objects.filter(mentor=mentor_instance,user__is_active=True)
+    student_applications = students_skills.objects.filter(student__in=students_data,student__user__is_active=True)
     examiner=examiner_skills.objects.filter(skill_status=True)
     return render(request, 'mentor/students_skill_applications.html', {'student_applications': student_applications,'examiners':examiner})
 
@@ -229,7 +230,7 @@ def student_application_approve_view(request,pk):
 
 def students_scores_view(request):
     mentor_instance = get_object_or_404(mentor, user=request.user)
-    students_data = Student.objects.filter(mentor=mentor_instance)
+    students_data = Student.objects.filter(mentor=mentor_instance,user__is_active=True)
 
 
     # Assuming students_data is a list of student IDs or some other filter criteria
@@ -713,3 +714,10 @@ def pm_view(request):
         
         # Redirect to a success page or wherever you need to redirect after form submission
         return HttpResponseRedirect('/mentor/student_profile_edit/')
+    
+
+def students_passout_view(request,id):
+    obj=User.objects.get(id=id)
+    obj.is_active=False
+    obj.save()
+    return HttpResponseRedirect("/mentor/students_list")

@@ -88,7 +88,7 @@ def examiner_dashboard_view(request):
     dict={
     'total_course':QMODEL.Course.objects.filter(examiner_id=e_obj.id).count(),
     'total_question':QMODEL.Question.objects.all().count(),
-    'total_student':student_skill_exam_applications.objects.filter(id=e_obj.id).count()
+    'total_student':student_skill_exam_applications.objects.filter(id=e_obj.id,student__user__is_active=True).count()
     }
     return render(request,'examiner/examiner_dashboard.html',context=dict)
 
@@ -141,7 +141,7 @@ def see_student_view(request, pk):
     request.session['course_selected']=pk
     course = get_object_or_404(QMODEL.Course, id=pk)
     students_list = QMODEL.Result.objects.filter(exam=course).values("student")
-    student_records = student_skill_exam_applications.objects.filter(student__in=students_list)
+    student_records = student_skill_exam_applications.objects.filter(student__in=students_list,student__user__is_active=True)
 
 
 
@@ -304,7 +304,7 @@ def remove_question_view(request,pk):
 
 @login_required(login_url='examinerlogin')
 def students_list(request):
-    user_instance = student_skill_exam_applications.objects.filter(assessed_by=request.user.id)
+    user_instance = student_skill_exam_applications.objects.filter(assessed_by=request.user.id,student__user__is_active=True)
 
     # examiner_instance = examiner.objects.get(user=user_instance)
     # students_data = Student.objects.filter(TD=examiner_instance).prefetch_related('user')
@@ -317,16 +317,16 @@ def select_students(request,cid):
     # del request.session['course_selected']
     c_obj = Course.objects.get(id=cid)
     user_instance = student_skill_exam_applications.objects.filter(
-        assessed_by=request.user.id, skill_name=c_obj.skill_name, exam_id__isnull=True)
+        assessed_by=request.user.id, skill_name=c_obj.skill_name, exam_id__isnull=True,student__user__is_active=True)
 
     sk_name=c_obj.skill_name
     if request.method == 'POST':
         selected_students = request.POST.getlist('selected_students')
         for i in selected_students:
-            temp=student_skill_exam_applications.objects.get(id=i)
+            temp=student_skill_exam_applications.objects.get(id=i,student__user__is_active=True)
             sid=temp.student.id
-            s_temp=Student.objects.get(id=sid)
-            temp=student_skill_exam_applications.objects.filter(student=s_temp)
+            s_temp=Student.objects.get(id=sid,user__is_active=True)
+            temp=student_skill_exam_applications.objects.filter(student=s_temp,student__user__is_active=True)
 
             for i in temp:
                 if i.exam_id==cid:
@@ -340,7 +340,7 @@ def select_students(request,cid):
 
 
 def delete_student_application_view(request,id):
-    app=student_skill_exam_applications.objects.get(id=id)
+    app=student_skill_exam_applications.objects.get(id=id,student__user__is_active=True)
     app.delete()
     return HttpResponseRedirect('/examiner/students_list')
 

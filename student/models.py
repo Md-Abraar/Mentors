@@ -16,10 +16,35 @@ class Student(models.Model):
     section=models.CharField(max_length=1,blank=True)
     gender=models.CharField(max_length=10,null=True)
     profile_score = models.IntegerField(default=0)   
-
     def __str__(self):
         return self.user.username
     
+
+
+# from django.contrib.auth.models import AbstractUser
+# from django.db import models
+
+# class ActiveUserManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().filter(is_active=True)
+
+# class User(AbstractUser):
+#     # Additional fields if needed
+#     name = models.CharField(max_length=40,null=True)
+#     user=models.OneToOneField(User,on_delete=models.CASCADE)
+#     roll=models.CharField(max_length=40,null=True)
+
+#     mentor = models.ForeignKey(mentor, on_delete=models.CASCADE,null=True,blank=True)
+#     branch=models.CharField(max_length=6,null=True)
+#     department=models.CharField(max_length=6,null=True)
+#     semester=models.IntegerField(null=True)
+#     section=models.CharField(max_length=1,blank=True)
+#     gender=models.CharField(max_length=10,null=True)
+#     profile_score = models.IntegerField(default=0)   
+
+#     objects = ActiveUserManager()
+
+
 
 # class Student_profile(models.Model):
 #     student_id=models.CharField(max_length=10)
