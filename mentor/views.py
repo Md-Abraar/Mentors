@@ -119,21 +119,21 @@ from student.models import *
 
 
 
-# def mentor_login_view(request):
-#     if request.method=='POST':
-#         username=request.POST['username']
-#         password=request.POST['password']
+def mentor_login_view(request):
+    if request.method=='POST':
+        username=request.POST['username']
+        password=request.POST['password']
 
-#         user=auth.authenticate(username=username,password=password)
+        user=auth.authenticate(username=username,password=password)
 
-#         if user is not None:
-#             auth.login(request,user)
+        if user is not None:
+            auth.login(request,user)
 
-#             return HttpResponseRedirect('/')
-#         else:
-#             messages.info(request,"user name or password does not match !")
-#             return redirect("mentorlogin")
-#     return render(request,'mentor/mentorlogin.html')
+            return HttpResponseRedirect('/')
+        else:
+            messages.info(request,"user name or password does not match !")
+            return redirect("mentorlogin")
+    return render(request,'mentor/mentorlogin.html')
 
 
 
@@ -174,18 +174,20 @@ from student.models import *
 def students_list(request):                            
     user_instance = User.objects.get(username=request.user)
     mentor_instance = mentor.objects.get(user=user_instance)
-    students_data = Student.objects.filter(mentor=mentor_instance).prefetch_related('user')
+    students_data = Student.objects.filter(mentor=mentor_instance,user__is_active=True).prefetch_related('user')
     return render(request, 'mentor/students_list.html', {'details': students_data})
 
 
 @login_required(login_url='mentorlogin')
 def mentor_dashboard_view(request):
+    m_user=request.user
+    M_obj=mentor.objects.get(user=m_user)
     dict={
-    
-    'total_students':Student.objects.all().count(),
-    'total_applications':students_skills.objects.all().count(),
-    'total_evaluated':students_skills.objects.filter(skill_status="evaluated").count()
+    'total_students':Student.objects.filter(mentor=M_obj,user__is_active=True).count(),
+    'total_applications' : students_skills.objects.filter(student__mentor=M_obj,student__user__is_active=True).count(),
+    'total_evaluated':students_skills.objects.filter(student__mentor=M_obj,skill_status="evaluated",student__user__is_active=True).count()
     }
+
     return render(request,'mentor/mentor_dashboard.html',context=dict)
 
 
@@ -230,7 +232,7 @@ def student_application_approve_view(request,pk):
 
 def students_scores_view(request):
     mentor_instance = get_object_or_404(mentor, user=request.user)
-    students_data = Student.objects.filter(mentor=mentor_instance)
+    students_data = Student.objects.filter(mentor=mentor_instance,user__is_active=True)
 
 
     # Assuming students_data is a list of student IDs or some other filter criteria
@@ -264,7 +266,6 @@ def update_student_skill_view(request,id):
     student_skill.skill_status="evaluated"
     student_skill.overall_score =  (int(student_skill.test_score)+int(student_skill.project_score))*multiplier
 
-    # student_skill.  project_score = new_project_score
     student_skill.save()
 
     user1=student_skill.student.roll
@@ -334,23 +335,74 @@ def student_profile_edit_c(request,roll):
     return HttpResponseRedirect('/mentor/student_profile_edit')
 
 
+
+def user_auth_required(function):
+    def wrap(request, *args, **kwargs):
+        if request.user.groups.filter(name='MENTOR').exists():
+            return function(request, *args, **kwargs)
+        else:
+            messages.error(request, 'You are not authorized to access this page.')
+            return redirect('some_redirect_url')  # Redirect to an appropriate URL
+    return wrap
+
+# Create your views here.
+@login_required
+@user_auth_required
+def student_profile_edit(request):
+
+    user1=request.session.get("student_details_edit")
+    # student_d = Student.objects.get(roll=user12)
+    # user1=student_d.roll
+    per_det=Personal_details.objects.filter(student_id=user1)
+    par_det=Parents_details.objects.filter(student_id=user1)
+    edu_det=Education_details.objects.filter(student_id=user1)
+    com_det=Competitive_exam.objects.filter(student_id=user1)
+    prof_det=Profile.objects.filter(student_id=user1)
+    ach_det=Achievements.objects.filter(student_id=user1)
+    ski_det=Skills.objects.filter(student_id=user1)
+    cer_det=Certifications.objects.filter(student_id=user1)
+    int_det=Internships.objects.filter(student_id=user1)
+    ext_det=Extra_Curriculars.objects.filter(student_id=user1)
+    att_det=Attendance_details.objects.filter(student_id=user1)
+    sem_wise_det=Semwise_grades.objects.filter(student_id=user1)
+    marks_det=Semester_marks.objects.filter(student_id=user1)
+    pla_det=Placements.objects.filter(student_id=user1)
+    bac_det=Backlogs.objects.filter(student_id=user1)
+    rem_det=Remarks.objects.filter(student_id=user1)
+    if request.user.groups.filter(name='MENTOR').exists():
+        return render(request,'mentor/student_profile_edit.html',{'per_det':per_det,'par_det':par_det,'edu_det':edu_det,'com_det':com_det,'prof_det':prof_det,'ach_det':ach_det,'ski_det':ski_det,'cer_det':cer_det,'int_det':int_det,'ext_det':ext_det,'att_det':att_det,'sem_wise_det':sem_wise_det,'marks_det':marks_det,'pla_det':pla_det,'bac_det':bac_det,'rem_det':rem_det,"user11":"mentor","st_id":user1})
+    elif(request.user.groups.filter(name='STUDENT').exists()):
+        return render(request,'student/student_profile_edit.html',{'per_det':per_det,'par_det':par_det,'edu_det':edu_det,'com_det':com_det,'prof_det':prof_det,'ach_det':ach_det,'ski_det':ski_det,'cer_det':cer_det,'int_det':int_det,'ext_det':ext_det,'att_det':att_det,'sem_wise_det':sem_wise_det,'marks_det':marks_det,'pla_det':pla_det,'bac_det':bac_det,'rem_det':rem_det,"user11":"student","st_id":user1})
+    else:
+        return render(request,'student_dashboard.html',{'per_det':per_det,'par_det':par_det,'edu_det':edu_det,'com_det':com_det,'prof_det':prof_det,'ach_det':ach_det,'ski_det':ski_det,'cer_det':cer_det,'int_det':int_det,'ext_det':ext_det,'att_det':att_det,'sem_wise_det':sem_wise_det,'marks_det':marks_det,'pla_det':pla_det,'bac_det':bac_det,'rem_det':rem_det})
+
+
+
 def achievements_view(request):
     if request.method == 'POST':
         # Assuming you have a form with CSRF token and fields sid, achieve_name, and achieve_score
         sid = request.POST['sid']
-        achieve_names = request.POST.getlist('achieve_name')
-        achieve_scores = [int(score) if score else None for score in request.POST.getlist('achieve_score')]
+        achieve_names = request.POST.get('achieve_name')
+        achieve_scores = request.POST.get('achieve_score')
+        achieve_files = request.FILES.get('achieve_file')
 
-        existing_records=Achievements.objects.filter(student_id=sid)
-        existing_records.delete()
-        for i in range(len(achieve_names)):
-            if achieve_names[i]:
-                new_achievement = Achievements(
+
+
+        # achieve_scores = [int(score) if score else None for score in request.POST.getlist('achieve_score')]
+
+        # existing_records=Achievements.objects.filter(student_id=sid)
+        # existing_records.delete()
+        new_achievement = Achievements(
                             student_id=sid,
-                            achieve_name=achieve_names[i] if i < len(achieve_names) else None,
-                            achieve_score=achieve_scores[i] if i < len(achieve_scores) else None
+                            achieve_name=achieve_names if achieve_names else None,
+                            achieve_score=achieve_scores if achieve_scores else None,
+                            achieve_file=achieve_files  
                         )
-                new_achievement.save()
+                
+        new_achievement.save()
+
+
+                
         user1=sid
         s_rec=Student.objects.get(roll=user1)
         ski_det = students_skills.objects.filter(student=s_rec,skill_status='evaluated').order_by(F('overall_score').desc())
@@ -379,9 +431,29 @@ def achievements_view(request):
         return HttpResponseRedirect('/mentor/student_profile_edit/')  # Change '/success/' to your desired URL
 
 
+import os
+
+def delete_achievement_view(request,oid,sid):
+    obj=Achievements.objects.get(id=oid)
+    file_path = obj.achieve_file.path
+
+    obj.delete()
+
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    return HttpResponseRedirect(f"/mentor/student_profile_edit_c/{sid}")
 
 
 
+def edit_achievement_view(request,id):
+    if request.method == 'POST':
+        A_name = request.POST.get('achieve_name')
+        A_score = request.POST.get('achieve_score')
+        A_obj=Achievements.objects.get(id=id)
+        A_obj.achieve_name=A_name
+        A_obj.achieve_score=A_score
+        A_obj.save()
+        return HttpResponseRedirect("/mentor/student_profile_edit/")
 
 
 
@@ -644,3 +716,10 @@ def pm_view(request):
         
         # Redirect to a success page or wherever you need to redirect after form submission
         return HttpResponseRedirect('/mentor/student_profile_edit/')
+    
+
+def students_passout_view(request,id):
+    obj=User.objects.get(id=id)
+    obj.is_active=False
+    obj.save()
+    return HttpResponseRedirect("/mentor/students_list")

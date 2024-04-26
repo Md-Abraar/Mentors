@@ -89,11 +89,11 @@
                         <div class="text-center">
                             <h5 class="card-title fw-bold ">Student Details</h5>
                         </div>
-                        {% if user11 == "student" %}
+                        {% comment %} {% if user11 == "student" %}
                         <div class="card-buttons">
                             <button class="btn PD-editBtn" id="sd-edit"><i class="fas fa-edit fa-sm"></i></button>
                         </div>
-                        {% endif %}
+                        {% endif %} {% endcomment %}
                     </div>
                     <div class="inputs-container">
                         <div class="input-set">
@@ -418,11 +418,11 @@
                     <div class="card-header">
                         <div class="text-center">
                             <h5 class="card-title fw-bold">Parent Details</h5>
-                            {% if user11 == "student" %}
+                            {% comment %} {% if user11 == "student" %}
                             <div class="card-buttons">
                                 <button class="btn PR-editBtn" id="pd-edit"><i class="fas fa-edit fa-sm"></i></button>
                             </div>
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                             
                         </div>
                     </div>
@@ -543,11 +543,11 @@
                             <div class="text-center">
                                 <h5 class="card-title fw-bold">Education Details</h5>
                             </div>
-                            {% if user11 == "student" %}
+                            {% comment %} {% if user11 == "student" %}
                             <div class="card-buttons">
                                 <button class="btn ED-editBtn" id="ED-editBtn"><i class="fas fa-edit fa-sm"></i></button>
                             </div>
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                         </div>
                         
                         {% with i=edu_det.all %}
@@ -714,12 +714,12 @@
                             <div class="text-center">
                                 <h5 class="card-title fw-bold">Competitive Exams</h5>
                             </div>
-                            {% if user11 == "student" %}
+                            {% comment %} {% if user11 == "student" %}
                             <div class="card-buttons">
                                 <button class="btn CE-editBtn" id="ce-edit"><i class="fas fa-edit fa-sm"></i></button>
                                 <button class="btn CE-addMoreBtn" id="ce-addmore"><i class="fas fa-plus fa-sm"></i></button>
                             </div>
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                         </div>
 
                  <div class="CE input-set empty card mt-3 p-3" id="CE-empty_fields" style="display: none;">
@@ -1671,28 +1671,43 @@
                             </div>
                             {% endif %}
                         </div>
-                    {% for i in ach_det %}
-                    <div class="inputs-container card mt-3 p-3">
-                        <!-- Initial set of inputs -->
-                        <div class="row mb-3 input-set">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <b><label class="form-label small">Name of the Achievement:</label></b>
-                                    <input type="text" class="form-control" id="achieve_name" name="achieve_name" placeholder="achievement Name"
-                                        value="{{ i.achieve_name }}" readonly>
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+                        {% for i in ach_det %}
+                        <div id="ach{{ forloop.counter }}" class="card p-3 mt-2">
+                            <div class="row mb-3 input-set">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" name="sid" value="{{ i.student_id }}" style="display: none;">
+                                        <b><label class="form-label small">Name of the Achievement:</label></b>
+                                        <input type="text" class="ach form-control" name="achieve_name" placeholder="Achievement Name" value="{{ i.achieve_name }}" readonly>
+                                    </div>
                                 </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <b><label class="form-label small">Score for the Achievement:</label></b>
+                                        <select name="achieve_score" class="ach form-select" disabled>
+                                            <option value="">Select</option>
+                                            <option value="10" {% if i.achieve_score == 10 %} selected {% endif %}>Level 1</option>
+                                            <option value="20" {% if i.achieve_score == 20 %} selected {% endif %}>Level 2</option>
+                                            <option value="30" {% if i.achieve_score == 30 %} selected {% endif %}>Level 3</option>
+                                        </select>
+                                    </div>
+                                </div>
+                     
+                                <div class="col-md-1 mt-auto d-flex ms-auto me-auto">
+                                    <div class="form-group">
+                                        <a href="/static/{{ i.achieve_file }}" class="btn btn-dark" target="_blank"><i class="bi bi-cloud-arrow-down-fill"></i></a>
+                                    </div>
+
+                                    
+                                </div>
+
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <b><label class="form-label small">Score for the Achievement:</label></b>
-                                    <input type="number" class="form-control" id="achieve_score" name="achieve_score" placeholder="Score"
-                                     value="{{ i.achieve_score}}"  readonly>
-                                </div>
+                            <div class="btn deleteBtn ms-auto" style="display: none;" id="achb" onclick="delete_specific_record('ach',{{forloop.counter}})">
+                                <i class="fa fa-window-close" aria-hidden="true"></i>
                             </div>
                         </div>
-                    </div>
-
-                    {% endfor %}
+                        {% endfor %}
                 </div>
             </div>
              </div>
@@ -1835,10 +1850,10 @@
                                 <div class="text-center"> <!-- Added text-center class -->
                                     <h5 class="card-title fw-bold">Extra Curriculars</h5>
                                 </div>
-                                <div class="card-buttons"> <!-- Added card-buttons class -->
+                                {% comment %} <div class="card-buttons"> <!-- Added card-buttons class -->
                                     <button class="btn EC-editBtn" id="a-edit"><i class="fas fa-edit fa-sm"></i> </button>
                                     <button class="btn  EC-addMoreBtn" id="a-addmore"><i class="fas fa-plus fa-sm"></i></button>
-                                </div>
+                                </div> {% endcomment %}
                             </div>
     
                     <div class="EC input-set empty card mt-3 p-3" id="EC-empty_fields" style="display: none;">

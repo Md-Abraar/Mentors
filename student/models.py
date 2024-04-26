@@ -15,7 +15,6 @@ class Student(models.Model):
     section=models.CharField(max_length=1,blank=True)
     gender=models.CharField(max_length=10,null=True)
     profile_score = models.IntegerField(default=0)   
-
     def __str__(self):
         return self.user.username
 class MentorChangeLog(models.Model):
@@ -29,6 +28,32 @@ class MentorChangeLog(models.Model):
     stu_sem = models.IntegerField()
     stu_sec = models.CharField(max_length=1)
     stu_score = models.IntegerField()
+
+
+# from django.contrib.auth.models import AbstractUser
+# from django.db import models
+
+# class ActiveUserManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().filter(is_active=True)
+
+# class User(AbstractUser):
+#     # Additional fields if needed
+#     name = models.CharField(max_length=40,null=True)
+#     user=models.OneToOneField(User,on_delete=models.CASCADE)
+#     roll=models.CharField(max_length=40,null=True)
+
+#     mentor = models.ForeignKey(mentor, on_delete=models.CASCADE,null=True,blank=True)
+#     branch=models.CharField(max_length=6,null=True)
+#     department=models.CharField(max_length=6,null=True)
+#     semester=models.IntegerField(null=True)
+#     section=models.CharField(max_length=1,blank=True)
+#     gender=models.CharField(max_length=10,null=True)
+#     profile_score = models.IntegerField(default=0)   
+
+#     objects = ActiveUserManager()
+
+
 
 # class Student_profile(models.Model):
 #     student_id=models.CharField(max_length=10)
@@ -176,6 +201,8 @@ class Achievements(models.Model):#mentor
     student_id=models.CharField(max_length=10)
     achieve_name=models.CharField(max_length=50,blank=True, null=True)
     achieve_score=models.IntegerField(blank=True,null=True)
+    achieve_file= models.FileField(upload_to='students_files/',blank=True,null=True)
+
     def __str__(self):
         return self.student_id
 

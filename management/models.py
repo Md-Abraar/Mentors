@@ -109,6 +109,7 @@ class Skill(models.Model):
     domain = models.CharField(max_length=50)
     level = models.CharField(max_length=15)
     status= models.BooleanField(default=False)
+
     def __str__(self):
         return self.skill_name
     

@@ -5,12 +5,15 @@ from .views import *
 from student import views as views_s
 
 urlpatterns = [
-    
+path("edit_achievement/<str:id>",edit_achievement_view,name="edit_achievement"),
+
 path('mentorclick', views.mentorclick_view,name="mentorclick"),
 path('mentorlogin', LoginView.as_view(template_name='mentor/mentorlogin.html'),name='mentorlogin'),
 path('mentorsignup', views.mentor_signup_view,name='mentorsignup'),
 path('mentor-dashboard', views.mentor_dashboard_view,name='mentor-dashboard'),
 path('students_list/',students_list,name='students_list'),
+path('student_passout/<str:id>',students_passout_view,name='student_passout'),
+
 path("mentor-forgot-password", views.mentor_forgot_password, name="mentor-forgot-password"),
 
 
@@ -29,12 +32,13 @@ path('students_scores', students_scores_view,name='students_scores'),
 path('update_student_skill/<int:id>', update_student_skill_view,name='update_student_skill'),
 path('student_profile/<str:roll>/', student_profile, name='student_profile'),
 
-path('student_profile_edit/', views_s.student_profile_edit, name='student_profile_edit'),
+# path('student_profile_edit/', views_s.student_profile_edit, name='student_profile_edit'),
 path('student_profile_edit_c/<str:roll>', student_profile_edit_c, name='student_profile_edit_c'),
 
+path('student_profile_edit/', student_profile_edit, name='student_profile_edit'),
 
 
-
+path("/delete_achievement/<str:oid>/<str:sid>", delete_achievement_view, name="delete_achievement"),
 
 path('achievements_url', achievements_view, name='achievements_url'),
 path('cert_url', cert_view, name='cert_url'),

@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CSRF_COOKIE_SECURE=False
-ROOT_URLCONF = 'onlinequiz.urls'
+ROOT_URLCONF = 'SPM.urls'
 
 TEMPLATES = [
     {
@@ -76,7 +76,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'onlinequiz.wsgi.application'
+WSGI_APPLICATION = 'SPM.wsgi.application'
 
 
 # Database

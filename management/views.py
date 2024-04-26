@@ -10,7 +10,6 @@ from django.core.mail import send_mail
 from examiner import models as TMODEL
 from student import models as SMODEL
 from mentor import models as MMODEL
-from examiner import models as EMODEL
 from examiner import forms as TFORM
 from student import forms as SFORM
 from .models import *
@@ -115,18 +114,18 @@ def afterlogin_view(request):
         roll=request.user.student.roll
         request.session['student_details_edit'] = roll
         return redirect(f'student/student_profile/{roll}')   
-    elif is_mentor(request.user):
+    elif request.user.groups.filter(name='EXAMINER').exists():
+        accountapproval=TMODEL.Examiner.objects.all().filter(user_id=request.user.id,status=True)
+        if accountapproval:
+            return redirect('examiner/examiner-dashboard')
+        else:
+            return render(request,'teacher/examiner_wait_for_approval.html')
+    elif request.user.groups.filter(name='MENTOR').exists():
         accountapproval=MMODEL.mentor.objects.all().filter(user_id=request.user.id,status=True)
         if accountapproval:
             return redirect('mentor/mentor-dashboard')
         else:
             return render(request,'mentor/mentor_wait_for_approval.html')
-    elif is_examiner(request.user):
-        accountapproval=EMODEL.Examiner.objects.all().filter(user_id=request.user.id,status=True)
-        if accountapproval:
-            return redirect('examiner/examiner-dashboard')
-        else:
-            return render(request,'examiner/examiner_wait_for_approval.html')
     else:
         return redirect('admin-dashboard')
 
@@ -166,7 +165,7 @@ def examiner(request):
     #mentor_pending =  MMODEL.mentor.objects.filter(status=False).values('emp_id','name','department','mobile','email','mentor_image')
     #mentor_approve = MMODEL.mentor.objects.filter(status=True).values('emp_id','name','department','mentor_image').annotate(mentee_count=Count('student')).order_by('mentee_count','name')
     examiners=TMODEL.Examiner.objects.all()
-    examiner_pending = TMODEL.Examiner.objects.filter(status=False).values('emp_id','name', 'department', 'examiner_image','mobile','email')
+    examiner_pending = TMODEL.Examiner.objects.filter(status=False).values('emp_id','name', 'department', 'examiner_image','email','mobile')
     examiner_approve = TMODEL.Examiner.objects.filter(status=True).values('emp_id','name', 'department', 'examiner_image')
     return render(request,'management/examiner.html',{'examiner_pending':examiner_pending,'examiner_approve':examiner_approve})
 
@@ -224,9 +223,7 @@ def mentor_assign(request,empid):
         'mentor_image':mentor.mentor_image,
         'is_active' : mentor.is_active
     }
-
     
-
     students = SMODEL.Student.objects.filter(department=mentor.department, mentor=None)
     classes = []
     for i in students.values('semester','branch','section').distinct():
@@ -891,6 +888,34 @@ def verify_otp(request):
 #         return HttpResponseRedirect('afterlogin')  
 #     return render(request,'home_page.html')
 
+
+def is_examiner(user):
+    return user.groups.filter(name='examiner').exists()
+
+def is_student(user):
+    return user.groups.filter(name='STUDENT').exists()
+
+def is_mentor(user):
+    return user.groups.filter(name='mentor').exists()
+
+# def afterlogin_view(request):
+#     if is_student(request.user):   
+#         roll=request.user.student.roll   
+#         return redirect(f'student/student_profile/{roll}')
+#     elif is_examiner(request.user):
+#         accountapproval=TMODEL.Examiner.objects.all().filter(user_id=request.user.id,status=True)
+#         if accountapproval:
+#             return redirect('examiner/examiner-dashboard')
+#         else:
+#             return render(request,'examiner/examiner_wait_for_approval.html')
+#     elif is_mentor(request.user):
+#         accountapproval=MMODEL.mentor.objects.all().filter(user_id=request.user.id,status=True)
+#         if accountapproval:
+#             return redirect('mentor/mentor-dashboard')
+#         else:
+#             return render(request,'mentor/mentor_wait_for_approval.html')
+#     else:
+#         return redirect('admin-dashboard')
 
 
 
