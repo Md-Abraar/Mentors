@@ -140,6 +140,9 @@
     <div class="container col-md-4 wrapper ">
         <img src="{% static "image/mentor_login_img.png" %}" alt="Avatar" class="avatar">
         <div class="title text-center"><span style="font-size:15px">Mentor</span><br>Login Form</div>
+        {% if form.non_field_errors %}
+          <div class="text-danger text-center mt-2" style="font-size:16px">Please enter valid credentials (case-sensitive)</div>
+        {% endif %}
         <div class="form-container" >
           <div class="form-inner">
             <form method="POST">

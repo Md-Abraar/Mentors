@@ -138,8 +138,11 @@
 <body>
   <br><br><br>
     <div class="container col-md-4 wrapper ">
-        <img src="{% static "image/examiner_login_img.png" %}" alt="Avatar" class="avatar">
-        <div class="title text-center"><span style="font-size:15px">Mentor</span><br>Login Form</div>
+        <img src="{% static "image/mentor_login_img.png" %}" alt="Avatar" class="avatar">
+        <div class="title text-center"><span style="font-size:15px">Examiner</span><br>Login Form</div>
+        {% if form.non_field_errors %}
+          <div class="text-danger text-center mt-2" style="font-size:16px">Please enter valid credentials (case-sensitive)</div>
+        {% endif %}
         <div class="form-container" >
           <div class="form-inner">
             <form method="POST">
@@ -169,4 +172,3 @@
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
-

@@ -16,6 +16,9 @@ from .models import *
 
 # admin.site.register(students_skills,StudentSkill)
 
+class ChangeLog(admin.ModelAdmin):
+    list_display = ("stu_roll","emp_id","date","id")
+
 
 
 admin.site.register(Student)
@@ -37,3 +40,4 @@ admin.site.register(Semester_marks)
 admin.site.register(Backlogs)
 admin.site.register(Placements)
 admin.site.register(Remarks)
+admin.site.register(MentorChangeLog,ChangeLog)

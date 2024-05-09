@@ -78,13 +78,6 @@ class students_skills(models.Model):
 #     def __str__(self):
 #         return self.skill_name if self.skill_name else "Unnamed Skill"
 
-
-class examiner_skills(models.Model):
-    examiner = models.ForeignKey(Examiner, on_delete=models.SET_NULL,null=True)
-    skill_name = models.CharField(max_length=30)
-    skill_status = models.CharField(max_length=20,default=False)
-    def __str__(self):
-        return self.skill_name if self.skill_name else "Unnamed Skill"
     
 
 class student_skill_exam_applications(models.Model):
@@ -119,6 +112,10 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.skill_name
+    
+class examiner_skills(models.Model):
+    examiner = models.ForeignKey(Examiner, on_delete=models.SET_NULL,null=True)
+    skill_name = models.ManyToManyField(Skill)
 
 class Faculty(models.Model):
     faculty_id = models.CharField(max_length=10)

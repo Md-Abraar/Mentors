@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from examiner.models import Examiner as Tmodel
 # from management.models import Skill as skill
-
 from mentor.models import mentor
 class Student(models.Model):
     name = models.CharField(max_length=40,null=True)
@@ -18,7 +17,17 @@ class Student(models.Model):
     profile_score = models.IntegerField(default=0)   
     def __str__(self):
         return self.user.username
-    
+class MentorChangeLog(models.Model):
+    date = models.DateTimeField(auto_now_add=True)
+    emp_id = models.CharField(max_length=40, null=True)
+    men_name = models.CharField(max_length=50, null=True)
+    department = models.CharField(max_length=40)
+    branch = models.CharField(max_length=6)
+    stu_roll = models.CharField(max_length=40)
+    stu_name = models.CharField(max_length=40)
+    stu_sem = models.IntegerField()
+    stu_sec = models.CharField(max_length=1)
+    stu_score = models.IntegerField()
 
 
 # from django.contrib.auth.models import AbstractUser

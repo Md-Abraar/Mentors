@@ -42,6 +42,8 @@
         <p style="font-size:18px"><span class="fw-semibold">Dept: </span>{{details.department}}</p>
         <p style="font-size:18px"><span class="fw-semibold">Email: </span>{{details.email}}</p>
         <p style="font-size:18px"><span class="fw-semibold">Contact: </span>{{details.mobile}}</p>
+        <p style="font-size:18px"><span class="fw-semibold">Skills: </span>{{details.skills|join:","}}</p>
+
         {% comment %} {% block mentee_count %}{% endblock mentee_count %} {% endcomment %}
           {% if details.is_active %}
           {% comment %} <a href=" {% url 'update-is-active' details.emp_id %} "><button type="submit" class="btn btn-danger" id="alert_message" onclick="alert_message()">deactivate</button></a>
@@ -69,5 +71,122 @@
   </div>
 <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+  $(document).ready(function(){
+    $('#sector').change(function(){
+      var sector = $(this).val(); 
+      // Check if the response for this sector is already cached
+          $.ajax({
+              url: '/get_domains',
+              data: {
+                  'sector': sector
+              },
+              dataType: 'json',
+              success: function (data){
+                  setDomains(data)
+              }
+          });
+  });
+  function setDomains(data){
+    var d = $('#domain')
+    d.empty();
+    d.append('<option value="">All</option>');
+    $.each(data, function(index, domain){
+        d.append('<option value="' + domain + '">' + domain + '</option>');
+    });   
+    d.find("option[value='{{domain|safe}}']").attr("selected","selected");         
+  }
+  });
+  $(document).ready(function() {
+    const choices = new Choices('#choices', {
+      searchEnabled: true,     
+      removeItemButton: true,
+      renderChoiceLimit: -1,  
+      maxItemCount: -1, 
+      items: [],
+      allowHTML: true,
+    });
+    // Bind AJAX call to the click event of the search button
+    $('#search').on('click', function(e) {
+        e.preventDefault(); // Prevent the default action of the button  
+        // Get selected values
+        var sector = $('#sector').val();
+        var domain = $('#domain').val();
+        var level = $('#level').val();
+        // AJAX request
+        $.ajax({
+            type: 'GET',
+            url: '/getSkillsforExaminer',  
+            data: {
+                sector: sector,
+                domain: domain,
+                level: level
+            },
+            success: function(data) {  
+              choices.setChoices(
+              data.map(skill => ({ value: skill, label: skill })),
+              'value',
+              'label',
+              true,
+            );
+          },          
+        });
+    });
+    $('#sector').trigger("change");
+    $('#search').on('click', function(e) {
+      e.preventDefault(); // Prevent the default action of the button  
+      // Get selected values
+      var sector = $('#sector').val();
+      var domain = $('#domain').val();
+      var level = $('#level').val();
+      // AJAX request
+      $.ajax({
+          type: 'GET',
+          url: '/getSkillsforExaminer',  
+          data: {
+              sector: sector,
+              domain: domain,
+              level: level
+          },
+          success: function(data) {  
+            choices.setChoices(
+            data.map(skill => ({ value: skill, label: skill })),
+            'value',
+            'label',
+            true,
+          );
+        },          
+      });
+  });
+    $('#AssignSkills').on('shown.bs.modal', function () {
+      $('#search').on('click', function(e) {
+        e.preventDefault(); // Prevent the default action of the button  
+        // Get selected values
+        var sector = $('#sector').val();
+        var domain = $('#domain').val();
+        var level = $('#level').val();
+        // AJAX request
+        $.ajax({
+            type: 'GET',
+            url: '/getSkillsforExaminer',  
+            data: {
+                sector: sector,
+                domain: domain,
+                level: level
+            },
+            success: function(data) {  
+              choices.setChoices(
+              data.map(skill => ({ value: skill, label: skill })),
+              'value',
+              'label',
+              true,
+            );
+          },          
+        });
+    });
+    $('#search').trigger("click");
+    });
+});
 
-  {% endblock content %}
+</script>
+{% endblock content %}
